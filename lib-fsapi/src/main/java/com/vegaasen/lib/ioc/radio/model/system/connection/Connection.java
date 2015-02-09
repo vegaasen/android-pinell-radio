@@ -1,4 +1,4 @@
-package com.vegaasen.lib.ioc.radio.model.conn;
+package com.vegaasen.lib.ioc.radio.model.system.connection;
 
 import java.util.Set;
 

@@ -1,4 +1,4 @@
-package com.vegaasen.lib.ioc.radio.model;
+package com.vegaasen.lib.ioc.radio.model.system;
 
 /**
  * Represents the state of the device

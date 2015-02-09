@@ -1,6 +1,6 @@
 package com.vegaasen.lib.ioc.radio.adapter.fsapi;
 
-import com.vegaasen.lib.ioc.radio.model.conn.Connection;
+import com.vegaasen.lib.ioc.radio.model.system.connection.Connection;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

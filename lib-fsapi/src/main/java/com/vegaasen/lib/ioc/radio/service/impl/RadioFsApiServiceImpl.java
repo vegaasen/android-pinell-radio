@@ -1,6 +1,6 @@
 package com.vegaasen.lib.ioc.radio.service.impl;
 
-import com.vegaasen.lib.ioc.radio.model.PowerState;
+import com.vegaasen.lib.ioc.radio.model.system.PowerState;
 import com.vegaasen.lib.ioc.radio.service.RadioFsApiService;
 
 /**
@@ -9,12 +9,12 @@ import com.vegaasen.lib.ioc.radio.service.RadioFsApiService;
 public class RadioFsApiServiceImpl implements RadioFsApiService {
 
     @Override
-    public PowerState getState() {
+    public PowerState getDeviceState() {
         return null;
     }
 
     @Override
-    public boolean power(PowerState state) {
+    public boolean setPowerState(PowerState state) {
         return false;
     }
 }

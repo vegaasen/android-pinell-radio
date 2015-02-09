@@ -1,16 +1,27 @@
 package com.vegaasen.lib.ioc.radio.util;
 
+import com.vegaasen.lib.ioc.radio.adapter.constants.ApiResponse;
+import com.vegaasen.lib.ioc.radio.model.response.Item;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public enum XmlUtils {
 
     INSTANCE;
+
+    private static final String EMPTY = "";
+    private static final int INIT = -1;
 
     public Document getDocument(InputStream inputStream) {
         if (inputStream == null) {
@@ -28,13 +39,72 @@ public enum XmlUtils {
         return null;
     }
 
-    public String getTextContentByNode(final Document document, final String nodeName) {
-        return (document == null) ? null : document.getElementsByTagName(nodeName).item(0).getTextContent();
+    /**
+     * Whenever dealing with elements of type "Item", this stuff is being created into an object. easy-pease
+     * Example:
+     * --------
+     * <fsapiResponse>
+     * <status>FS_OK</status>
+     * <item key="38">
+     * <field name="name"><c8_array>?NRK SUPER       </c8_array></field>
+     * <field name="type"><u8>1</u8></field>
+     * <field name="subtype"><u8>1</u8></field>
+     * </item>
+     * <item key="25">
+     * <field name="name"><c8_array>?NRK TEST        </c8_array></field>
+     * <field name="type"><u8>1</u8></field>
+     * <field name="subtype"><u8>1</u8></field>
+     * </item>
+     * ...
+     * </fsapiResponse>
+     * <p/>
+     *
+     * @param ele _
+     * @return _
+     */
+    public Set<Item> getItems(final Element ele) {
+        final Set<Item> items = new HashSet<Item>();
+        final NodeList candidates = ele.getElementsByTagName(ApiResponse.ITEM);
+        if (candidates == null) {
+            return items;
+        }
+        int i = INIT;
+        while (i++ != candidates.getLength()) {
+            final Map<String, String> fieldValues = new HashMap<String, String>();
+            final Element item = (Element) candidates.item(i);
+            if (item != null) {
+                int found = INIT;
+                final NodeList fields = item.getElementsByTagName(ApiResponse.FIELD);
+                if (fields != null) {
+                    while (found++ != fields.getLength()) {
+                        final Element field = (Element) fields.item(found);
+                        if (field != null) {
+                            if (field.getAttributes().getLength() > 0) {
+                                fieldValues.put(field.getAttributes().item(0).getTextContent(), field.getTextContent());
+                            }
+                        }
+                    }
+                }
+            }
+            items.add(Item.create(getItemKey(item), fieldValues));
+        }
+        return items;
     }
 
-    public int getNumberContentByNode(final Document document, final String nodeName) {
+    private int getItemKey(final Element item) {
+        if (item != null) {
+            return Integer.parseInt(item.getAttribute(ApiResponse.ITEM_KEY));
+        }
+        return 0;
+    }
+
+    public String getTextContentByNode(final Element ele, final String nodeName) {
+        return (ele == null) ? EMPTY : ele.getElementsByTagName(nodeName).item(0).getTextContent();
+    }
+
+    public int getNumberContentByNode(final Element ele, final String nodeName) {
         try {
-            return (document == null) ? 0 : Integer.parseInt(document.getElementsByTagName(nodeName).item(0).getTextContent());
+            return (ele == null) ? 0 : Integer.parseInt(ele.getElementsByTagName(nodeName).item(0).getTextContent());
         } catch (NumberFormatException e) {
             // *gulp*
         }

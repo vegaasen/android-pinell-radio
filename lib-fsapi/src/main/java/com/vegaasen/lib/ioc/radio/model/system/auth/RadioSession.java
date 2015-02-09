@@ -1,4 +1,4 @@
-package com.vegaasen.lib.ioc.radio.model.auth;
+package com.vegaasen.lib.ioc.radio.model.system.auth;
 
 /**
  * Represents the session of the radio.

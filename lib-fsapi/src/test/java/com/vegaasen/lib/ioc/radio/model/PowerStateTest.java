@@ -1,5 +1,6 @@
 package com.vegaasen.lib.ioc.radio.model;
 
+import com.vegaasen.lib.ioc.radio.model.system.PowerState;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

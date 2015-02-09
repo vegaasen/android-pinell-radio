@@ -1,6 +1,6 @@
 package com.vegaasen.lib.ioc.radio.service;
 
-import com.vegaasen.lib.ioc.radio.model.PowerState;
+import com.vegaasen.lib.ioc.radio.model.system.PowerState;
 
 /**
  * Simple interface for communicating with fsapi-enable devices (such as Pinell)
@@ -14,7 +14,7 @@ public interface RadioFsApiService {
      *
      * @return _
      */
-    public PowerState getState();
+    public PowerState getDeviceState();
 
     /**
      * This simply just sets the device in the wanted state
@@ -22,6 +22,6 @@ public interface RadioFsApiService {
      * @param state _
      * @return _
      */
-    public boolean power(PowerState state);
+    public boolean setPowerState(PowerState state);
 
 }

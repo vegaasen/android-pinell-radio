@@ -1,6 +1,6 @@
-package com.vegaasen.lib.ioc.radio.model.conn;
+package com.vegaasen.lib.ioc.radio.model.system.connection;
 
-import com.vegaasen.lib.ioc.radio.model.auth.RadioSession;
+import com.vegaasen.lib.ioc.radio.model.system.auth.RadioSession;
 
 public class Host {
 

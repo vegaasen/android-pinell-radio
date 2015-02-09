@@ -1,4 +1,4 @@
-package com.vegaasen.lib.ioc.radio.model;
+package com.vegaasen.lib.ioc.radio.model.response;
 
 /**
  * Represents all (registered) possible return codes from the FsApi :-).
