@@ -1,12 +1,14 @@
 package com.vegaasen.lib.ioc.radio.model.system;
 
 import com.vegaasen.lib.ioc.radio.adapter.constants.ApiResponse;
+import com.vegaasen.lib.ioc.radio.model.annotation.Immutable;
 import com.vegaasen.lib.ioc.radio.model.response.Item;
 
 /**
  * Represents which modes is available through the Radio itself.
  * It might be internetRadio, DAB, AUX etc.
  */
+@Immutable
 public class RadioMode {
 
     private static final String SELECTABLE = "1";

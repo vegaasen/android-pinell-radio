@@ -1,8 +1,10 @@
 package com.vegaasen.lib.ioc.radio.model.system;
 
 import com.vegaasen.lib.ioc.radio.adapter.constants.ApiResponse;
+import com.vegaasen.lib.ioc.radio.model.annotation.Immutable;
 import com.vegaasen.lib.ioc.radio.model.response.Item;
 
+@Immutable
 public class Equalizer {
 
     private static final String UNKNOWN = "";

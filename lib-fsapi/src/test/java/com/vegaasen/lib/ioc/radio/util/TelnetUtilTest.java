@@ -2,7 +2,9 @@ package com.vegaasen.lib.ioc.radio.util;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class TelnetUtilTest {
 
@@ -17,8 +19,11 @@ public class TelnetUtilTest {
     }
 
     @Test
-    public void findPotentialLocalHosts_localHosts() {
-        assertNotNull(TelnetUtil.findPotentialLocalHosts());
+    public void findPotentialLocalSubnetNetworkHosts_localHosts() {
+        final long start = System.currentTimeMillis();
+        assertNotNull(TelnetUtil.findPotentialLocalSubnetNetworkHosts());
+        final long stop = System.currentTimeMillis();
+        System.out.println("Test took ~" + (stop - start) + "ms");
     }
 
 }

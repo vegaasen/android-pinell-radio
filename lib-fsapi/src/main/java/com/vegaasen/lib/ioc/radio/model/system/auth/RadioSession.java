@@ -1,10 +1,13 @@
 package com.vegaasen.lib.ioc.radio.model.system.auth;
 
+import com.vegaasen.lib.ioc.radio.model.annotation.Immutable;
+
 /**
  * Represents the session of the radio.
  *
  * @author <a href="mailto:vegaasen@gmail.com">vegaasen</a>
  */
+@Immutable
 public class RadioSession {
 
     private final String id;

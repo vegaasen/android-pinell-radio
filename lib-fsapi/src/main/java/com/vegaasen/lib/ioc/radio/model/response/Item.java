@@ -1,8 +1,11 @@
 package com.vegaasen.lib.ioc.radio.model.response;
 
+import com.vegaasen.lib.ioc.radio.model.annotation.Immutable;
+
 import java.util.HashMap;
 import java.util.Map;
 
+@Immutable
 public class Item {
 
     // This is the default delimiter - in case of elements of <c8_array/> appears in the value of the k/v..

@@ -15,11 +15,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 public enum XmlUtils {
 
     INSTANCE;
 
+    private static final Logger LOG = Logger.getLogger(XmlUtils.class.getSimpleName());
     private static final String EMPTY = "";
     private static final int INIT = -1;
 
@@ -30,13 +32,26 @@ public enum XmlUtils {
         try {
             return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(inputStream);
         } catch (SAXException e) {
-            e.printStackTrace();
+            LOG.info("Unable to parse the stream due to elements");
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.info("Unable to stream");
         } catch (ParserConfigurationException e) {
-            e.printStackTrace();
+            LOG.info("Unable to parse the stream");
         }
         return null;
+    }
+
+    public int getNumberContentByNode(final Element ele, final String nodeName) {
+        try {
+            return (ele == null) ? 0 : Integer.parseInt(getTextContentByNode(ele, nodeName));
+        } catch (NumberFormatException e) {
+            // *gulp*
+        }
+        return 0;
+    }
+
+    public String getTextContentByNode(final Element ele, final String nodeName) {
+        return (ele == null) ? EMPTY : ele.getElementsByTagName(nodeName).item(0).getTextContent();
     }
 
     /**
@@ -94,19 +109,6 @@ public enum XmlUtils {
     private int getItemKey(final Element item) {
         if (item != null) {
             return Integer.parseInt(item.getAttribute(ApiResponse.ITEM_KEY));
-        }
-        return 0;
-    }
-
-    public String getTextContentByNode(final Element ele, final String nodeName) {
-        return (ele == null) ? EMPTY : ele.getElementsByTagName(nodeName).item(0).getTextContent();
-    }
-
-    public int getNumberContentByNode(final Element ele, final String nodeName) {
-        try {
-            return (ele == null) ? 0 : Integer.parseInt(ele.getElementsByTagName(nodeName).item(0).getTextContent());
-        } catch (NumberFormatException e) {
-            // *gulp*
         }
         return 0;
     }

@@ -120,6 +120,12 @@ public enum ApiSystemRequest {
         );
     }
 
+    /**
+     * Get the current powerState. Might be On or Off.
+     *
+     * @param host _
+     * @return UNKNOWN - which most likely denotes that the current session has timed out or is invalid.
+     */
     public PowerState getCurrentPowerState(Host host) {
         final Document document = ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.System.GET_POWER_STATE));
         if (document != null && ApiConnection.INSTANCE.verifyResponseOk(document)) {

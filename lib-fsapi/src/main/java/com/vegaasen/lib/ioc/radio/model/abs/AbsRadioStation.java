@@ -1,5 +1,8 @@
 package com.vegaasen.lib.ioc.radio.model.abs;
 
+import com.vegaasen.lib.ioc.radio.model.annotation.Immutable;
+
+@Immutable
 public abstract class AbsRadioStation {
 
     private final int keyId;

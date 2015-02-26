@@ -10,7 +10,7 @@ public abstract class AbstractApiRequestIntTest {
 
     @BeforeClass
     public static void initialize() {
-        host = ApiConnection.INSTANCE.getConnection().getHost().iterator().next();
+        host = ApiConnection.INSTANCE.initialize().getHost().iterator().next();
     }
 
 }

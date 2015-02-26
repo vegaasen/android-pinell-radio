@@ -10,6 +10,7 @@ import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
 import com.vegaasen.lib.ioc.radio.util.TelnetUtil;
 import com.vegaasen.lib.ioc.radio.util.XmlUtils;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
@@ -41,7 +42,12 @@ public enum ApiConnection {
     private HttpClient httpClient = HttpClientBuilder.create().build();
     private Connection connection;
 
-    public Connection getConnection() {
+    /**
+     * Before actually connecting to anything, a connection is required to exist.
+     *
+     * @return your current connection
+     */
+    public Connection initialize() {
         if (connection == null) {
             connection = Connection.create(fetchPotentialHosts());
             massageConnections();
@@ -60,11 +66,22 @@ public enum ApiConnection {
 
     public Document request(URI uri) {
         try {
-            return XmlUtils.INSTANCE.getDocument(httpClient.execute(assembleGetRequest(uri)).getEntity().getContent());
+            final HttpResponse response = conditionallyGetResponse(uri);
+            if (response != null) {
+                return XmlUtils.INSTANCE.getDocument(response.getEntity().getContent());
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private HttpResponse conditionallyGetResponse(URI uri) throws IOException {
+        final HttpResponse response = httpClient.execute(assembleGetRequest(uri));
+        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
+            return null;
+        }
+        return response;
     }
 
     public boolean verifyResponseOk(final Document document) {
@@ -108,8 +125,29 @@ public enum ApiConnection {
         return parameters;
     }
 
+    public Connection reinitialize() {
+        connection = null;
+        return initialize();
+    }
+
+    public void setConnection(Connection connection) {
+        this.connection = connection;
+    }
+
     private String getConnectionRoot(final Host host) {
         return String.format("%s%s", host.getConnectionString(), UriContext.ROOT);
+    }
+
+    private Set<Host> fetchPotentialHosts() {
+        final Set<Host> hosts = new HashSet<Host>();
+        for (final String host : TelnetUtil.findPotentialLocalSubnetNetworkHosts()) {
+            if (TelnetUtil.isAlive(host, DEFAULT_PORT)) {
+                hosts.add(Host.create(host, DEFAULT_PORT, DEFAULT_CODE));
+            } else {
+                hosts.add(Host.create(host, PORT_TRY_2, DEFAULT_CODE));
+            }
+        }
+        return hosts;
     }
 
     private void massageConnections() {
@@ -118,18 +156,6 @@ public enum ApiConnection {
                 connection.getHost().remove(host);
             }
         }
-    }
-
-    private Set<Host> fetchPotentialHosts() {
-        final Set<Host> hosts = new HashSet<Host>();
-        for (final String host : TelnetUtil.findPotentialLocalHosts()) {
-            if (TelnetUtil.isAlive(host, DEFAULT_PORT)) {
-                hosts.add(Host.create(host, DEFAULT_PORT, DEFAULT_CODE));
-            } else if (TelnetUtil.isAlive(host, PORT_TRY_2)) {
-                hosts.add(Host.create(host, DEFAULT_PORT, DEFAULT_CODE));
-            }
-        }
-        return hosts;
     }
 
     /**

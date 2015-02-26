@@ -1,7 +1,6 @@
 package com.vegaasen.lib.ioc.radio.util;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -10,19 +9,24 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * Simple tools used to help with capturing and requesting status of remote services
+ *
  * @author <a href="mailto:vegard.aasen@telenor.com">Vegard Aasen</a>
  * @since 10:40 AM
  */
 public final class TelnetUtil {
 
-    private static final int TIMEOUT = 200;
+    // The timeout portion may need to be moved around a bit, as it may be too "slow" or "too quick" in regards to Android devices. We'll see..
+    private static final int TIMEOUT = 500;
     private static final long WAIT = TimeUnit.SECONDS.toMillis(5);
-    private static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(10);
+    private static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(15);
+    private static final CountDownLatch LATCH = new CountDownLatch(250);
 
     private TelnetUtil() {
     }
@@ -35,18 +39,38 @@ public final class TelnetUtil {
      *
      * @return the lot.
      */
-    public static Set<String> findPotentialLocalHosts() {
+    public static Set<String> findPotentialLocalSubnetNetworkHosts() {
+        final Set<Runnable> runnables = new HashSet<Runnable>();
         final Set<String> hosts = new HashSet<String>();
         try {
             final String subnet = findActiveSubnet();
-            for (int i = 104; i < 105; i++) {
-                final String host = subnet + i;
-                if (isAlive(host, 80)) {
-                    hosts.add(host);
-                }
+            for (int i = 0; i <= 250; i++) {
+                final int currPort = i;
+                runnables.add(new Runnable() {
+                    @Override
+                    public void run() {
+                        System.out.println(currPort);
+                        final String host = subnet + currPort;
+                        if (isAlive(host, 80)) {
+                            hosts.add(host);
+                        }
+                        LATCH.countDown();
+                    }
+                });
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        if (!runnables.isEmpty()) {
+
+            for (final Runnable runnable : runnables) {
+                EXECUTOR_SERVICE.execute(runnable);
+            }
+            try {
+                LATCH.await();
+            } catch (InterruptedException e) {
+                // *gulp*
+            }
         }
         return hosts;
     }
@@ -72,10 +96,9 @@ public final class TelnetUtil {
         try {
             pingSocket.setSoTimeout(TIMEOUT);
             pingSocket.connect(new InetSocketAddress(hostName, port), TIMEOUT);
+            pingSocket.isBound();
             pingSocket.setKeepAlive(false);
-            new PrintWriter(pingSocket.getOutputStream(), true);
             if (pingSocket.isConnected()) {
-                System.out.println(String.format("%s <- open", port));
                 return true;
             }
         } catch (final IOException e) {

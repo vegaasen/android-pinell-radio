@@ -1,12 +1,16 @@
 package com.vegaasen.lib.ioc.radio.model.system.connection;
 
+import com.vegaasen.lib.ioc.radio.model.annotation.Immutable;
+
+import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Represents a connection and its details
+ * Represents a connection and its details. Immutable
  *
  * @author vegaasen
  */
+@Immutable
 public class Connection {
 
     private final Set<Host> host;
@@ -17,12 +21,18 @@ public class Connection {
         this.when = when;
     }
 
-    public static Connection create(Set<Host> host) {
+    public static Connection create(final Host host) {
+        final Set<Host> hosts = new HashSet<Host>();
+        hosts.add(host);
+        return create(hosts);
+    }
+
+    public static Connection create(final Set<Host> host) {
         return new Connection(host, System.currentTimeMillis());
     }
 
     public Set<Host> getHost() {
-        return host;
+        return new HashSet<Host>(host);
     }
 
     public long getWhen() {

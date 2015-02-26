@@ -2,8 +2,10 @@ package com.vegaasen.lib.ioc.radio.model.dab;
 
 import com.vegaasen.lib.ioc.radio.adapter.constants.ApiResponse;
 import com.vegaasen.lib.ioc.radio.model.abs.AbsRadioStation;
+import com.vegaasen.lib.ioc.radio.model.annotation.Immutable;
 import com.vegaasen.lib.ioc.radio.model.response.Item;
 
+@Immutable
 public class RadioStation extends AbsRadioStation {
 
     private RadioStation(int keyId, String name, String type, String subType) {

@@ -1,5 +1,8 @@
 package com.vegaasen.lib.ioc.radio.model.device;
 
+import com.vegaasen.lib.ioc.radio.model.annotation.Immutable;
+
+@Immutable
 public class DeviceAudio {
 
     private final AudioStatus status;

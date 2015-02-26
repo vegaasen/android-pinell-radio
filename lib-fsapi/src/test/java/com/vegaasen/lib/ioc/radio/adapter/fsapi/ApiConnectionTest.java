@@ -10,9 +10,9 @@ public class ApiConnectionTest {
 
     @Test
     public void assemble_connection() {
-        final Connection connection = ApiConnection.INSTANCE.getConnection();
+        final Connection connection = ApiConnection.INSTANCE.initialize();
         assertNotNull(connection);
-        final Connection connection2 = ApiConnection.INSTANCE.getConnection();
+        final Connection connection2 = ApiConnection.INSTANCE.initialize();
         assertEquals(connection, connection2);
     }
 
