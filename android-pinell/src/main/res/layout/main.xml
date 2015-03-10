@@ -9,5 +9,9 @@
             android:layout_height="wrap_content"
             android:text="Hello World, MainActivity"
             />
+    <Button android:layout_width="wrap_content" 
+            android:layout_height="wrap_content"
+            android:id="@+id/btnDialog"
+            android:text="@string/mainBtnDialog"/>
 </LinearLayout>
 
