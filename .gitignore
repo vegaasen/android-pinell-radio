@@ -1,11 +1,9 @@
-# Output
-/build/
-
 # Build
-/gradle/
 .gradle
 /local.properties
 gen/
+gradle
+build
 
 # IDE
 *.eclipse

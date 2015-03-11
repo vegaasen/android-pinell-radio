@@ -39,4 +39,11 @@ public class Connection {
         return when;
     }
 
+    @Override
+    public String toString() {
+        return "Connection{" +
+                "host=" + host +
+                ", when=" + when +
+                '}';
+    }
 }

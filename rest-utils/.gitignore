@@ -1,0 +1,18 @@
+#
+# @author Vegard Aasen
+# @since 18.2.2014
+#
+
+# IDE Files
+.idea/
+*.iml
+*.ipr
+*.eclipse
+
+# Project Files
+*.class
+
+# Package Files
+*.jar
+*.war
+*.ear

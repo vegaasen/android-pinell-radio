@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/defaultBackgroundColor"
+        >
+    <RelativeLayout
+            android:id="@+id/listDeviceWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/defaultBackgroundColor">
+        <ImageView
+                android:id="@+id/listDeviceRadioIcon"
+                android:layout_width="@dimen/iconSizeWidth"
+                android:layout_height="@dimen/iconSizeHeight"
+                android:layout_marginEnd="15dp"
+                android:layout_marginStart="10dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"
+                android:contentDescription="@string/dialogIconDescription"
+                android:src="@android:drawable/ic_btn_speak_now"
+                />
+        <TextView
+                android:id="@+id/listDeviceRadioName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/listDeviceRadioIcon"
+                android:layout_centerVertical="true"
+                android:text="@string/dialogSearchingForDevices"
+                />
+    </RelativeLayout>
+</LinearLayout>

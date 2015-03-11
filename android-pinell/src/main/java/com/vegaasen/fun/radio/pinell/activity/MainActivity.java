@@ -1,17 +1,19 @@
 package com.vegaasen.fun.radio.pinell.activity;
 
-import android.app.Activity;
-import android.app.Dialog;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import com.vegaasen.fun.radio.pinell.R;
+import com.vegaasen.fun.radio.pinell.activity.abs.AbstractActivity;
 
 /**
- * Simple buttons
+ * Main activity which simply controls the "entrance" to the application.
+ * It will also display some stuff regarding the various contexts the user selects.
+ *
+ * @author vegaasen
+ * @since 0.1-SNAPSHOT
  */
-public class MainActivity extends Activity {
+public class MainActivity extends AbstractActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -26,10 +28,7 @@ public class MainActivity extends Activity {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(final View view) {
-                    final Dialog dialog = new Dialog(getBaseContext());
-                    dialog.setContentView(R.layout.dialog_device_chooser);
-                    dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    dialog.show();
+                    generateDeviceConnectionDialog();
                 }
             });
         }
