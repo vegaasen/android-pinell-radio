@@ -29,4 +29,12 @@ public interface PinellService {
      */
     Connection getPinellConnection(boolean refresh);
 
+    /**
+     * Set the current subnet. Can be nilled.
+     * Use WifiManager in order to fetch the current subnet
+     *
+     * @param currentSubnet _
+     */
+    void setCurrentSubnet(String currentSubnet);
+
 }

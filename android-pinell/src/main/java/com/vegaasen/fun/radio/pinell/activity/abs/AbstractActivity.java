@@ -3,6 +3,8 @@ package com.vegaasen.fun.radio.pinell.activity.abs;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.net.wifi.WifiManager;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ListView;
@@ -11,6 +13,7 @@ import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.adapter.DeviceArrayAdapter;
 import com.vegaasen.fun.radio.pinell.service.PinellService;
 import com.vegaasen.fun.radio.pinell.service.impl.PinellServiceImpl;
+import com.vegaasen.fun.radio.pinell.util.NetworkUtils;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
 
 import java.util.List;
@@ -22,7 +25,9 @@ import java.util.List;
  */
 public abstract class AbstractActivity extends Activity {
 
-    private static final PinellService PINELL_SERVICE = new PinellServiceImpl();
+    private static final String TAG = AbstractActivity.class.getSimpleName();
+
+    private PinellService pinellService;
 
     protected final Context context = this;
 
@@ -38,17 +43,25 @@ public abstract class AbstractActivity extends Activity {
     private void refreshDevicesToList(Dialog dialogView) {
         final ListView deviceOverview = (ListView) dialogView.findViewById(R.id.listDevices);
         if (deviceOverview != null) {
-            final List<Host> pinellHosts = Lists.newArrayList(Host.create("localhost", 1234, "123ads"));
+//            final List<Host> pinellHosts = Lists.newArrayList(Host.create("localhost", 1234, "123ads"));
+            final List<Host> pinellHosts = Lists.newArrayList(getPinellService().getPinellHosts());
             final DeviceArrayAdapter devicesAdapter = new DeviceArrayAdapter(context, R.layout.device_listview, pinellHosts);
             deviceOverview.setAdapter(devicesAdapter);
         }
     }
 
-    protected static PinellService getPinellService() {
-        if (PINELL_SERVICE != null) {
-            return PINELL_SERVICE;
+    protected PinellService getPinellService() {
+        if (pinellService == null) {
+            pinellService = new PinellServiceImpl();
+            final String subnet = NetworkUtils.fromIntToIp(getWifiManager().getConnectionInfo().getIpAddress());
+            Log.d(TAG, String.format("Device connected to {%s}", subnet));
+            pinellService.setCurrentSubnet(subnet);
         }
-        throw new RuntimeException("PinellService is nilled for some reason. Dying :).");
+        return pinellService;
+    }
+
+    protected WifiManager getWifiManager() {
+        return (WifiManager) getSystemService(Context.WIFI_SERVICE);
     }
 
 }

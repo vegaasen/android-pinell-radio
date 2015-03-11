@@ -14,7 +14,7 @@ public interface RadioFsApiService {
      *
      * @return _
      */
-    public PowerState getDeviceState();
+    PowerState getDeviceState();
 
     /**
      * This simply just sets the device in the wanted state
@@ -22,6 +22,6 @@ public interface RadioFsApiService {
      * @param state _
      * @return _
      */
-    public boolean setPowerState(PowerState state);
+    boolean setPowerState(PowerState state);
 
 }

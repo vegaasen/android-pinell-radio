@@ -15,7 +15,7 @@ public interface RadioFsApiConnectionService {
      *
      * @return potential hosts
      */
-    public Connection getPotentialHosts();
+    Connection getPotentialHosts();
 
     /**
      * Tries to detect hosts. This is the same as the getPotentialHosts()-however, it will remove the previous found
@@ -23,7 +23,7 @@ public interface RadioFsApiConnectionService {
      *
      * @return potential hosts
      */
-    public Connection redetectPotentialHosts();
+    Connection redetectPotentialHosts();
 
     /**
      * In certain cases, it would be nice to configure the IP and stuff if you already have this at hand.
@@ -32,6 +32,14 @@ public interface RadioFsApiConnectionService {
      * @param connection _
      * @return _
      */
-    public Connection configureConnection(Connection connection);
+    Connection configureConnection(Connection connection);
+
+    /**
+     * In some cases it is good to set the subnet from an external source. This methods helps in this regard.
+     * Requires to be called first.
+     *
+     * @param subnet _
+     */
+    void setSubnet(String subnet);
 
 }

@@ -21,6 +21,7 @@ public class PinellServiceImpl implements PinellService {
 
     private RadioFsApiConnectionService radioFsApiConnectionService;
     private Connection connection;
+    private String currentSubnet;
 
     public PinellServiceImpl() {
         this.radioFsApiConnectionService = new RadioFsApiConnectionServiceImpl();
@@ -52,6 +53,11 @@ public class PinellServiceImpl implements PinellService {
             );
         }
         return getConnection();
+    }
+
+    public void setCurrentSubnet(String currentSubnet) {
+        this.currentSubnet = currentSubnet;
+        getService().setSubnet(currentSubnet);
     }
 
     private RadioFsApiConnectionService getService() {

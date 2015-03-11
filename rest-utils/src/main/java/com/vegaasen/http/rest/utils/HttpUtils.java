@@ -5,7 +5,11 @@ import com.vegaasen.http.rest.model.Scheme;
 import com.vegaasen.http.rest.model.abs.StringId;
 import com.vegaasen.http.rest.model.auth.Authentication;
 import com.vegaasen.http.rest.model.auth.AuthenticationType;
-import com.vegaasen.http.rest.model.http.*;
+import com.vegaasen.http.rest.model.http.ContentType;
+import com.vegaasen.http.rest.model.http.Header;
+import com.vegaasen.http.rest.model.http.Param;
+import com.vegaasen.http.rest.model.http.RequestType;
+import com.vegaasen.http.rest.model.http.Response;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -66,11 +70,13 @@ public final class HttpUtils {
             appendHeadersForConnection(urlConnection, scheme);
             conditionallyConfigurePostLikeRequest(scheme, urlConnection, requestType);
             final Response response = new Response();
+            final InputStream inputStream = urlConnection.getInputStream();
             response.setResponseCode(urlConnection.getResponseCode());
             response.setWhen(urlConnection.getIfModifiedSince());
             response.setOriginalRequestScheme(scheme);
             response.setHeaders(convertHeaders(urlConnection.getHeaderFields()));
-            response.setPayload(convertInputStreamToPayload(urlConnection.getInputStream()));
+            response.setPayload(convertInputStreamToPayload(inputStream));
+            response.setOriginalPayload(inputStream);
             return response;
         } catch (final IOException e) {
             throw new IllegalArgumentException(String.format("The URL {%s} is for some reason not parseable", scheme.getTo().toString()));

@@ -2,6 +2,7 @@ package com.vegaasen.http.rest.model.http;
 
 import com.vegaasen.http.rest.model.Scheme;
 
+import java.io.InputStream;
 import java.util.Map;
 
 /**
@@ -13,6 +14,7 @@ public final class Response {
 
     private long when;
     private String payload;
+    private InputStream originalPayload;
     private Map<String, String> headers;
     private int responseCode;
     private Scheme originalRequestScheme;
@@ -31,6 +33,14 @@ public final class Response {
 
     public void setPayload(String payload) {
         this.payload = payload;
+    }
+
+    public InputStream getOriginalPayload() {
+        return originalPayload;
+    }
+
+    public void setOriginalPayload(InputStream originalPayload) {
+        this.originalPayload = originalPayload;
     }
 
     public Map<String, String> getHeaders() {

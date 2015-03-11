@@ -1,2 +1,2 @@
-include ':lib-fsapi', ':rest-utils'
+include ':rest-utils', ':lib-fsapi'
 include ':android-pinell'

@@ -5,6 +5,8 @@ import com.vegaasen.http.rest.model.abs.StringId;
 import com.vegaasen.http.rest.model.http.Param;
 import com.vegaasen.http.rest.model.http.UrlParam;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 /**
@@ -39,6 +41,10 @@ public final class UrlBuilder<T> {
                 conditionallyReplaceUrlParams(scheme.getUrlParams(), scheme.getTo().toString()),
                 appendParams(scheme.getParams())
         );
+    }
+
+    public static URI buildFromSchemeAsUri(final Scheme scheme) throws URISyntaxException {
+        return new URI(buildFromScheme(scheme));
     }
 
     private static String conditionallyReplaceUrlParams(final List<UrlParam> urlParams, final String url) {

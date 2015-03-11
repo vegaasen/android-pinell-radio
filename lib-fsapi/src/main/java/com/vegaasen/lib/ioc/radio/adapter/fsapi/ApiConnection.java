@@ -1,5 +1,12 @@
 package com.vegaasen.lib.ioc.radio.adapter.fsapi;
 
+import com.vegaasen.http.rest.handler.Restinator;
+import com.vegaasen.http.rest.model.Scheme;
+import com.vegaasen.http.rest.model.http.Header;
+import com.vegaasen.http.rest.model.http.Param;
+import com.vegaasen.http.rest.model.http.Response;
+import com.vegaasen.http.rest.model.http.ResponseCode;
+import com.vegaasen.http.rest.utils.UrlBuilder;
 import com.vegaasen.lib.ioc.radio.adapter.constants.ApiResponse;
 import com.vegaasen.lib.ioc.radio.adapter.constants.Parameter;
 import com.vegaasen.lib.ioc.radio.adapter.constants.UriContext;
@@ -9,14 +16,6 @@ import com.vegaasen.lib.ioc.radio.model.system.connection.Connection;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
 import com.vegaasen.lib.ioc.radio.util.TelnetUtil;
 import com.vegaasen.lib.ioc.radio.util.XmlUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.message.BasicHeader;
 import org.w3c.dom.Document;
 
 import java.io.IOException;
@@ -27,20 +26,25 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Todo: remove all e.printStackTrace()..
+ * Todo: better test-coverage
+ */
 public enum ApiConnection {
 
     INSTANCE;
 
-    private static final BasicHeader USER_AGENT = new BasicHeader("User-Agent", "Pinell/1.1 CFNetwork/711.1.16 Darwin/14.0.0");
-    private static final BasicHeader ACCEPT = new BasicHeader("Accept", "*/*");
-    private static final BasicHeader ACCEPT_LANGUAGE = new BasicHeader("Accept-Language", "en-us");
-    private static final BasicHeader CONNECTION = new BasicHeader("Connection", "keep-alive");
-    private static final BasicHeader ACCEPT_ENCODING = new BasicHeader("Accept-Encoding", "gzip, deflate");
-    private static final int DEFAULT_PORT = 2244, PORT_TRY_2 = 80, DEFAULT_RESPONSE = 403;
+    private static final Header USER_AGENT = new Header("User-Agent", "Pinell/1.1 CFNetwork/711.1.16 Darwin/14.0.0");
+    private static final Header ACCEPT = new Header("Accept", "*/*");
+    private static final Header ACCEPT_LANGUAGE = new Header("Accept-Language", "en-us");
+    private static final Header CONNECTION = new Header("Connection", "keep-alive");
+    private static final Header ACCEPT_ENCODING = new Header("Accept-Encoding", "gzip, deflate");
+    private static final int DEFAULT_PORT = 2244, PORT_TRY_2 = 80;
     private static final String DEFAULT_CODE = "1234";
 
-    private HttpClient httpClient = HttpClientBuilder.create().build();
     private Connection connection;
+    //In certain cases, it would be nice to let the user specify the subnet
+    private String preSubnet;
 
     /**
      * Before actually connecting to anything, a connection is required to exist.
@@ -49,14 +53,14 @@ public enum ApiConnection {
      */
     public Connection initialize() {
         if (connection == null) {
-            connection = Connection.create(fetchPotentialHosts());
+            connection = Connection.create(fetchPotentialHosts(preSubnet));
             massageConnections();
         }
         return connection;
     }
 
     public void retrieveNewSession(Host host) {
-        final Map<String, String> parameters = new HashMap<String, String>();
+        final Map<String, String> parameters = new HashMap<>();
         parameters.put(Parameter.QueryParameter.PIN_NUMBER, host.getCode());
         final Document document = request(getApiUri(host, UriContext.Authentication.CREATE_SESSION, parameters));
         if (document != null && verifyResponseOk(document)) {
@@ -66,9 +70,9 @@ public enum ApiConnection {
 
     public Document request(URI uri) {
         try {
-            final HttpResponse response = conditionallyGetResponse(uri);
+            final Response response = conditionallyGetResponse(uri);
             if (response != null) {
-                return XmlUtils.INSTANCE.getDocument(response.getEntity().getContent());
+                return XmlUtils.INSTANCE.getDocument(response.getOriginalPayload());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -76,9 +80,9 @@ public enum ApiConnection {
         return null;
     }
 
-    private HttpResponse conditionallyGetResponse(URI uri) throws IOException {
-        final HttpResponse response = httpClient.execute(assembleGetRequest(uri));
-        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
+    private Response conditionallyGetResponse(URI uri) throws IOException {
+        final Response response = new Restinator(uri.toString()).headers(USER_AGENT, ACCEPT, ACCEPT_ENCODING, ACCEPT_LANGUAGE, CONNECTION).get();
+        if (response.getResponseCode() == ResponseCode.NOT_FOUND) {
             return null;
         }
         return response;
@@ -89,12 +93,13 @@ public enum ApiConnection {
     }
 
     public URI getApiUriWithoutRoot(final Host host, final String context) {
+        final Scheme urlScheme = new Scheme();
+        urlScheme.setTo(host.getConnectionString() + context);
+        for (final Map.Entry<String, String> entry : getDefaultApiConnectionParams(host).entrySet()) {
+            urlScheme.addParam(new Param(entry.getKey(), entry.getValue()));
+        }
         try {
-            URIBuilder builder = new URIBuilder(host.getConnectionString() + context);
-            for (final Map.Entry<String, String> entry : getDefaultApiConnectionParams(host).entrySet()) {
-                builder.addParameter(entry.getKey(), entry.getValue());
-            }
-            return builder.build();
+            return UrlBuilder.buildFromSchemeAsUri(urlScheme);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -106,12 +111,13 @@ public enum ApiConnection {
     }
 
     public URI getApiUri(final Host host, final String context, final Map<String, String> parameters) {
+        final Scheme urlScheme = new Scheme();
+        urlScheme.setTo(getConnectionRoot(host) + context);
+        for (final Map.Entry<String, String> entry : parameters.entrySet()) {
+            urlScheme.addParam(new Param(entry.getKey(), entry.getValue()));
+        }
         try {
-            URIBuilder builder = new URIBuilder(getConnectionRoot(host) + context);
-            for (final Map.Entry<String, String> entry : parameters.entrySet()) {
-                builder.addParameter(entry.getKey(), entry.getValue());
-            }
-            return builder.build();
+            return UrlBuilder.buildFromSchemeAsUri(urlScheme);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -119,14 +125,21 @@ public enum ApiConnection {
     }
 
     public Map<String, String> getDefaultApiConnectionParams(Host host) {
-        final Map<String, String> parameters = new HashMap<String, String>();
+        final Map<String, String> parameters = new HashMap<>();
         parameters.put(Parameter.QueryParameter.PIN_NUMBER, host.getCode());
         parameters.put(Parameter.QueryParameter.SESSION_ID, getSession(host));
         return parameters;
     }
 
-    public Connection reinitialize() {
+    /**
+     * Remove the current connection
+     */
+    public void detach() {
         connection = null;
+    }
+
+    public Connection reinitialize() {
+        detach();
         return initialize();
     }
 
@@ -134,13 +147,23 @@ public enum ApiConnection {
         this.connection = connection;
     }
 
+    public void setPreSubnet(String preSubnet) {
+        this.preSubnet = preSubnet;
+    }
+
     private String getConnectionRoot(final Host host) {
         return String.format("%s%s", host.getConnectionString(), UriContext.ROOT);
     }
 
-    private Set<Host> fetchPotentialHosts() {
-        final Set<Host> hosts = new HashSet<Host>();
-        for (final String host : TelnetUtil.findPotentialLocalSubnetNetworkHosts()) {
+    /**
+     * @param preEnteredSubnet - if this variable exists, it will try to use the entered subnet instead of relying on the TelnetUtils to find the current one
+     * @return hosts
+     */
+    private Set<Host> fetchPotentialHosts(final String preEnteredSubnet) {
+        final Set<Host> hosts = new HashSet<>();
+        for (final String host : preEnteredSubnet == null || preEnteredSubnet.isEmpty() ?
+                TelnetUtil.findPotentialLocalSubnetNetworkHosts() :
+                TelnetUtil.findPotentialLocalSubnetNetworkHosts(preEnteredSubnet)) {
             if (TelnetUtil.isAlive(host, DEFAULT_PORT)) {
                 hosts.add(Host.create(host, DEFAULT_PORT, DEFAULT_CODE));
             } else {
@@ -165,25 +188,13 @@ public enum ApiConnection {
      * @return _
      */
     private boolean verifyCandidate(final String uri) {
-        final HttpGet get = new HttpGet(URI.create(uri));
-        get.setConfig(RequestConfig.DEFAULT);
         try {
-            HttpResponse response = httpClient.execute(get);
-            return response.getStatusLine().getStatusCode() == DEFAULT_RESPONSE;
-        } catch (final IOException e) {
+            final Response response = new Restinator(uri).get();
+            return response.getResponseCode() == ResponseCode.FORBIDDEN;
+        } catch (final Exception e) {
             //*gulp*
         }
         return false;
-    }
-
-    private HttpGet assembleGetRequest(final URI uri) {
-        final HttpGet get = new HttpGet(uri);
-        get.addHeader(USER_AGENT);
-        get.addHeader(ACCEPT);
-        get.addHeader(ACCEPT_ENCODING);
-        get.addHeader(ACCEPT_LANGUAGE);
-        get.addHeader(CONNECTION);
-        return get;
     }
 
     private String getSession(Host host) {
