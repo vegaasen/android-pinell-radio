@@ -3,6 +3,7 @@ package com.vegaasen.fun.radio.pinell.activity.abs;
 import android.app.Activity;
 import android.content.Context;
 import android.net.wifi.WifiManager;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import com.vegaasen.fun.radio.pinell.service.PinellService;
 import com.vegaasen.fun.radio.pinell.service.impl.PinellServiceImpl;
@@ -11,10 +12,12 @@ import com.vegaasen.fun.radio.pinell.util.NetworkUtils;
 /**
  * Simple layer abstraction for all common screens in the application.
  * It works as the "unibody" design
+ * <p/>
+ * Todo: move the initialization from the AbstractActivity to a context-wide location instead
  *
  * @author <a href="mailto:vegaasen@gmail.com">vegaasen</a>
  */
-public abstract class AbstractActivity extends Activity {
+public abstract class AbstractActivity extends FragmentActivity {
 
     private static final String TAG = AbstractActivity.class.getSimpleName();
 

@@ -18,10 +18,17 @@ import java.io.InputStreamReader;
 import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.URLConnection;
+import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Simple utils that is used to convert the response to something usable.
@@ -39,6 +46,9 @@ public final class HttpUtils {
 
     private static final int FIRST_INDEXED = 0;
     private static final String EMPTY = "";
+    private static final int NUM_THREADS_ALIVE_ACTIVE = 1;
+    private static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(NUM_THREADS_ALIVE_ACTIVE);
+    private static final long TIMEOUT = 2;
 
     private HttpUtils() {
     }
@@ -59,32 +69,15 @@ public final class HttpUtils {
     }
 
     private static Response getHttpConnection(final RequestType requestType, final Scheme scheme) {
-        HttpURLConnection urlConnection = null;
         try {
-            conditionallyAddAuthenticationMechanism(scheme.getAuthentication());
-            urlConnection = (HttpURLConnection) scheme.getTo().openConnection();
-            urlConnection.setRequestMethod(requestType.getType());
-            urlConnection.setInstanceFollowRedirects(false);
-            urlConnection.setUseCaches(false);
-            configureConnection(urlConnection);
-            appendHeadersForConnection(urlConnection, scheme);
-            conditionallyConfigurePostLikeRequest(scheme, urlConnection, requestType);
-            final Response response = new Response();
-            final InputStream inputStream = urlConnection.getInputStream();
-            response.setResponseCode(urlConnection.getResponseCode());
-            response.setWhen(urlConnection.getIfModifiedSince());
-            response.setOriginalRequestScheme(scheme);
-            response.setHeaders(convertHeaders(urlConnection.getHeaderFields()));
-            response.setPayload(convertInputStreamToPayload(inputStream));
-            response.setOriginalPayload(inputStream);
-            return response;
-        } catch (final IOException e) {
-            throw new IllegalArgumentException(String.format("The URL {%s} is for some reason not parseable", scheme.getTo().toString()));
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
-            }
+            final ResponseFetcher task = new ResponseFetcher(requestType, scheme);
+            final Future<Response> future = EXECUTOR_SERVICE.submit(task);
+            task.getCountDownLatch().await(TIMEOUT, TimeUnit.SECONDS);
+            return future.get();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return null;
     }
 
     @SuppressWarnings("unchecked")
@@ -94,7 +87,7 @@ public final class HttpUtils {
             final RequestType requestType) {
         if (requestType.equals(RequestType.PUT) || requestType.equals(RequestType.POST) || requestType.equals(RequestType.DELETE)) {
             urlConnection.addRequestProperty(Header.HEADER_CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getVariant());
-            if (scheme.getParams() == null && scheme.getParams().isEmpty()) {
+            if (scheme.getParams() == null || scheme.getParams().isEmpty()) {
                 return;
             }
             final StringBuilder builder = new StringBuilder();
@@ -118,16 +111,16 @@ public final class HttpUtils {
     }
 
     private static void configureConnection(final URLConnection urlConnection) {
-        urlConnection.setDoOutput(true);
         urlConnection.setConnectTimeout(Restinator.getConnectionTimeout());
         urlConnection.setReadTimeout(Restinator.getSocketTimeout());
     }
 
     private static void appendHeadersForConnection(final URLConnection connection, final Scheme scheme) {
         if (scheme.getHeaders() == null || scheme.getHeaders().isEmpty()) {
-            for (final Header header : scheme.getHeaders()) {
-                connection.addRequestProperty(header.getKey().getId(), header.getValue().getId());
-            }
+            return;
+        }
+        for (final Header header : scheme.getHeaders()) {
+            connection.addRequestProperty(header.getKey().getId(), header.getValue().getId());
         }
     }
 
@@ -183,6 +176,59 @@ public final class HttpUtils {
     private static void verifyParamters(final Scheme scheme, final RequestType requestType) {
         if (requestType == null || scheme == null) {
             throw new IllegalArgumentException("Either requestType or Scheme may be nilled");
+        }
+    }
+
+    private static final class ResponseFetcher implements Callable<Response> {
+
+        private final CountDownLatch countDownLatch;
+        private final RequestType requestType;
+        private final Scheme scheme;
+
+        public ResponseFetcher(RequestType requestType, Scheme scheme) {
+            countDownLatch = new CountDownLatch(NUM_THREADS_ALIVE_ACTIVE);
+            this.requestType = requestType;
+            this.scheme = scheme;
+        }
+
+        @Override
+        public Response call() throws Exception {
+            return getResponse();
+        }
+
+        private Response getResponse() throws UnknownHostException {
+            HttpURLConnection urlConnection = null;
+            try {
+                conditionallyAddAuthenticationMechanism(scheme.getAuthentication());
+                urlConnection = (HttpURLConnection) scheme.getTo().openConnection();
+                urlConnection.setRequestMethod(requestType.getType());
+                urlConnection.setInstanceFollowRedirects(false);
+                urlConnection.setUseCaches(false);
+                urlConnection.setDoOutput(false);
+                configureConnection(urlConnection);
+                appendHeadersForConnection(urlConnection, scheme);
+                conditionallyConfigurePostLikeRequest(scheme, urlConnection, requestType);
+                final Response response = new Response();
+                final InputStream inputStream = urlConnection.getInputStream();
+                response.setResponseCode(urlConnection.getResponseCode());
+                response.setWhen(urlConnection.getIfModifiedSince());
+                response.setOriginalRequestScheme(scheme);
+                response.setHeaders(convertHeaders(urlConnection.getHeaderFields()));
+                response.setPayload(convertInputStreamToPayload(inputStream));
+                response.setOriginalPayload(inputStream);
+                return response;
+            } catch (final IOException e) {
+                throw new IllegalArgumentException(String.format("The URL {%s} is for some reason not parseable", scheme.getTo().toString()), e);
+            } finally {
+                countDownLatch.countDown();
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+            }
+        }
+
+        public CountDownLatch getCountDownLatch() {
+            return countDownLatch;
         }
     }
 

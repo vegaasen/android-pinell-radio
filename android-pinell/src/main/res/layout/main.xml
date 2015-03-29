@@ -14,4 +14,3 @@
             android:id="@+id/btnDialog"
             android:text="@string/mainBtnDialog"/>
 </LinearLayout>
-

@@ -7,9 +7,11 @@ import android.widget.AdapterView;
 import com.vegaasen.fun.radio.pinell.service.PinellService;
 
 /**
- * ..what..
+ * This actually controls the select host activity. Whenever the user selects a wanted host, the activity will be closed with a
+ * referenced int representing an "OK" state.
  *
  * @author <a href="mailto:vegaasen@gmail.com">vegaasen</a>
+ * @see com.vegaasen.fun.radio.pinell.activity.host.SelectHostActivity
  */
 public class DeviceListListener implements AdapterView.OnItemClickListener {
 
@@ -43,6 +45,7 @@ public class DeviceListListener implements AdapterView.OnItemClickListener {
             Log.w(TAG, "Unable to automatically close the activity due to the dialog being nilled");
             return;
         }
+        activity.setResult(Activity.RESULT_OK);
         activity.finish();
     }
 

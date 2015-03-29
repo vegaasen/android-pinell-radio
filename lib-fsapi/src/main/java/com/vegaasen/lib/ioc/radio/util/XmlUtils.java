@@ -5,12 +5,14 @@ import com.vegaasen.lib.ioc.radio.model.response.Item;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -25,6 +27,24 @@ public enum XmlUtils {
     private static final String EMPTY = "";
     private static final int INIT = -1;
 
+    public Document getDocument(String candidate) {
+        if (candidate == null || candidate.isEmpty()) {
+            return null;
+        }
+        InputSource source = new InputSource();
+        source.setCharacterStream(new StringReader(candidate));
+        try {
+            return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(source);
+        } catch (SAXException e) {
+            LOG.info("Unable to parse the stream due to elements");
+        } catch (IOException e) {
+            LOG.info("Unable to stream. It could be that the stream has been closed");
+        } catch (ParserConfigurationException e) {
+            LOG.info("Unable to parse the stream");
+        }
+        return null;
+    }
+
     public Document getDocument(InputStream inputStream) {
         if (inputStream == null) {
             return null;
@@ -34,7 +54,7 @@ public enum XmlUtils {
         } catch (SAXException e) {
             LOG.info("Unable to parse the stream due to elements");
         } catch (IOException e) {
-            LOG.info("Unable to stream");
+            LOG.info("Unable to stream. It could be that the stream has been closed");
         } catch (ParserConfigurationException e) {
             LOG.info("Unable to parse the stream");
         }

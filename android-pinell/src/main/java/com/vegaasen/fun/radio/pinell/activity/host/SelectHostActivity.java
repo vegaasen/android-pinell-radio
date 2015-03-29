@@ -20,6 +20,7 @@ import java.util.List;
  *
  * @author <a href="mailto:vegaasen@gmail.com">vegaasen</a>
  * @version 0.1
+ * @see DeviceListListener
  * @since 29.03.2015
  */
 public class SelectHostActivity extends AbstractActivity {

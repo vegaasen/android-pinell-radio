@@ -33,7 +33,7 @@ public final class TelnetUtil {
     // The timeout portion may need to be moved around a bit, as it may be too "slow" or "too quick" in regards to Android devices. We'll see..
     private static final long WAIT = TimeUnit.SECONDS.toMillis(5);
     private static final int NUM_OF_HOSTS = 250, NUM_THREADS = 150, NUM_THREADS_ALIVE_ACTIVE = 1;
-    private static final int TIMEOUT_SOCKET_MS = 1500, TIMEOUT_DETECT_SUBNET = 20, TIMEOUT_IS_ALIVE = 10;
+    private static final int TIMEOUT_SOCKET_MS = 2500, TIMEOUT_DETECT_SUBNET = 20, TIMEOUT_IS_ALIVE = 10;
     private static final ExecutorService
             EXECUTOR_SERVICE = Executors.newFixedThreadPool(NUM_THREADS),
             ACTIVE_SUBNET = Executors.newFixedThreadPool(NUM_THREADS_ALIVE_ACTIVE),

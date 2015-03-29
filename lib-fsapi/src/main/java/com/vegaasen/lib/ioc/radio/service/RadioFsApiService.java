@@ -1,6 +1,7 @@
 package com.vegaasen.lib.ioc.radio.service;
 
 import com.vegaasen.lib.ioc.radio.model.system.PowerState;
+import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
 
 /**
  * Simple interface for communicating with fsapi-enable devices (such as Pinell)
@@ -8,6 +9,14 @@ import com.vegaasen.lib.ioc.radio.model.system.PowerState;
  * @author <a href="mailto:vegaasen@gmail.com">vegaasen</a>
  */
 public interface RadioFsApiService {
+
+    /**
+     * Update the provided host with more information regarding the device
+     *
+     * @param host _
+     * @see com.vegaasen.lib.ioc.radio.model.device.DeviceInformation
+     */
+    void updateHostDeviceInformation(Host host);
 
     /**
      * Gets the current state

@@ -2,6 +2,8 @@ package com.vegaasen.lib.ioc.radio.util;
 
 import org.junit.Test;
 
+import java.io.InputStream;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -9,7 +11,7 @@ public class XmlUtilsTest {
 
     @Test
     public void getDocument_nilled_fail() {
-        assertNull(XmlUtils.INSTANCE.getDocument(null));
+        assertNull(XmlUtils.INSTANCE.getDocument((InputStream) null));
     }
 
     @Test

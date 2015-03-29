@@ -6,6 +6,7 @@ import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
 import java.util.Set;
 
 /**
+ *
  * @author <a href="mailto:vegaasen@gmail.com">vegaasen</a>
  */
 public interface PinellService {
@@ -40,6 +41,11 @@ public interface PinellService {
      */
     Connection getPinellConnection(boolean refresh);
 
+    /**
+     * Fetch the currently selected host
+     *
+     * @return _
+     */
     Host getSelectedHost();
 
     /**

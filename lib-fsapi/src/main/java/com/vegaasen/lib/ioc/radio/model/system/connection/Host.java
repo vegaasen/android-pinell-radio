@@ -1,5 +1,6 @@
 package com.vegaasen.lib.ioc.radio.model.system.connection;
 
+import com.vegaasen.lib.ioc.radio.model.device.DeviceInformation;
 import com.vegaasen.lib.ioc.radio.model.system.auth.RadioSession;
 
 public class Host {
@@ -10,6 +11,7 @@ public class Host {
     private final int port;
     private final String code;
     private RadioSession radioSession;
+    private DeviceInformation deviceInformation;
 
     private Host(String host, int port, String code) {
         this.host = host;
@@ -39,6 +41,14 @@ public class Host {
 
     public void setRadioSession(final RadioSession session) {
         this.radioSession = session;
+    }
+
+    public DeviceInformation getDeviceInformation() {
+        return deviceInformation;
+    }
+
+    public void setDeviceInformation(DeviceInformation deviceInformation) {
+        this.deviceInformation = deviceInformation;
     }
 
     public void removeRadioSession() {

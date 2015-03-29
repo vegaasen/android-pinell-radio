@@ -6,7 +6,9 @@ import com.vegaasen.fun.radio.pinell.service.PinellService;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Connection;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
 import com.vegaasen.lib.ioc.radio.service.RadioFsApiConnectionService;
+import com.vegaasen.lib.ioc.radio.service.RadioFsApiService;
 import com.vegaasen.lib.ioc.radio.service.impl.RadioFsApiConnectionServiceImpl;
+import com.vegaasen.lib.ioc.radio.service.impl.RadioFsApiServiceImpl;
 
 import java.util.Collections;
 import java.util.Set;
@@ -22,12 +24,14 @@ public class PinellServiceImpl implements PinellService {
     private static final String TAG = PinellServiceImpl.class.getSimpleName();
 
     private RadioFsApiConnectionService radioFsApiConnectionService;
+    private RadioFsApiService radioFsApiService;
     private Connection connection;
     private String currentSubnet;
     private Host selectedHost;
 
     public PinellServiceImpl() {
         this.radioFsApiConnectionService = new RadioFsApiConnectionServiceImpl();
+        this.radioFsApiService = new RadioFsApiServiceImpl();
     }
 
     @Override
@@ -62,8 +66,8 @@ public class PinellServiceImpl implements PinellService {
         if (getConnection() == null || refresh) {
             setConnection(
                     refresh ?
-                            getService().redetectPotentialHosts() :
-                            getService().getPotentialHosts()
+                            getRadioConnectionService().redetectPotentialHosts() :
+                            getRadioConnectionService().getPotentialHosts()
             );
         }
         return getConnection();
@@ -71,7 +75,19 @@ public class PinellServiceImpl implements PinellService {
 
     public void setCurrentSubnet(String currentSubnet) {
         this.currentSubnet = currentSubnet;
-        getService().setSubnet(currentSubnet);
+        getRadioConnectionService().setSubnet(currentSubnet);
+    }
+
+    private RadioFsApiConnectionService getRadioConnectionService() {
+        return radioFsApiConnectionService;
+    }
+
+    private RadioFsApiService getRadioService() {
+        return radioFsApiService;
+    }
+
+    private Connection getConnection() {
+        return connection;
     }
 
     public Host getSelectedHost() {
@@ -81,18 +97,19 @@ public class PinellServiceImpl implements PinellService {
     private void setSelectedHost(Host selectedHost) {
         Log.i(TAG, String.format("Setting {%s} as the selected host", selectedHost.getHost()));
         this.selectedHost = selectedHost;
-    }
-
-    private RadioFsApiConnectionService getService() {
-        return radioFsApiConnectionService;
-    }
-
-    private Connection getConnection() {
-        return connection;
+        updateCurrentHost();
     }
 
     private void setConnection(final Connection connection) {
         Log.i(TAG, String.format("Connection {%s} has been set", connection.toString()));
         this.connection = connection;
+    }
+
+    private void updateCurrentHost() {
+        try {
+            getRadioService().updateHostDeviceInformation(getSelectedHost());
+        } catch (Exception e) {
+            Log.e(TAG, String.format("Unable to update the current host {%s} with device information", getSelectedHost().getHost()));
+        }
     }
 }

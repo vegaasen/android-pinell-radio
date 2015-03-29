@@ -75,7 +75,10 @@ public enum ApiConnection {
         try {
             final Response response = conditionallyGetResponse(uri);
             if (response != null) {
-                return XmlUtils.INSTANCE.getDocument(response.getOriginalPayload());
+                final String payload = response.getPayload();
+                if (payload != null && !payload.isEmpty()) {
+                    return XmlUtils.INSTANCE.getDocument(payload);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
