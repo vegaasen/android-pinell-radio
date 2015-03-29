@@ -1,10 +1,10 @@
 package com.vegaasen.fun.radio.pinell.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractActivity;
+import com.vegaasen.fun.radio.pinell.activity.host.SelectHostActivity;
 
 /**
  * Main activity which simply controls the "entrance" to the application.
@@ -19,19 +19,7 @@ public class MainActivity extends AbstractActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        configureButtons();
-    }
-
-    private void configureButtons() {
-        Button button = (Button) findViewById(R.id.btnDialog);
-        if (button != null) {
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(final View view) {
-                    generateDeviceConnectionDialog();
-                }
-            });
-        }
+        startActivity(new Intent(this, SelectHostActivity.class));
     }
 
 }

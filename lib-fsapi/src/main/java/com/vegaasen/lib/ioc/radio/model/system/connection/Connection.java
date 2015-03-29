@@ -22,7 +22,7 @@ public class Connection {
     }
 
     public static Connection create(final Host host) {
-        final Set<Host> hosts = new HashSet<Host>();
+        final Set<Host> hosts = new HashSet<>();
         hosts.add(host);
         return create(hosts);
     }
@@ -32,7 +32,7 @@ public class Connection {
     }
 
     public Set<Host> getHost() {
-        return new HashSet<Host>(host);
+        return new HashSet<>(host);
     }
 
     public long getWhen() {

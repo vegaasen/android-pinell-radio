@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * Todo: remove all e.printStackTrace()..
@@ -34,12 +35,14 @@ public enum ApiConnection {
 
     INSTANCE;
 
+    private static final Logger LOG = Logger.getLogger(ApiConnection.class.getSimpleName());
+    //todo: change the header so that it identifies the library correctly.
     private static final Header USER_AGENT = new Header("User-Agent", "Pinell/1.1 CFNetwork/711.1.16 Darwin/14.0.0");
     private static final Header ACCEPT = new Header("Accept", "*/*");
     private static final Header ACCEPT_LANGUAGE = new Header("Accept-Language", "en-us");
     private static final Header CONNECTION = new Header("Connection", "keep-alive");
     private static final Header ACCEPT_ENCODING = new Header("Accept-Encoding", "gzip, deflate");
-    private static final int DEFAULT_PORT = 2244, PORT_TRY_2 = 80;
+    private static final int DEFAULT_FS_PORT = 2244, ALTERNATIVE_FS_PORT = 80;
     private static final String DEFAULT_CODE = "1234";
 
     private Connection connection;
@@ -78,14 +81,6 @@ public enum ApiConnection {
             e.printStackTrace();
         }
         return null;
-    }
-
-    private Response conditionallyGetResponse(URI uri) throws IOException {
-        final Response response = new Restinator(uri.toString()).headers(USER_AGENT, ACCEPT, ACCEPT_ENCODING, ACCEPT_LANGUAGE, CONNECTION).get();
-        if (response.getResponseCode() == ResponseCode.NOT_FOUND) {
-            return null;
-        }
-        return response;
     }
 
     public boolean verifyResponseOk(final Document document) {
@@ -151,6 +146,14 @@ public enum ApiConnection {
         this.preSubnet = preSubnet;
     }
 
+    private Response conditionallyGetResponse(URI uri) throws IOException {
+        final Response response = new Restinator(uri.toString()).headers(USER_AGENT, ACCEPT, ACCEPT_ENCODING, ACCEPT_LANGUAGE, CONNECTION).get();
+        if (response.getResponseCode() == ResponseCode.NOT_FOUND) {
+            return null;
+        }
+        return response;
+    }
+
     private String getConnectionRoot(final Host host) {
         return String.format("%s%s", host.getConnectionString(), UriContext.ROOT);
     }
@@ -160,14 +163,20 @@ public enum ApiConnection {
      * @return hosts
      */
     private Set<Host> fetchPotentialHosts(final String preEnteredSubnet) {
+        LOG.info(String.format("Fetching potentialHosts for {%s}", preEnteredSubnet));
         final Set<Host> hosts = new HashSet<>();
         for (final String host : preEnteredSubnet == null || preEnteredSubnet.isEmpty() ?
                 TelnetUtil.findPotentialLocalSubnetNetworkHosts() :
                 TelnetUtil.findPotentialLocalSubnetNetworkHosts(preEnteredSubnet)) {
-            if (TelnetUtil.isAlive(host, DEFAULT_PORT)) {
-                hosts.add(Host.create(host, DEFAULT_PORT, DEFAULT_CODE));
+            if (TelnetUtil.isAlive(host, DEFAULT_FS_PORT)) {
+                LOG.info(String.format("Found potential FSRadio client on {%s}", host));
+                hosts.add(Host.create(host, DEFAULT_FS_PORT, DEFAULT_CODE));
             } else {
-                hosts.add(Host.create(host, PORT_TRY_2, DEFAULT_CODE));
+                if (TelnetUtil.isAlive(host, ALTERNATIVE_FS_PORT)) {
+                    hosts.add(Host.create(host, ALTERNATIVE_FS_PORT, DEFAULT_CODE));
+                } else {
+                    LOG.fine(String.format("Unable to connect to host {%s} on either of the ports {%s, %s}", host, DEFAULT_FS_PORT, ALTERNATIVE_FS_PORT));
+                }
             }
         }
         return hosts;

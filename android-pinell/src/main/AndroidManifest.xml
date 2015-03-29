@@ -8,6 +8,7 @@
             android:theme="@style/android:Theme.Holo.Light"
             android:label="@string/app_name"
             android:icon="@drawable/ic_launcher"
+            android:largeHeap="true"
             android:allowBackup="true">
         <activity android:name=".activity.MainActivity"
                   android:label="@string/app_name"
@@ -17,6 +18,12 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+        <activity android:name=".activity.host.SelectHostActivity"
+                  android:label="@string/activity_host_main"
+                  android:screenOrientation="portrait"
+                  android:theme="@android:style/Theme.Translucent.NoTitleBar">
+
         </activity>
     </application>
 </manifest>

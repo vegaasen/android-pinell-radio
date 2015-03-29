@@ -6,12 +6,23 @@ import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
 import java.util.Set;
 
 /**
- * ..what..
- *
  * @author <a href="mailto:vegaasen@gmail.com">vegaasen</a>
  */
 public interface PinellService {
 
+    /**
+     * Set the wanted pinellHost by the index. The index is determined by the host of indexes.
+     *
+     * @param index _
+     * @return _
+     */
+    boolean setCurrentPinellHost(int index);
+
+    /**
+     * Get a list of all the availble pinellHosts
+     *
+     * @return _
+     */
     Set<Host> getPinellHosts();
 
     /**
@@ -28,6 +39,8 @@ public interface PinellService {
      * @return _
      */
     Connection getPinellConnection(boolean refresh);
+
+    Host getSelectedHost();
 
     /**
      * Set the current subnet. Can be nilled.

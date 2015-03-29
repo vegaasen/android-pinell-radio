@@ -17,7 +17,7 @@ public enum ApiRadioRequest {
 
     INSTANCE;
 
-    private static final String PREVIOUS = "0xffffffff";
+    private static final String PREVIOUS_LEVEL = "0xffffffff";
 
     /**
      * Returns to the previous container. The property "PREVIOUS" is Pinell's own method of returning one level up
@@ -28,7 +28,7 @@ public enum ApiRadioRequest {
      */
     public Set<RadioStation> getToPreviousContainer(Host host, int maxItems) {
         final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
-        params.put(Parameter.QueryParameter.VALUE, PREVIOUS);
+        params.put(Parameter.QueryParameter.VALUE, PREVIOUS_LEVEL);
         ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.SELECT_SUB_CONTAINER, params));
         return getRadioStations(host, -1, maxItems);
     }
