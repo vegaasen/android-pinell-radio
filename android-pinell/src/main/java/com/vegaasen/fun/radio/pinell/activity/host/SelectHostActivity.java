@@ -50,7 +50,7 @@ public class SelectHostActivity extends AbstractActivity {
         if (deviceOverview != null) {
             final List<Host> pinellHosts = Lists.newArrayList(getPinellService().getPinellHosts());
             if (deviceOverview.getAdapter() == null) {
-                final DeviceArrayAdapter devicesAdapter = new DeviceArrayAdapter(context, R.layout.device_listview, pinellHosts);
+                final DeviceArrayAdapter devicesAdapter = new DeviceArrayAdapter(context, R.layout.listview_device, pinellHosts);
                 deviceOverview.setAdapter(devicesAdapter);
                 deviceOverview.setOnItemClickListener(new DeviceListListener(activity, getPinellService()));
             } else {

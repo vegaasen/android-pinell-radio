@@ -1,16 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:minWidth="300dp"
+              android:background="#80000000"
               android:orientation="vertical"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
         >
-    <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Hello World, MainActivity"
-            />
-    <Button android:layout_width="wrap_content" 
-            android:layout_height="wrap_content"
-            android:id="@+id/btnDialog"
-            android:text="@string/mainBtnDialog"/>
+    <RelativeLayout
+            android:layout_gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/defaultBackgroundColor"
+            android:paddingBottom="@dimen/elementSpacing"
+            >
+        <ImageView
+                android:id="@+id/imgCurrentApplicationContext"
+                android:layout_width="@dimen/iconSizeWidth"
+                android:layout_height="@dimen/iconSizeHeight"
+                android:layout_marginEnd="15dp"
+                android:layout_marginStart="10dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"
+                android:src="@drawable/abc_ic_go"
+                />
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/imgCurrentApplicationContext"
+                android:layout_centerVertical="true"
+                android:text="@string/txtApplicationCaptionInformation"
+                android:id="@+id/txtCurrentApplicationContext"
+                />
+        <ImageButton
+                android:id="@+id/btnCurrentApplicationSelectDevice"
+                android:layout_width="@dimen/iconSizeWidth"
+                android:layout_height="@dimen/iconSizeHeight"
+                android:src="@android:drawable/ic_menu_rotate"
+                android:layout_marginEnd="10dp"
+                android:background="@android:color/transparent"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:clickable="true"
+                android:contentDescription="@string/txtReselectDevice"
+                />
+    </RelativeLayout>
+
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="fill_parent"
+                  android:baselineAligned="false"
+                  android:background="@color/defaultElementColor"
+            >
+        <fragment android:name="com.vegaasen.fun.radio.pinell.activity.fragment.InformationFragment"
+                  android:id="@+id/fragmentInformation"
+                  android:layout_weight="1"
+                  android:layout_width="0dp"
+                  android:layout_height="fill_parent"
+                  tools:layout="@layout/fragment_information"/>
+
+    </LinearLayout>
+
 </LinearLayout>

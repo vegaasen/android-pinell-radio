@@ -39,7 +39,7 @@ public class DeviceArrayAdapter extends ArrayAdapter<Host> {
         Log.d(TAG, String.format("Iterating through position {%s}", position));
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (layoutInflater != null) {
-            final View deviceListView = layoutInflater.inflate(R.layout.device_listview, parent, false);
+            final View deviceListView = layoutInflater.inflate(R.layout.listview_device, parent, false);
             final TextView radioName = (TextView) deviceListView.findViewById(R.id.listDeviceRadioName);
             final Host host = devices.get(position);
             if (host != null) {

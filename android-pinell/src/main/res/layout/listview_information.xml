@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/defaultBackgroundColor"
+        >
+    <RelativeLayout
+            android:id="@+id/listDeviceWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/defaultBackgroundColor">
+        <TextView
+                android:id="@+id/lblDeviceInformation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/dialogSearchingForDevices"
+                />
+        <TextView
+                android:id="@+id/txtDeviceInformation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:textStyle="italic"
+
+                android:text="@string/dialogSearchingForDevices"
+                />
+    </RelativeLayout>
+</LinearLayout>
