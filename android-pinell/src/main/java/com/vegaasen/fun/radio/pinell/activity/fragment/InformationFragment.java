@@ -1,6 +1,7 @@
 package com.vegaasen.fun.radio.pinell.activity.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.ListView;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractFragment;
 import com.vegaasen.fun.radio.pinell.adapter.DeviceInformationAdapter;
+import com.vegaasen.fun.radio.pinell.model.PinellProperties;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
 
 import java.util.Collections;
@@ -22,33 +24,56 @@ import java.util.TreeMap;
  */
 public class InformationFragment extends AbstractFragment {
 
+    private static final String TAG = InformationFragment.class.getSimpleName();
+
+    private View informationView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View informationView = inflater.inflate(R.layout.fragment_information, container, false);
-        refreshDeviceInformation(container);
+        informationView = inflater.inflate(R.layout.fragment_information, container, false);
+        refreshDeviceInformation();
         return informationView;
     }
 
-    private void refreshDeviceInformation(ViewGroup container) {
-        final ListView deviceOverview = (ListView) container.findViewById(R.id.listDevices);
+    public void refreshDeviceInformation() {
+        if (informationView == null) {
+            Log.w(TAG, "Unable to refresh device information. It seems like the view is nilled for some reason.");
+            return;
+        }
+        final ListView deviceOverview = (ListView) informationView.findViewById(R.id.listDeviceInformation);
         if (deviceOverview != null) {
+            final Map<String, String> information = generateMapOfDeviceInformation();
             if (deviceOverview.getAdapter() == null) {
-                DeviceInformationAdapter deviceInformationAdapter = new DeviceInformationAdapter(null);
+                DeviceInformationAdapter deviceInformationAdapter = new DeviceInformationAdapter(information);
                 deviceOverview.setAdapter(deviceInformationAdapter);
             } else {
-                deviceOverview.deferNotifyDataSetChanged();
+                Log.d(TAG, "Refreshing existing device information");
+                DeviceInformationAdapter adapter = (DeviceInformationAdapter) deviceOverview.getAdapter();
+                adapter.updateDeviceInformation(information);
+                adapter.notifyDataSetChanged();
+//                deviceOverview.deferNotifyDataSetChanged();
             }
         }
     }
 
     private Map<String, String> generateMapOfDeviceInformation() {
-        Host host = getPinellService().getSelectedHost();
-        if (host == null) {
+        if (!getPinellService().isHostConfigured()) {
             return Collections.emptyMap();
         }
+        Host host = getPinellService().getSelectedHost();
         Map<String, String> information = new TreeMap<>();
-        //todo: finish of the map of informational stuff :-)
-        information.put("code", host.getCode());
+        information.put(PinellProperties.CODE.getKey(), host.getCode());
+        information.put(PinellProperties.HOST.getKey(), host.getHost());
+        information.put(PinellProperties.PORT.getKey(), Integer.toString(host.getPort()));
+        information.put(PinellProperties.CONNECTION_STRING.getKey(), host.getConnectionString());
+        if(host.getRadioSession()!=null) {
+            information.put(PinellProperties.RADIO_SESSION.getKey(), host.getRadioSession().toString());
+        }
+        if(host.getDeviceInformation()!=null) {
+            information.put(PinellProperties.DEVICE_NAME.getKey(), host.getDeviceInformation().getName());
+            information.put(PinellProperties.DEVICE_VERSION.getKey(), host.getDeviceInformation().getVersion());
+            information.put(PinellProperties.DEVICE_API.getKey(), host.getDeviceInformation().getApiUrl());
+        }
         return information;
     }
 

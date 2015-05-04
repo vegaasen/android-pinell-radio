@@ -5,7 +5,7 @@
     <color name="defaultElementColor">#F1F8F9</color>
     <color name="sidebarCurrentElementColor">#1B85BB</color>
     <color name="sidebarBackgroundColor">#2D2D2D</color>
-    <color name="sidebarBoxColor">#1B1B1B</color>
+    <color name="sidebarBoxColor">#ff3ee9ff</color>
     <color name="textNormal">#111111</color>
     <color name="textSmall">#BABABA</color>
 </resources>

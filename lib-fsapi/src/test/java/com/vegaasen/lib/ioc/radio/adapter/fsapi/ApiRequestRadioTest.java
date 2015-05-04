@@ -9,11 +9,11 @@ import java.util.Set;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
-public class ApiRadioRequestTest extends AbstractApiRequestIntTest {
+public class ApiRequestRadioTest extends AbstractApiRequestIntTest {
 
     @Test
     public void getRadioStations_normalProcedure() {
-        Set<RadioStation> result = ApiRadioRequest.INSTANCE.getRadioStations(host, 0, 20);
+        Set<RadioStation> result = ApiRequestRadio.INSTANCE.getRadioStations(host, 0, 20);
         assertNotNull(result);
         assertFalse(result.isEmpty());
     }

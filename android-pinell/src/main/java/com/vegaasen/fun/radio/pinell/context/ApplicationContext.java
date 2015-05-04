@@ -30,7 +30,7 @@ public enum ApplicationContext {
     }
 
     /**
-     * Required: This must be set prior to everything. Currently, this is set in the AbstractActivity class.
+     * Required: This must be set prior to everything. Currently, this is set in the AbstractActivity class, which is used in the MainActivity :-).
      *
      * @param context _
      */

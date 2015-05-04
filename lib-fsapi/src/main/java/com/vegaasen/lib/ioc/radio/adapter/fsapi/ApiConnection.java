@@ -151,7 +151,7 @@ public enum ApiConnection {
 
     private Response conditionallyGetResponse(URI uri) throws IOException {
         final Response response = new Restinator(uri.toString()).headers(USER_AGENT, ACCEPT, ACCEPT_ENCODING, ACCEPT_LANGUAGE, CONNECTION).get();
-        if (response.getResponseCode() == ResponseCode.NOT_FOUND) {
+        if (response != null && response.getResponseCode() == ResponseCode.NOT_FOUND) {
             return null;
         }
         return response;

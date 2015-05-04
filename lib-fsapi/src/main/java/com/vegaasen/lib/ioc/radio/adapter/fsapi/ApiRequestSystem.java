@@ -21,27 +21,43 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-
 /**
  * Simple class which basically just connects to the API. All of these methods requires a host is present
- * Todo: errohandling, errorhandling, errorhandling.
+ * Todo: errohandling, errorhandling, errorhandling!!!!!!!!! ;-)
  * Todo: Prettify
  *
  * @author vegaasen
  */
-public enum ApiSystemRequest {
+public enum ApiRequestSystem {
 
     INSTANCE;
 
     private static final String EMPTY = "";
     private static final String MIN = "-1", MAX = Integer.toString(Integer.MAX_VALUE);
 
-    public Equalizer getCurrentEqualizer(Host host) {
-        final Document document = ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.System.GET_EQUALIZER));
+    public Set<Equalizer> getEqualizers(Host host) {
+        final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
+        params.put(Parameter.QueryParameter.MAX_ITEMS, MAX);
+        final Document document = ApiConnection.INSTANCE.request(
+                ApiConnection.INSTANCE.getApiUri(host, String.format(UriContext.System.EQUALIZER_LIST, MIN), params));
+        if (document != null && ApiConnection.INSTANCE.verifyResponseOk(document)) {
+            Set<Equalizer> equalizers = new HashSet<>();
+            for (final Item item : XmlUtils.INSTANCE.getItems(document.getDocumentElement())) {
+                equalizers.add(Equalizer.create(item));
+            }
+            return equalizers;
+        }
+        return Collections.emptySet();
+    }
+
+    //todo: this seems to not be working, use the getEqualizers instead :-)
+    public Equalizer getEqualizer(Host host) {
+        final Document document = ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.System.EQUALIZER));
         if (document != null && ApiConnection.INSTANCE.verifyResponseOk(document)) {
             return Equalizer.create(
                     Item.create(
-                            XmlUtils.INSTANCE.getNumberContentByNode(document.getDocumentElement(), ApiResponse.VALUE_U_8), Collections.<String, String>emptyMap()
+                            XmlUtils.INSTANCE.getNumberContentByNode(document.getDocumentElement(), ApiResponse.VALUE_U_8),
+                            Collections.<String, String>emptyMap()
                     )
             );
         }
@@ -51,32 +67,17 @@ public enum ApiSystemRequest {
     public boolean setEqualizer(Host host, Equalizer equalizer) {
         final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
         params.put(Parameter.QueryParameter.VALUE, equalizer.getKeyAsString());
-        final Document document = ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.System.SET_EQUALIZER, params));
+        final Document document = ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.System.EQUALIZER_SET, params));
         return document != null && ApiConnection.INSTANCE.verifyResponseOk(document);
-    }
-
-    public Set<Equalizer> getEqualizers(Host host) {
-        final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
-        params.put(Parameter.QueryParameter.MAX_ITEMS, MAX);
-        final Document document = ApiConnection.INSTANCE.request(
-                ApiConnection.INSTANCE.getApiUri(host, String.format(UriContext.System.VALID_EQUALIZERS, MIN), params));
-        if (document != null && ApiConnection.INSTANCE.verifyResponseOk(document)) {
-            Set<Equalizer> radioStations = new HashSet<Equalizer>();
-            for (final Item item : XmlUtils.INSTANCE.getItems(document.getDocumentElement())) {
-                radioStations.add(Equalizer.create(item));
-            }
-            return radioStations;
-        }
-        return Collections.emptySet();
     }
 
     public Set<RadioMode> getRadioModes(Host host) {
         final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
         params.put(Parameter.QueryParameter.MAX_ITEMS, MAX);
         final Document document = ApiConnection.INSTANCE.request(
-                ApiConnection.INSTANCE.getApiUri(host, String.format(UriContext.System.VALID_MODES, MIN), params));
+                ApiConnection.INSTANCE.getApiUri(host, String.format(UriContext.System.RADIO_MODE_LIST, MIN), params));
         if (document != null && ApiConnection.INSTANCE.verifyResponseOk(document)) {
-            Set<RadioMode> radioStations = new HashSet<RadioMode>();
+            Set<RadioMode> radioStations = new HashSet<>();
             for (final Item item : XmlUtils.INSTANCE.getItems(document.getDocumentElement())) {
                 radioStations.add(RadioMode.create(item));
             }

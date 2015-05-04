@@ -29,4 +29,9 @@ public class RadioSession {
     public long getWhen() {
         return when;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s*%s", id, when);
+    }
 }

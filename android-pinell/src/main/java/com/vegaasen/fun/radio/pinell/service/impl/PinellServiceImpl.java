@@ -3,6 +3,7 @@ package com.vegaasen.fun.radio.pinell.service.impl;
 import android.util.Log;
 import com.google.common.collect.Lists;
 import com.vegaasen.fun.radio.pinell.service.PinellService;
+import com.vegaasen.lib.ioc.radio.model.system.PowerState;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Connection;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
 import com.vegaasen.lib.ioc.radio.service.RadioFsApiConnectionService;
@@ -15,6 +16,8 @@ import java.util.Set;
 
 /**
  * Implementation of the pinellService
+ * <p/>
+ * TODO: split this into several abstract classes or several classes in general?
  *
  * @author <a href="mailto:vegaasen@gmail.com">vegaasen</a>
  * @since 21.03.2015
@@ -32,6 +35,16 @@ public class PinellServiceImpl implements PinellService {
     public PinellServiceImpl() {
         this.radioFsApiConnectionService = new RadioFsApiConnectionServiceImpl();
         this.radioFsApiService = new RadioFsApiServiceImpl();
+    }
+
+    @Override
+    public boolean isPoweredOn() {
+        return getRadioService().getDeviceState(getSelectedHost()) == PowerState.ON;
+    }
+
+    @Override
+    public boolean isHostConfigured() {
+        return getSelectedHost() != null;
     }
 
     @Override
@@ -73,6 +86,20 @@ public class PinellServiceImpl implements PinellService {
         return getConnection();
     }
 
+    @Override
+    public Host getSelectedHost() {
+        return getSelectedHost(false);
+    }
+
+    @Override
+    public Host getSelectedHost(boolean update) {
+        if(selectedHost != null && update) {
+            updateCurrentHost();
+        }
+        return selectedHost;
+    }
+
+    @Override
     public void setCurrentSubnet(String currentSubnet) {
         this.currentSubnet = currentSubnet;
         getRadioConnectionService().setSubnet(currentSubnet);
@@ -88,10 +115,6 @@ public class PinellServiceImpl implements PinellService {
 
     private Connection getConnection() {
         return connection;
-    }
-
-    public Host getSelectedHost() {
-        return selectedHost;
     }
 
     private void setSelectedHost(Host selectedHost) {

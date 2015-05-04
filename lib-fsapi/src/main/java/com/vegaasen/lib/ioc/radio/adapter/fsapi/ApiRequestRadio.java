@@ -13,10 +13,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public enum ApiRadioRequest {
+public enum ApiRequestRadio {
 
     INSTANCE;
 
+    //Found from sniffing the network..
     private static final String PREVIOUS_LEVEL = "0xffffffff";
 
     /**
@@ -56,6 +57,7 @@ public enum ApiRadioRequest {
         return getRadioStations(host, -1, maxItems);
     }
 
+    //TODO: This is not bounded to radioStations. Rename
     public Set<RadioStation> getRadioStations(Host host, int fromIndex, int maxItems) {
         preGetRadioStations(host);
         final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);

@@ -51,4 +51,19 @@ public class DeviceArrayAdapter extends ArrayAdapter<Host> {
         }
         return super.getView(position, convertView, parent);
     }
+
+    /**
+     * Must be called whenever the adapter is updated due to some event.
+     *
+     * @param hosts _
+     */
+    public void updateDeviceList(List<Host> hosts) {
+        devices.clear();
+        if (hosts == null || hosts.isEmpty()) {
+            Log.d(TAG, "Unable to update the deviceArrayAdapter due to the hostsList being empty. List was cleared, though.");
+            return;
+        }
+        devices.addAll(hosts);
+    }
+
 }

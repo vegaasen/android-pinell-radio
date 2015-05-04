@@ -59,4 +59,12 @@ public class Host {
         return String.format("%s://%s:%s", HTTP_SCHEME, getHost(), getPort());
     }
 
+    @Override
+    public String toString() {
+        return "Host{" +
+                "host='" + host + '\'' +
+                ", port=" + port +
+                ", code='" + code + '\'' +
+                '}';
+    }
 }

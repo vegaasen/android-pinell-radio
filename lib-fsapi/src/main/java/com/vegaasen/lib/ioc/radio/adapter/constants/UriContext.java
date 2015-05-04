@@ -11,12 +11,17 @@ public final class UriContext {
     public static final class System {
         public static final String GET_POWER_STATE = SLASH + "GET/netRemote.sys.power";
         public static final String SET_POWER_STATE = SLASH + "SET/netRemote.sys.power";
-        public static final String VALID_MODES = SLASH + "LIST_GET_NEXT/netRemote.sys.caps.validModes" + SLASH + "%s";
-        public static final String VALID_EQUALIZERS = SLASH + "LIST_GET_NEXT/netRemote.sys.caps.eqPresets" + SLASH + "%s";
-        public static final String GET_EQUALIZER = SLASH + "GET/netRemote.sys.audio.eqPreset";
-        public static final String SET_EQUALIZER = SLASH + "SET/netRemote.sys.audio.eqPreset";
+        //equalizers
+        public static final String EQUALIZER_LIST = SLASH + "LIST_GET_NEXT/netRemote.sys.caps.eqPresets" + SLASH + "%s";
+        public static final String EQUALIZER = SLASH + "GET/netRemote.sys.audio.eqPreset";
+        public static final String EQUALIZER_SET = SLASH + "SET/netRemote.sys.audio.eqPreset";
+        //radio-modes
+        public static final String RADIO_MODE_LIST = SLASH + "LIST_GET_NEXT/netRemote.sys.caps.validModes" + SLASH + "%s";
+        public static final String RADIO_MODE = SLASH + "GET/netRemote.sys.mode";
+        public static final String RADIO_MODE_SET = SLASH + "SET/netRemote.sys.mode";
     }
 
+    //todo: missing "set new selected station"
     public static final class Device {
         public static final String INFORMATION = SLASH + "device";
         public static final String CURRENTLY_PLAYING_RATE = SLASH + "GET/netRemote.play.rate";
@@ -29,7 +34,9 @@ public final class UriContext {
         public static final String CURRENTLY_PLAYING_GRAPHICAL = SLASH + "GET/netRemote.play.info.graphicUri";
         public static final String CURRENTLY_PLAYING_DAB_SERVICE_ID = SLASH + "GET/netRemote.play.serviceIds.dabServiceId";
         public static final String AUDIO_VOLUME_LEVEL = SLASH + "GET/netRemote.sys.audio.volume";
+        public static final String AUDIO_VOLUME_LEVEL_SET = SLASH + "SET/netRemote.sys.audio.volume";
         public static final String AUDIO_VOLUME_MUTED = SLASH + "GET/netRemote.sys.audio.mute";
+        public static final String AUDIO_VOLUME_MUTED_SET = SLASH + "SET/netRemote.sys.audio.mute";
     }
 
     public static final class RadioNavigation {

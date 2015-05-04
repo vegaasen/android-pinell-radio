@@ -30,10 +30,10 @@ public final class TelnetUtil {
 
     private static final Logger LOG = Logger.getLogger(TelnetUtil.class.getSimpleName());
 
-    // The timeout portion may need to be moved around a bit, as it may be too "slow" or "too quick" in regards to Android devices. We'll see..
-    private static final long WAIT = TimeUnit.SECONDS.toMillis(5);
-    private static final int NUM_OF_HOSTS = 250, NUM_THREADS = 150, NUM_THREADS_ALIVE_ACTIVE = 1;
-    private static final int TIMEOUT_SOCKET_MS = 2500, TIMEOUT_DETECT_SUBNET = 20, TIMEOUT_IS_ALIVE = 10;
+    // todo: The timeout portion may need to be moved around a bit, as it may be too "slow" or "too quick" in regards to Android devices. We'll see..
+    private static final long WAIT = TimeUnit.SECONDS.toMillis(8);
+    private static final int NUM_OF_HOSTS = 250, NUM_THREADS = 250, NUM_THREADS_ALIVE_ACTIVE = 1;
+    private static final int TIMEOUT_SOCKET_MS = (int) TimeUnit.SECONDS.toMillis(10), TIMEOUT_DETECT_SUBNET = 20, TIMEOUT_IS_ALIVE = 10;
     private static final ExecutorService
             EXECUTOR_SERVICE = Executors.newFixedThreadPool(NUM_THREADS),
             ACTIVE_SUBNET = Executors.newFixedThreadPool(NUM_THREADS_ALIVE_ACTIVE),
@@ -64,6 +64,16 @@ public final class TelnetUtil {
      * @return the lot.
      */
     public static Set<String> findPotentialLocalSubnetNetworkHosts(final String subnet) {
+        return findPotentialLocalSubnetNetworkHosts(subnet, 80);
+    }
+
+    /**
+     * Finds all potential local hosts around in your local network.
+     * <p/>
+     *
+     * @return the lot.
+     */
+    public static Set<String> findPotentialLocalSubnetNetworkHosts(final String subnet, final int portToVerify) {
         final String splittedSubnet = splitSubnet(subnet);
         final Set<Runnable> runnables = new HashSet<>();
         final Set<String> hosts = new HashSet<>();
@@ -76,7 +86,7 @@ public final class TelnetUtil {
                     public void run() {
                         LOG.fine(splittedSubnet + currPort);
                         final String host = splittedSubnet + currPort;
-                        if (isAliveWithoutThreading(host, 80)) {
+                        if (isAliveWithoutThreading(host, portToVerify)) {
                             hosts.add(host);
                         }
                         potentialSubnetLatch.countDown();
