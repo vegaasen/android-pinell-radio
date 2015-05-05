@@ -10,13 +10,20 @@ import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public enum XmlUtils {
@@ -124,6 +131,26 @@ public enum XmlUtils {
             items.add(Item.create(getItemKey(item), fieldValues));
         }
         return items;
+    }
+
+    public String asString(Document candidate) {
+        if (candidate == null) {
+            return EMPTY;
+        }
+        try {
+            StringWriter sw = new StringWriter();
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer transformer = tf.newTransformer();
+            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+            transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+            transformer.transform(new DOMSource(candidate), new StreamResult(sw));
+            return sw.toString();
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, "Unable to convert document", e);
+            return EMPTY;
+        }
     }
 
     private int getItemKey(final Element item) {

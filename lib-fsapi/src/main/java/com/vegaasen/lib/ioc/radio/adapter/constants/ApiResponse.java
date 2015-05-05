@@ -25,6 +25,11 @@ public final class ApiResponse {
         public static final String NAME = "name", TYPE = "type", SUBTYPE = "subtype";
     }
 
+    public static final class SubType {
+        public static final String TYPE_CONTAINER = "0";
+        public static final String TYPE_STATION = "1";
+    }
+
     private ApiResponse() {
     }
 

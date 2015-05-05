@@ -1,6 +1,8 @@
 package com.vegaasen.lib.ioc.radio.service.impl;
 
+import com.vegaasen.lib.ioc.radio.adapter.fsapi.ApiRequestRadio;
 import com.vegaasen.lib.ioc.radio.adapter.fsapi.ApiRequestSystem;
+import com.vegaasen.lib.ioc.radio.model.dab.RadioStation;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceAudio;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceCurrentlyPlaying;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceInformation;
@@ -18,6 +20,8 @@ import java.util.logging.Logger;
  * @author <a href="mailto:vegaasen@gmail.com">vegaasen</a>
  */
 public class RadioFsApiServiceImpl implements RadioFsApiService {
+
+    public static final int DEFAULT_MAX_ITEMS = 20, DEFAULT_START_INDEX = -1;
 
     private static final Logger LOG = Logger.getLogger(RadioFsApiServiceImpl.class.getSimpleName());
 
@@ -79,6 +83,26 @@ public class RadioFsApiServiceImpl implements RadioFsApiService {
     }
 
     @Override
+    public RadioMode getRadioMode(Host host) {
+        if (host == null) {
+            LOG.warning("Unable to get radioMode for host. Host is nilled");
+            return null;
+        }
+        return ApiRequestSystem.INSTANCE.getRadioMode(host);
+    }
+
+    @Override
+    public void setRadioMode(Host host, RadioMode radioMode) {
+        if (host == null || radioMode == null) {
+            LOG.warning("Unable to set radioMode for host. Host or radioMode is nilled");
+            return;
+        }
+        if (!ApiRequestSystem.INSTANCE.setRadioMode(host, radioMode)) {
+            LOG.warning(String.format("Unable to set radioMode to {%s} for {%s}", radioMode.toString(), host.toString()));
+        }
+    }
+
+    @Override
     public DeviceCurrentlyPlaying getCurrentlyPlaying(Host host) {
         if (host == null) {
             LOG.warning("Unable to get information for host. Host is nilled");
@@ -102,16 +126,78 @@ public class RadioFsApiServiceImpl implements RadioFsApiService {
             LOG.warning(String.format("Unable to set audioLevel to the wanted level due to invalid level {%s}", level));
             return;
         }
-        //todo: implement the set-routine
+        if (!ApiRequestSystem.INSTANCE.setDeviceAudioLevel(host, level)) {
+            LOG.warning(String.format("Unable to set audioLevel {%s} for {%s}", level, host.toString()));
+        }
     }
 
     @Override
     public Set<Equalizer> listEqualizers(Host host) {
-        return null;
+        if (host == null) {
+            LOG.warning("Unable to list equalizers for a nilled host");
+            return Collections.emptySet();
+        }
+        final Set<Equalizer> equalizers = ApiRequestSystem.INSTANCE.getEqualizers(host);
+        LOG.fine(String.format("Found {%s} equalizers", equalizers.size()));
+        return equalizers;
+    }
+
+    @Override
+    public Equalizer getEqualizer(Host host) {
+        if (host == null) {
+            LOG.warning("Unable to get equalizer due to either host is nilled");
+            return null;
+        }
+        return ApiRequestSystem.INSTANCE.getEqualizer(host);
     }
 
     @Override
     public void setEqualizer(Host host, Equalizer equalizer) {
+        if (host == null || equalizer == null) {
+            LOG.warning("Unable to set requested equalizer due to either host or equalizer is nilled");
+            return;
+        }
+        ApiRequestSystem.INSTANCE.setEqualizer(host, equalizer);
+    }
 
+    @Override
+    public Set<RadioStation> listStations(Host host, int from, int maxStations) {
+        if (host == null) {
+            LOG.warning("Unable to listStations due to either host is nilled");
+            return null;
+        }
+        LOG.fine(String.format("Listing stations for {%s} from {%s} and max stations {%s}", host.toString(), from, maxStations));
+        return ApiRequestRadio.INSTANCE.getRadioStations(host, from, maxStations);
+    }
+
+    @Override
+    public Set<RadioStation> enterContainerAndListStations(Host host, RadioStation radioStation, int maxStations) {
+        if (host == null || radioStation == null) {
+            LOG.warning("Unable to enter container and list stations due to either host or selected folder is nilled/empty");
+            return Collections.emptySet();
+        }
+        LOG.fine(String.format("Selecting container {%s} for {%s}. Showing {%s} elements", radioStation.toString(), host.toString(), maxStations));
+        return ApiRequestRadio.INSTANCE.selectContainerAndGetRadioStations(host, radioStation, maxStations);
+    }
+
+    @Override
+    public Set<RadioStation> enterPreviousContainerAndListStations(Host host, int maxStations) {
+        if (host == null) {
+            LOG.warning("Unable to move to previous container and list stations due to host is nilled/empty");
+            return Collections.emptySet();
+        }
+        LOG.fine(String.format("Moving to previous container for {%s}. Showing {%s} elements", host.toString(), maxStations));
+        return ApiRequestRadio.INSTANCE.selectPreviousContainer(host, maxStations);
+    }
+
+    @Override
+    public DeviceCurrentlyPlaying selectStation(Host host, RadioStation radioStation) {
+        if (host == null || radioStation == null) {
+            LOG.warning("Unable to selectStation due to either host or selected folder is nilled/empty");
+            return null;
+        }
+        LOG.fine(String.format("Selecting station {%s} for {%s}", radioStation.toString(), host.toString()));
+        ApiRequestRadio.INSTANCE.selectRadioStation(host, radioStation);
+        return ApiRequestSystem.INSTANCE.getCurrentlyPlaying(host);
     }
 }

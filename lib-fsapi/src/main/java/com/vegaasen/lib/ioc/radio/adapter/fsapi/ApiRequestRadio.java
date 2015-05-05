@@ -17,25 +17,27 @@ public enum ApiRequestRadio {
 
     INSTANCE;
 
-    //Found from sniffing the network..
     private static final String PREVIOUS_LEVEL = "0xffffffff";
 
     /**
      * Returns to the previous container. The property "PREVIOUS" is Pinell's own method of returning one level up
+     * Example:
+     * (from) -- Local
+     * (to) - My Favorites
      *
      * @param host     _
      * @param maxItems _
      * @return _
      */
-    public Set<RadioStation> getToPreviousContainer(Host host, int maxItems) {
+    public Set<RadioStation> selectPreviousContainer(Host host, int maxItems) {
         final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
         params.put(Parameter.QueryParameter.VALUE, PREVIOUS_LEVEL);
-        ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.SELECT_SUB_CONTAINER, params));
+        ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.SUB_CONTAINER_SELECT, params));
         return getRadioStations(host, -1, maxItems);
     }
 
     /**
-     * Normally, this will not be used. However, when dealing with internet-radios, they may have underlaying containers
+     * Normally, this will not be used. However, when dealing with internet-radios, they may have underlying containers
      * of either just containers, or radio-stations. Example:
      * - My Favorites
      * -- Local
@@ -50,14 +52,14 @@ public enum ApiRequestRadio {
      * @param maxItems     _
      * @return _
      */
-    public Set<RadioStation> getSubContainers(Host host, RadioStation radioStation, int maxItems) {
+    public Set<RadioStation> selectContainerAndGetRadioStations(Host host, RadioStation radioStation, int maxItems) {
         final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
         params.put(Parameter.QueryParameter.VALUE, radioStation.getKeyIdAsString());
-        ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.SELECT_SUB_CONTAINER, params));
+        ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.SUB_CONTAINER_SELECT, params));
         return getRadioStations(host, -1, maxItems);
     }
 
-    //TODO: This is not bounded to radioStations. Rename
+    //TODO: There is, for some reason, something not working as it should regarding the listing of radio stations/containers. Look into the sniffing session
     public Set<RadioStation> getRadioStations(Host host, int fromIndex, int maxItems) {
         preGetRadioStations(host);
         final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
@@ -70,13 +72,26 @@ public enum ApiRequestRadio {
                 )
         );
         if (document != null && ApiConnection.INSTANCE.verifyResponseOk(document)) {
-            Set<RadioStation> radioStations = new HashSet<RadioStation>();
+            Set<RadioStation> radioStations = new HashSet<>();
             for (final Item item : XmlUtils.INSTANCE.getItems(document.getDocumentElement())) {
-                radioStations.add(RadioStation.create(item));
+                final RadioStation candidate = RadioStation.create(item);
+                if (candidate != null) {
+                    radioStations.add(candidate);
+                }
             }
             return radioStations;
         }
         return Collections.emptySet();
+    }
+
+    public void selectRadioStation(Host host, RadioStation radioStation) {
+        if (host == null || radioStation == null) {
+            return;
+        }
+        final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
+        params.put(Parameter.QueryParameter.VALUE, radioStation.getKeyIdAsString());
+        ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.STATION_SELECT, params));
+        postSelectRadioStation(host);
     }
 
     /**
@@ -96,8 +111,29 @@ public enum ApiRequestRadio {
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_SET_NAV_STATE, params));
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_STATE));
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_STATUS));
+            try {
+                //todo: messy? Oh, never!!! :-) for some reason, the get_notifies may fail on strange occasions. Wrapping this crappy stuff
+                //todo: create a common wrapper for callables..?
+                ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NOTIFIES));
+            } catch (Exception e) {
+                //*gulp*
+            }
+            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NUM_ITEMS));
         } catch (final Exception e) {
             //*gulp*
+        }
+    }
+
+    /**
+     * For some reason, we also need to ensure that some of the APIs is getting requested. Atleast, that is how it looks like in the proxy listner application
+     *
+     * @param host _
+     */
+    private void postSelectRadioStation(Host host) {
+        try {
+            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NOTIFIES));
+        } catch (Exception e) {
+            // *gulp*
         }
     }
 

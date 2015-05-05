@@ -37,7 +37,7 @@ public enum ApiConnection {
 
     private static final Logger LOG = Logger.getLogger(ApiConnection.class.getSimpleName());
     //todo: change the header so that it identifies the library correctly.
-    private static final Header USER_AGENT = new Header("User-Agent", "Pinell/1.1 CFNetwork/711.1.16 Darwin/14.0.0");
+    private static final Header USER_AGENT = new Header("User-Agent", "Pinell/1.1 CFNetwork/711.3.18 Darwin/14.0.0");
     private static final Header ACCEPT = new Header("Accept", "*/*");
     private static final Header ACCEPT_LANGUAGE = new Header("Accept-Language", "en-us");
     private static final Header CONNECTION = new Header("Connection", "keep-alive");

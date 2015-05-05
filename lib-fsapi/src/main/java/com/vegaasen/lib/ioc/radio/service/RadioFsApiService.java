@@ -1,5 +1,6 @@
 package com.vegaasen.lib.ioc.radio.service;
 
+import com.vegaasen.lib.ioc.radio.model.dab.RadioStation;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceAudio;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceCurrentlyPlaying;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceInformation;
@@ -56,6 +57,22 @@ public interface RadioFsApiService {
     Set<RadioMode> listAvailableRadioModes(Host host);
 
     /**
+     * Get the current active radioMode
+     *
+     * @param host _
+     * @return _
+     */
+    RadioMode getRadioMode(Host host);
+
+    /**
+     * Set the wanted radioMode as active
+     *
+     * @param host      _
+     * @param radioMode _
+     */
+    void setRadioMode(Host host, RadioMode radioMode);
+
+    /**
      * Get the currently active playing tune, radio station or similar
      *
      * @return _
@@ -87,11 +104,55 @@ public interface RadioFsApiService {
     Set<Equalizer> listEqualizers(Host host);
 
     /**
+     * Get the current equalizer set for the Radio
+     *
+     * @param host _
+     * @return _
+     */
+    Equalizer getEqualizer(Host host);
+
+    /**
      * Configure new equalizer for the specified host
      *
      * @param host      _
      * @param equalizer _
      */
     void setEqualizer(Host host, Equalizer equalizer);
+
+    /**
+     * List all stations in a folder
+     *
+     * @param host _
+     * @return _
+     */
+    Set<RadioStation> listStations(Host host, int from, int maxStations);
+
+    /**
+     * Enter a container and list all stations in this folder
+     *
+     * @param host         _
+     * @param radioStation _
+     * @param maxStations  _
+     * @return _
+     */
+    Set<RadioStation> enterContainerAndListStations(Host host, RadioStation radioStation, int maxStations);
+
+    /**
+     * Move one folder up and list all stations is this folder
+     *
+     * @param host        _
+     * @param maxStations _
+     * @return _
+     */
+    Set<RadioStation> enterPreviousContainerAndListStations(Host host, int maxStations);
+
+    /**
+     * Select station and return information regarding the active station playing
+     *
+     * @param host         _
+     * @param radioStation _
+     * @return _
+     */
+    DeviceCurrentlyPlaying selectStation(Host host, RadioStation radioStation);
 
 }

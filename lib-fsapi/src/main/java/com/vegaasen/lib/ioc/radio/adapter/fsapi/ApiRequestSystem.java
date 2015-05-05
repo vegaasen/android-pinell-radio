@@ -36,6 +36,9 @@ public enum ApiRequestSystem {
     private static final String MIN = "-1", MAX = Integer.toString(Integer.MAX_VALUE);
 
     public Set<Equalizer> getEqualizers(Host host) {
+        if (host == null) {
+            return Collections.emptySet();
+        }
         final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
         params.put(Parameter.QueryParameter.MAX_ITEMS, MAX);
         final Document document = ApiConnection.INSTANCE.request(
@@ -50,16 +53,21 @@ public enum ApiRequestSystem {
         return Collections.emptySet();
     }
 
-    //todo: this seems to not be working, use the getEqualizers instead :-)
     public Equalizer getEqualizer(Host host) {
         final Document document = ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.System.EQUALIZER));
         if (document != null && ApiConnection.INSTANCE.verifyResponseOk(document)) {
-            return Equalizer.create(
+            final Equalizer equalizer = Equalizer.create(
                     Item.create(
                             XmlUtils.INSTANCE.getNumberContentByNode(document.getDocumentElement(), ApiResponse.VALUE_U_8),
                             Collections.<String, String>emptyMap()
                     )
             );
+            for (final Equalizer candidate : getEqualizers(host)) {
+                if (candidate.getKey() == equalizer.getKey()) {
+                    return candidate;
+                }
+            }
+            return equalizer;
         }
         return null;
     }
@@ -86,6 +94,31 @@ public enum ApiRequestSystem {
         return Collections.emptySet();
     }
 
+    public RadioMode getRadioMode(Host host) {
+        final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
+        final Document document = ApiConnection.INSTANCE.request(
+                ApiConnection.INSTANCE.getApiUri(host, UriContext.System.RADIO_MODE, params));
+        if (document != null && ApiConnection.INSTANCE.verifyResponseOk(document)) {
+            RadioMode radioMode = RadioMode.create(Item.create(
+                    XmlUtils.INSTANCE.getNumberContentByNode(document.getDocumentElement(), ApiResponse.VALUE_U_32),
+                    Collections.<String, String>emptyMap()
+            ));
+            for (final RadioMode candidate : getRadioModes(host)) {
+                if (candidate.getKey() == radioMode.getKey()) {
+                    return candidate;
+                }
+            }
+        }
+        return null;
+    }
+
+    public boolean setRadioMode(Host host, RadioMode radioMode) {
+        final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
+        params.put(Parameter.QueryParameter.VALUE, radioMode.getKeyAsString());
+        final Document document = ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.System.RADIO_MODE_SET, params));
+        return document != null && ApiConnection.INSTANCE.verifyResponseOk(document);
+    }
+
     public DeviceAudio getDeviceAudioInformation(Host host) {
         return DeviceAudio.create(
                 AudioStatus.fromValue(getResponse(host, UriContext.Device.AUDIO_VOLUME_MUTED)),
@@ -104,6 +137,16 @@ public enum ApiRequestSystem {
             );
         }
         return null;
+    }
+
+    public boolean setDeviceAudioLevel(Host host, int level) {
+        if (host == null || level < 0) {
+            return false;
+        }
+        final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
+        params.put(Parameter.QueryParameter.VALUE, Integer.toString(level));
+        final Document document = ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.Device.AUDIO_VOLUME_LEVEL_SET, params));
+        return document != null && ApiConnection.INSTANCE.verifyResponseOk(document);
     }
 
     public DeviceCurrentlyPlaying getCurrentlyPlaying(Host host) {

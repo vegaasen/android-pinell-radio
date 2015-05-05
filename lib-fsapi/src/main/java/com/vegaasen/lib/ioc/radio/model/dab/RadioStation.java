@@ -13,11 +13,18 @@ public class RadioStation extends AbsRadioStation {
     }
 
     public static RadioStation create(Item item) {
+        if (!valid(item)) {
+            return null;
+        }
         return new RadioStation(
                 item.getKeyId(),
                 item.getFields().get(ApiResponse.RadioStation.NAME),
                 item.getFields().get(ApiResponse.RadioStation.TYPE),
                 item.getFields().get(ApiResponse.RadioStation.SUBTYPE));
+    }
+
+    private static boolean valid(Item item) {
+        return !item.getFields().isEmpty() && item.getFields().get(ApiResponse.RadioStation.NAME) != null && item.getFields().get(ApiResponse.RadioStation.TYPE) != null && item.getFields().get(ApiResponse.RadioStation.SUBTYPE) != null;
     }
 
 }

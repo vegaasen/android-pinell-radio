@@ -1,5 +1,6 @@
 package com.vegaasen.lib.ioc.radio.model.abs;
 
+import com.vegaasen.lib.ioc.radio.adapter.constants.ApiResponse;
 import com.vegaasen.lib.ioc.radio.model.annotation.Immutable;
 
 @Immutable
@@ -35,5 +36,23 @@ public abstract class AbsRadioStation {
 
     public String getSubType() {
         return subType;
+    }
+
+    /**
+     * The radioStation-candidate may also be an container. This verifies that it is not.
+     * @return _
+     */
+    public boolean isRadioStation() {
+        return subType!=null && !subType.isEmpty() && subType.equals(ApiResponse.SubType.TYPE_STATION);
+    }
+
+    @Override
+    public String toString() {
+        return "AbsRadioStation{" +
+                "keyId=" + keyId +
+                ", name='" + name + '\'' +
+                ", type='" + type + '\'' +
+                ", subType='" + subType + '\'' +
+                '}';
     }
 }

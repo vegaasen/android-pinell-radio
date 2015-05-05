@@ -12,6 +12,7 @@ import com.vegaasen.lib.ioc.radio.model.response.Item;
 public class RadioMode {
 
     private static final String SELECTABLE = "1";
+    private static final String EMPTY = "";
 
     private final int key;
     private final String id;
@@ -26,11 +27,11 @@ public class RadioMode {
     }
 
     public static RadioMode create(Item item) {
-        if (item != null && !item.getFields().isEmpty()) {
+        if (item != null) {
             return new RadioMode(item.getKeyId(),
-                    item.getFields().get(ApiResponse.RadioMode.ID),
-                    item.getFields().get(ApiResponse.RadioMode.NAME),
-                    item.getFields().get(ApiResponse.RadioMode.SELECTABLE).equals(SELECTABLE));
+                    item.getFields().isEmpty() ? EMPTY : item.getFields().get(ApiResponse.RadioMode.ID),
+                    item.getFields().isEmpty() ? EMPTY : item.getFields().get(ApiResponse.RadioMode.NAME),
+                    !item.getFields().isEmpty() && item.getFields().get(ApiResponse.RadioMode.SELECTABLE).equals(SELECTABLE));
         }
         return null;
     }
@@ -43,11 +44,25 @@ public class RadioMode {
         return id;
     }
 
+    public String getKeyAsString() {
+        return Integer.toString(key);
+    }
+
     public String getName() {
         return name;
     }
 
     public boolean isSelectable() {
         return selectable;
+    }
+
+    @Override
+    public String toString() {
+        return "RadioMode{" +
+                "key=" + key +
+                ", id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", selectable=" + selectable +
+                '}';
     }
 }

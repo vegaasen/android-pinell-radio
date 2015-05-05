@@ -1,9 +1,11 @@
 package com.vegaasen.lib.ioc.radio.service.impl;
 
 import com.vegaasen.lib.ioc.radio.helper.HelperUtils;
+import com.vegaasen.lib.ioc.radio.model.dab.RadioStation;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceAudio;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceCurrentlyPlaying;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceInformation;
+import com.vegaasen.lib.ioc.radio.model.system.Equalizer;
 import com.vegaasen.lib.ioc.radio.model.system.PowerState;
 import com.vegaasen.lib.ioc.radio.model.system.RadioMode;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
@@ -11,9 +13,12 @@ import com.vegaasen.lib.ioc.radio.service.RadioFsApiService;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -75,6 +80,33 @@ public class RadioFsApiServiceImplIntTest {
     }
 
     @Test
+    public void listAvailableRadioModes_normalProcedure() throws InterruptedException {
+        turnDeviceOn();
+        Set<RadioMode> radioModes = service.listAvailableRadioModes(host);
+        assertNotNull(radioModes);
+        turnDeviceOff();
+    }
+
+    @Test
+    public void getRadioMode_normalProcedure() throws InterruptedException {
+        turnDeviceOn();
+        RadioMode radioMode = service.getRadioMode(host);
+        assertNotNull(radioMode);
+        turnDeviceOff();
+    }
+
+    @Test
+    public void setRadioMode_normalProcedure() throws InterruptedException {
+        turnDeviceOn();
+        RadioMode originalMode = service.getRadioMode(host);
+        List<RadioMode> radioModes = new ArrayList<>(service.listAvailableRadioModes(host));
+        service.setRadioMode(host, radioModes.get(1));
+        Thread.sleep(2000);
+        service.setRadioMode(host, originalMode);
+        turnDeviceOff();
+    }
+
+    @Test
     public void getCurrentAudioInformation_normalProcedure() throws InterruptedException {
         turnDeviceOn();
         DeviceAudio audio = service.getCurrentAudioInformation(host);
@@ -83,10 +115,101 @@ public class RadioFsApiServiceImplIntTest {
     }
 
     @Test
-    public void listAvailableRadioModes_normalProcedure() throws InterruptedException {
+    public void setAudioLevel_normalProcedure() throws InterruptedException {
         turnDeviceOn();
-        Set<RadioMode> radioModes = service.listAvailableRadioModes(host);
-        assertNotNull(radioModes);
+        final int expectedLevel = 20;
+        service.setAudioLevel(host, expectedLevel);
+        DeviceAudio audio = service.getCurrentAudioInformation(host);
+        assertNotNull(audio);
+        assertEquals(expectedLevel, audio.getLevel());
+        turnDeviceOff();
+    }
+
+    @Test
+    public void listEqualizers_normalProcedure() throws InterruptedException {
+        turnDeviceOn();
+        Set<Equalizer> equalizers = service.listEqualizers(host);
+        assertNotNull(equalizers);
+        turnDeviceOff();
+    }
+
+    @Test
+    public void getEqualizer_normalProcedure() throws InterruptedException {
+        turnDeviceOn();
+        Equalizer equalizer = service.getEqualizer(host);
+        assertNotNull(equalizer);
+        turnDeviceOff();
+    }
+
+    @Test
+    public void setEqualizer_normalProcedure() throws InterruptedException {
+        turnDeviceOn();
+        Equalizer originallySet = service.getEqualizer(host);
+        assertNotNull(originallySet);
+        List<Equalizer> equalizers = new ArrayList<>(service.listEqualizers(host));
+        assertNotNull(equalizers);
+        assertTrue(equalizers.size() > 1);
+        final Equalizer expectedEqualizer = equalizers.get(2);
+        service.setEqualizer(host, expectedEqualizer);
+        Equalizer newSet = service.getEqualizer(host);
+        assertNotNull(newSet);
+        assertEquals(expectedEqualizer.getKey(), newSet.getKey());
+        service.setEqualizer(host, originallySet);
+        turnDeviceOff();
+    }
+
+    @Test
+    public void listStations_normalProcedure() throws InterruptedException {
+        turnDeviceOn();
+        Set<RadioStation> radioStations = service.listStations(host, RadioFsApiServiceImpl.DEFAULT_START_INDEX, RadioFsApiServiceImpl.DEFAULT_MAX_ITEMS);
+        assertNotNull(radioStations);
+        assertFalse(radioStations.isEmpty());
+        turnDeviceOff();
+    }
+
+    @Test
+    public void enterContainerAndListStations_normalProcedure() throws InterruptedException {
+        turnDeviceOn();
+        List<RadioStation> radioStations = new ArrayList<>(service.listStations(host, RadioFsApiServiceImpl.DEFAULT_START_INDEX, RadioFsApiServiceImpl.DEFAULT_MAX_ITEMS));
+        assertNotNull(radioStations);
+        assertFalse(radioStations.isEmpty());
+        Set<RadioStation> oneLevelDownStation = service.enterContainerAndListStations(host, radioStations.get(0), RadioFsApiServiceImpl.DEFAULT_MAX_ITEMS);
+        assertNotNull(oneLevelDownStation);
+        assertFalse(oneLevelDownStation.isEmpty());
+        turnDeviceOff();
+    }
+
+    @Test
+    public void enterPreviousContainerAndListStations_normalProcedure() throws InterruptedException {
+        turnDeviceOn();
+        List<RadioStation> radioStations = new ArrayList<>(service.listStations(host, RadioFsApiServiceImpl.DEFAULT_START_INDEX, RadioFsApiServiceImpl.DEFAULT_MAX_ITEMS));
+        assertNotNull(radioStations);
+        assertFalse(radioStations.isEmpty());
+        Set<RadioStation> oneLevelUpStation = service.enterContainerAndListStations(host, radioStations.get(0), RadioFsApiServiceImpl.DEFAULT_MAX_ITEMS);
+        assertNotNull(oneLevelUpStation);
+        Set<RadioStation> oneLevelDownStation = service.enterPreviousContainerAndListStations(host, RadioFsApiServiceImpl.DEFAULT_MAX_ITEMS);
+        assertNotNull(oneLevelDownStation);
+        assertFalse(oneLevelDownStation.isEmpty());
+        assertNotEquals(oneLevelUpStation.size(), oneLevelDownStation.size());
+        turnDeviceOff();
+    }
+
+    @Test
+    public void selectStation_normalProcedure() throws InterruptedException {
+        turnDeviceOn();
+        List<RadioStation> radioStations = new ArrayList<>(service.listStations(host, RadioFsApiServiceImpl.DEFAULT_START_INDEX, RadioFsApiServiceImpl.DEFAULT_MAX_ITEMS));
+        assertNotNull(radioStations);
+        assertFalse(radioStations.isEmpty());
+        if (!radioStations.get(0).isRadioStation()) {
+            radioStations = new ArrayList<>(service.enterContainerAndListStations(host, radioStations.get(0), RadioFsApiServiceImpl.DEFAULT_MAX_ITEMS));
+            if (!radioStations.isEmpty() && !radioStations.get(0).isRadioStation()) {
+                radioStations = new ArrayList<>(service.enterContainerAndListStations(host, radioStations.get(0), RadioFsApiServiceImpl.DEFAULT_MAX_ITEMS));
+            }
+        }
+        service.selectStation(host, radioStations.get(0));
+        Thread.sleep(1500);
+        DeviceCurrentlyPlaying playing = service.selectStation(host, radioStations.get(1));
+        System.out.println(playing.toString());
         turnDeviceOff();
     }
 

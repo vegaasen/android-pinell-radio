@@ -41,12 +41,15 @@ public final class UriContext {
 
     public static final class RadioNavigation {
         //this require that there is some kind of "init" param. Please use String.format(string, param)
+        public static final String STATION_SELECT = SLASH + "SET/netRemote.nav.action.selectItem";
         public static final String STATION_LIST = SLASH + "LIST_GET_NEXT/netRemote.nav.list" + SLASH + "%s";
+        public static final String SUB_CONTAINER_SELECT = SLASH + "SET/netRemote.nav.action.navigate";
         public static final String PRE_GET_NAV_CAPS = SLASH + "GET/netRemote.nav.caps";
+        public static final String PRE_GET_NUM_ITEMS = SLASH + "GET/netRemote.nav.numItems";
         public static final String PRE_GET_NAV_STATE = SLASH + "GET/netRemote.nav.state";
         public static final String PRE_SET_NAV_STATE = SLASH + "GET/netRemote.nav.state";
         public static final String PRE_GET_NAV_STATUS = SLASH + "GET/netRemote.nav.status";
-        public static final String SELECT_SUB_CONTAINER = SLASH + "SET/netRemote.nav.action.navigate";
+        public static final String PRE_GET_NOTIFIES = SLASH + "GET_NOTIFIES";
     }
 
     private UriContext() {
