@@ -2,10 +2,10 @@
 <resources>
     <!-- Can also be transparent, however I'd like to control this color scheme anyway.. -->
     <color name="defaultBackgroundColor">#FFFFFF</color>
-    <color name="defaultElementColor">#F1F8F9</color>
-    <color name="sidebarCurrentElementColor">#1B85BB</color>
+    <color name="defaultElementColor">#E1F5FE</color>
+    <color name="sidebarCurrentElementColor">#03A9F4</color>
     <color name="sidebarBackgroundColor">#2D2D2D</color>
-    <color name="sidebarBoxColor">#ff3ee9ff</color>
+    <color name="sidebarBoxColor">#039BE5</color>
     <color name="textNormal">#111111</color>
     <color name="textSmall">#BABABA</color>
 </resources>

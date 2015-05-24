@@ -24,6 +24,8 @@ public class MainActivity extends AbstractActivity {
 
     private InformationFragment deviceInformation;
 
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

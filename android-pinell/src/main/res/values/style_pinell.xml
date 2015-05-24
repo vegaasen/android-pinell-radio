@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        The default theme for the Pinell application.
+        @author vegaasen
+        @since 24.5.2015
+        @see AndroidManifest.xml for usage
+    -->
+    <style name="PinellTheme" parent="android:Theme.Holo.Light.NoActionBar">
+        <item name="android:textViewStyle">@style/PinellTextViewStyle</item>
+    </style>
+    <style name="PinellTextViewStyle" parent="android:Widget.TextView">
+        <item name="android:textSize">@dimen/textDefaultHeight</item>
+        <item name="android:fontFamily">sans-serif-condensed</item>
+    </style>
+</resources>

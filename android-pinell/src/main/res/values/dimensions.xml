@@ -6,4 +6,5 @@
     <dimen name="elementStandaloneSpacing">30dp</dimen>
     <dimen name="listElementSpacing">2dp</dimen>
     <dimen name="listGenericTextSpacing">30dp</dimen>
+    <dimen name="textDefaultHeight">18sp</dimen>
 </resources>
