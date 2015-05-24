@@ -12,7 +12,7 @@ public enum PinellProperties {
 
     private final String key;
 
-    private PinellProperties(final String key) {
+    PinellProperties(final String key) {
         this.key = key;
     }
 

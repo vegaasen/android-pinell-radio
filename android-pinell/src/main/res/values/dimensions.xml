@@ -3,5 +3,7 @@
     <dimen name="iconSizeHeight">40dp</dimen>
     <dimen name="iconSizeWidth">40dp</dimen>
     <dimen name="elementSpacing">5dp</dimen>
+    <dimen name="elementStandaloneSpacing">30dp</dimen>
     <dimen name="listElementSpacing">2dp</dimen>
+    <dimen name="listGenericTextSpacing">30dp</dimen>
 </resources>

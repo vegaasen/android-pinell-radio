@@ -7,7 +7,9 @@ package com.vegaasen.fun.radio.pinell.service;
  * @version 0.2
  * @since 01.02.2015
  */
-public interface PinellService extends
+public interface
+        PinellService extends
         PinellHostService,
-        PinellDeviceInformationService {
+        PinellDeviceInformationService,
+        PinellVerificationService {
 }

@@ -11,7 +11,7 @@ import com.google.common.collect.Lists;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractActivity;
 import com.vegaasen.fun.radio.pinell.adapter.DeviceArrayAdapter;
-import com.vegaasen.fun.radio.pinell.listner.DeviceListListener;
+import com.vegaasen.fun.radio.pinell.listener.DeviceListListener;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
 
 import java.util.List;

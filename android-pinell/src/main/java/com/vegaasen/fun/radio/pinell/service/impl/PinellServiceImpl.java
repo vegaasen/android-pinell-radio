@@ -43,6 +43,16 @@ public class PinellServiceImpl implements PinellService {
     }
 
     @Override
+    public void setPowerState(PowerState powerState) {
+        if (powerState == null) {
+            Log.w(TAG, "Unable to handle a nilled powerState");
+            return;
+        }
+        Log.w(TAG, String.format("Attempting to alter the powerState to {%s}", powerState));
+        radioFsApiService.setPowerState(getSelectedHost(), powerState);
+    }
+
+    @Override
     public boolean isHostConfigured() {
         return getSelectedHost() != null;
     }
@@ -93,7 +103,7 @@ public class PinellServiceImpl implements PinellService {
 
     @Override
     public Host getSelectedHost(boolean update) {
-        if(selectedHost != null && update) {
+        if (selectedHost != null && update) {
             updateCurrentHost();
         }
         return selectedHost;
@@ -103,6 +113,12 @@ public class PinellServiceImpl implements PinellService {
     public void setCurrentSubnet(String currentSubnet) {
         this.currentSubnet = currentSubnet;
         getRadioConnectionService().setSubnet(currentSubnet);
+    }
+
+    @Override
+    public boolean isPinellDevice(Host host) {
+        //todo: implement the verification of the host
+        return false;
     }
 
     private RadioFsApiConnectionService getRadioConnectionService() {

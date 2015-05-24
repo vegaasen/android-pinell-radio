@@ -9,13 +9,16 @@
             android:id="@+id/listDeviceWrapper"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@color/defaultBackgroundColor">
+            android:background="@color/defaultElementColor">
         <TextView
                 android:id="@+id/lblDeviceInformation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:text="@string/dialogSearchingForDevices"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                android:text="@string/deviceInformationKey"
+                android:layout_marginStart="@dimen/listGenericTextSpacing"
                 />
         <TextView
                 android:id="@+id/txtDeviceInformation"
@@ -23,9 +26,8 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_alignParentEnd="true"
-                android:textStyle="italic"
-
-                android:text="@string/dialogSearchingForDevices"
+                android:text="@string/deviceInformationValue"
+                android:layout_marginEnd="@dimen/listGenericTextSpacing"
                 />
     </RelativeLayout>
 </LinearLayout>

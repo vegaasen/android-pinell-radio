@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="deviceInformationKey">Key</string>
+    <string name="deviceInformationValue">Value</string>
+    <string name="deviceInformationPowerState">Power</string>
+    <string name="deviceInformationSoundLevel">Sound level</string>
+    <string name="deviceInformationPinellInformation">Pinell device information</string>
+    <string name="deviceInformationAppInformation">Application information c(",)</string>
+</resources>

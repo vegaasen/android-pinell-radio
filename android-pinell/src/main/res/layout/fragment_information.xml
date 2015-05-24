@@ -4,13 +4,155 @@
               android:layout_height="match_parent"
               android:orientation="vertical"
               android:gravity="center"
+              android:scrollbars="vertical"
+              android:overScrollMode="ifContentScrolls"
+              android:background="@color/defaultBackgroundColor"
         >
-    <ImageView
-            android:layout_width="140dp"
-            android:layout_height="80dp"
-            android:src="@color/sidebarBoxColor"
-            android:contentDescription="@string/imgDeviceInformation"
-            />
+    <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/elementStandaloneSpacing"
+                    android:background="@color/defaultElementColor">
+        <ImageView
+                android:layout_width="140dp"
+                android:layout_height="80dp"
+                android:layout_centerInParent="true"
+                android:src="@color/sidebarBoxColor"
+                android:contentDescription="@string/imgDeviceInformation"
+                />
+    </RelativeLayout>
+    <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/defaultElementColor"
+                    android:paddingTop="@dimen/listElementSpacing"
+                    android:layout_marginBottom="@dimen/listElementSpacing"
+            >
+        <ImageView
+                android:id="@+id/listDeviceInformationAppInformationIcon"
+                android:layout_width="@dimen/iconSizeWidth"
+                android:layout_height="@dimen/iconSizeHeight"
+                android:layout_marginEnd="15dp"
+                android:layout_marginStart="10dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"
+                android:contentDescription="@string/dialogIconDescription"
+                android:src="@android:drawable/ic_menu_info_details"
+                />
+        <TextView
+                android:id="@+id/listDeviceInformationAppInformationText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/listDeviceInformationAppInformationIcon"
+                android:layout_centerVertical="true"
+                android:text="@string/deviceInformationAppInformation"
+                />
+        <TextView
+                android:id="@+id/listDeviceInformationAppInformationVersionText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:paddingStart="@dimen/listGenericTextSpacing"
+                android:paddingEnd="@dimen/listGenericTextSpacing"
+                android:text="?android:attr/versionName"
+                />
+    </RelativeLayout>
+    <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/defaultElementColor"
+                    android:paddingTop="@dimen/listElementSpacing"
+                    android:layout_marginBottom="@dimen/listElementSpacing"
+            >
+        <ImageView
+                android:id="@+id/listDeviceInformationPowerIcon"
+                android:layout_width="@dimen/iconSizeWidth"
+                android:layout_height="@dimen/iconSizeHeight"
+                android:layout_marginEnd="15dp"
+                android:layout_marginStart="10dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"
+                android:contentDescription="@string/dialogIconDescription"
+                android:src="@android:drawable/ic_lock_power_off"
+                />
+        <TextView
+                android:id="@+id/listDeviceInformationPowerText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/listDeviceInformationPowerIcon"
+                android:layout_centerVertical="true"
+                android:text="@string/deviceInformationPowerState"
+                />
+        <Switch
+                android:id="@+id/listDeviceInformationPowerSwitcher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/listDeviceInformationPowerText"
+                android:layout_alignParentEnd="true"
+                />
+    </RelativeLayout>
+    <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/defaultElementColor"
+                    android:paddingTop="@dimen/listElementSpacing"
+                    android:layout_marginBottom="@dimen/listElementSpacing"
+            >
+        <ImageView
+                android:id="@+id/listDeviceInformationSoundLevelIcon"
+                android:layout_width="@dimen/iconSizeWidth"
+                android:layout_height="@dimen/iconSizeHeight"
+                android:layout_marginEnd="15dp"
+                android:layout_marginStart="10dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"
+                android:contentDescription="@string/dialogIconDescription"
+                android:src="@android:drawable/ic_menu_compass"
+                />
+        <TextView
+                android:id="@+id/listDeviceInformationSoundLevelText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/listDeviceInformationSoundLevelIcon"
+                android:layout_centerVertical="true"
+                android:text="@string/deviceInformationSoundLevel"
+                />
+    </RelativeLayout>
+    <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/defaultElementColor"
+                    android:paddingTop="@dimen/listElementSpacing"
+                    android:layout_marginBottom="@dimen/listElementSpacing"
+            >
+        <ImageView
+                android:id="@+id/listDeviceInformationPinellInformationIcon"
+                android:layout_width="@dimen/iconSizeWidth"
+                android:layout_height="@dimen/iconSizeHeight"
+                android:layout_marginEnd="15dp"
+                android:layout_marginStart="10dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"
+                android:contentDescription="@string/dialogIconDescription"
+                android:src="@android:drawable/ic_menu_info_details"
+                />
+        <TextView
+                android:id="@+id/listDeviceInformationPinellInformationText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/listDeviceInformationPinellInformationIcon"
+                android:layout_centerVertical="true"
+                android:text="@string/deviceInformationPinellInformation"
+                />
+        <ImageView
+                android:id="@+id/listDeviceInformationPinellInformationIconPointDown"
+                android:layout_width="@dimen/iconSizeWidth"
+                android:layout_height="@dimen/iconSizeHeight"
+                android:layout_marginStart="10dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@id/listDeviceInformationPinellInformationText"
+                android:contentDescription="@string/dialogIconDescription"
+                android:src="@android:drawable/arrow_down_float"
+                />
+    </RelativeLayout>
     <LinearLayout android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:background="@color/defaultBackgroundColor">
@@ -24,6 +166,8 @@
                 android:clickable="false"
                 android:choiceMode="none"
                 android:smoothScrollbar="true"
+                android:dividerHeight="@dimen/listElementSpacing"
+                android:divider="@color/defaultBackgroundColor"
                 >
         </ListView>
     </LinearLayout>
