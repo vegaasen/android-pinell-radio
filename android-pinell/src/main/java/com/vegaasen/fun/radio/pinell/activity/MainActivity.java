@@ -2,13 +2,11 @@ package com.vegaasen.fun.radio.pinell.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractActivity;
 import com.vegaasen.fun.radio.pinell.activity.fragment.InformationFragment;
 import com.vegaasen.fun.radio.pinell.activity.host.SelectHostActivity;
-import com.vegaasen.lib.ioc.radio.model.device.DeviceInformation;
 
 /**
  * This is the main activity which controls all the various fragments within the application itself.
@@ -23,8 +21,6 @@ public class MainActivity extends AbstractActivity {
     private static final int REQUEST_CODE = 1;
 
     private InformationFragment deviceInformation;
-
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,7 +42,7 @@ public class MainActivity extends AbstractActivity {
     }
 
     private void configureUiElements() {
-        deviceInformation = (InformationFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentInformation);
+        deviceInformation = (InformationFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentDynamic);
     }
 
 }

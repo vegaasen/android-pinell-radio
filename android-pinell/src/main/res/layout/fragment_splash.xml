@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <!--
+        This can be perceived as a "splash" screen for the user.
+        It does not contain any special features, and it cannot be rendered after the user have changed
+        the view to something else (e.g information, browsing, playing now etc)
+
+        @author vegaasen
+        @since 26.5.2015
+    -->
+
+</LinearLayout>
