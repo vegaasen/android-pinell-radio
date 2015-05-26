@@ -8,18 +8,19 @@
               android:overScrollMode="ifContentScrolls"
               android:background="@color/defaultBackgroundColor"
         >
-    <RelativeLayout android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/elementStandaloneSpacing"
-                    android:background="@color/defaultElementColor">
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:paddingBottom="@dimen/elementStandaloneSpacing"
+                  android:orientation="vertical"
+                  android:background="@color/defaultElementColor">
         <ImageView
                 android:layout_width="140dp"
                 android:layout_height="80dp"
-                android:layout_centerInParent="true"
+                android:layout_gravity="center"
                 android:src="@color/sidebarBoxColor"
                 android:contentDescription="@string/imgDeviceInformation"
                 />
-    </RelativeLayout>
+    </LinearLayout>
     <RelativeLayout android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/defaultElementColor"

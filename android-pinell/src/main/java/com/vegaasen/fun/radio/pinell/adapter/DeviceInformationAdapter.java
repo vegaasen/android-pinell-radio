@@ -20,9 +20,10 @@ import java.util.Map;
 public class DeviceInformationAdapter extends BaseAdapter {
 
     private static final String TAG = DeviceInformationAdapter.class.getSimpleName();
-    public static final String NOT_FOUND = "";
+    private static final String NOT_FOUND = "";
 
     private final Context context;
+
     private Map<String, String> information;
     private String[] informationKeys;
 
