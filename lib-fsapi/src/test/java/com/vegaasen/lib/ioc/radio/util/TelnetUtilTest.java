@@ -26,4 +26,12 @@ public class TelnetUtilTest {
         System.out.println("Test took ~" + (stop - start) + "ms");
     }
 
+    @Test
+    public void findPotentialLocalSubnetNetworkHosts_specificPort_localHosts() {
+        final long start = System.currentTimeMillis();
+        assertNotNull(TelnetUtil.findPotentialLocalSubnetNetworkHosts("192.168.0", 80));
+        final long stop = System.currentTimeMillis();
+        System.out.println("Test took ~" + (stop - start) + "ms");
+    }
+
 }

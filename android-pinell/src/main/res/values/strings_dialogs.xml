@@ -4,4 +4,5 @@
     <string name="dialogSearchingForDevices">Scanning for devices</string>
     <string name="dialogChooserDeviceNotFound">No device found</string>
     <string name="dialogIconDescription">RadioSymbol</string>
+    <string name="genericUndocumented">Undocumented</string>
 </resources>

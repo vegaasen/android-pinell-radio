@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sidebarNowPlaying">Playing</string>
+    <string name="sidebarBrowse">Browse</string>
+    <string name="sidebarSource">Sources</string>
+    <string name="sidebarEqualizer">Equalizer</string>
+    <string name="sidebarInformation">Information</string>
+</resources>
