@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <!--
+        This is the "Now Playing" view for the application.
+        It mainly provides the following details:
+        - Current media
+        - Photo (optional)
+        - Song
+        - ??
+        - Volume (??)
+
+        @author vegaasen
+        @since 27.5.2015
+    -->
+
+</LinearLayout>

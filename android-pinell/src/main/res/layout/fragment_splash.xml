@@ -19,7 +19,7 @@
             android:layout_gravity="center"
             android:paddingStart="@dimen/listGenericTextSpacing"
             android:paddingEnd="@dimen/listGenericTextSpacing"
-            android:text="@string/genericUndocumented"
+            android:text="@string/splashLocatePinellDevices"
             />
 
 </LinearLayout>

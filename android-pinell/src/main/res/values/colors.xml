@@ -4,7 +4,7 @@
     <color name="defaultBackgroundColor">#FFFFFF</color>
     <color name="defaultElementColor">#E1F5FE</color>
     <color name="sidebarBackgroundColor">#2D2D2D</color>
-    <color name="sidebarBoxColor">#000000</color>
+    <color name="sidebarBoxColor">#ff202020</color>
     <color name="sidebarBoxSelectedColor">#039BE5</color>
     <color name="sidebarBoxHoverColor">#eeeeee</color>
     <color name="sidebarBoxTextColor">#ffffff</color>

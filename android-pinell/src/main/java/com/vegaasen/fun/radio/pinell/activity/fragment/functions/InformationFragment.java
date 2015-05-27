@@ -1,4 +1,4 @@
-package com.vegaasen.fun.radio.pinell.activity.fragment;
+package com.vegaasen.fun.radio.pinell.activity.fragment.functions;
 
 import android.os.Bundle;
 import android.util.Log;

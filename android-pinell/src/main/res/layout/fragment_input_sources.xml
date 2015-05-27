@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <!--
+        This is a view that basically just displays and let the user select a source
+        he/she want to play from. Simple as that.
+
+        @author vegaasen
+        @since 27.5.2015
+    -->
+
+</LinearLayout>
