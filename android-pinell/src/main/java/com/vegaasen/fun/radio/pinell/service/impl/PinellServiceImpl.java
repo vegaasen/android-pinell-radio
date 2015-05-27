@@ -116,6 +116,11 @@ public class PinellServiceImpl implements PinellService {
     }
 
     @Override
+    public boolean isPinellDevice() {
+        return isPinellDevice(getSelectedHost());
+    }
+
+    @Override
     public boolean isPinellDevice(Host host) {
         //todo: implement the verification of the host
         return false;

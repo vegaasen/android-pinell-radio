@@ -12,4 +12,14 @@
         @since 26.5.2015
     -->
 
+    <TextView
+            android:id="@+id/listDeviceInformationAppInformationVersionText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingStart="@dimen/listGenericTextSpacing"
+            android:paddingEnd="@dimen/listGenericTextSpacing"
+            android:text="@string/genericUndocumented"
+            />
+
 </LinearLayout>

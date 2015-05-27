@@ -13,6 +13,13 @@ import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
 interface PinellVerificationService {
 
     /**
+     * Is the current selected host a Pinell device, or something else?
+     *
+     * @return _
+     */
+    boolean isPinellDevice();
+
+    /**
      * Is the selected host actually a Pinell device, or something else?
      *
      * @param host _

@@ -44,6 +44,7 @@ public enum ApiConnection {
     private static final Header ACCEPT_ENCODING = new Header("Accept-Encoding", "gzip, deflate");
     private static final int DEFAULT_FS_PORT = 2244, ALTERNATIVE_FS_PORT = 80;
     private static final String DEFAULT_CODE = "1234";
+    private static final String EMPTY = "";
 
     private Connection connection;
     //In certain cases, it would be nice to let the user specify the subnet
@@ -211,7 +212,7 @@ public enum ApiConnection {
 
     private String getSession(Host host) {
         verifyConnection(host);
-        return host.getRadioSession().getId();
+        return host == null || host.getRadioSession() == null ? EMPTY : host.getRadioSession().getId();
     }
 
     private void verifyConnection(final Host host) {

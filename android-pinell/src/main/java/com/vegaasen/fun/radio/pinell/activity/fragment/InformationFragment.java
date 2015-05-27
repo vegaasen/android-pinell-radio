@@ -57,6 +57,7 @@ public class InformationFragment extends AbstractFragment {
                 adapter.notifyDataSetChanged();
 //                deviceOverview.deferNotifyDataSetChanged();
             }
+            postActivities();
         }
     }
 
@@ -104,6 +105,13 @@ public class InformationFragment extends AbstractFragment {
             information.put(PinellProperties.DEVICE_API.getKey(), host.getDeviceInformation().getApiUrl());
         }
         return information;
+    }
+
+    private void postActivities() {
+        Log.d(TAG, "Activating postActivities - e.g disabling functions and so on");
+        final Switch powerSwitch = (Switch) informationView.findViewById(R.id.listDeviceInformationPowerSwitcher);
+        //todo: enable the powerSwitch enable/disable-ability upon selection of the current pinell device
+//        powerSwitch.setEnabled(!getPinellService().isPinellDevice());
     }
 
 }
