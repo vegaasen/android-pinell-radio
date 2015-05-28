@@ -2,4 +2,5 @@
 <resources>
     <string name="app_name">android-pinell</string>
     <string name="activity_host_main">host-related-main-activity</string>
+    <string name="messagePinellDeviceNotOn">Powering on Pinell device</string>
 </resources>

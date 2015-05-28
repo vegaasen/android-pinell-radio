@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractActivity;
+import com.vegaasen.fun.radio.pinell.activity.abs.AbstractFragment;
 import com.vegaasen.fun.radio.pinell.activity.fragment.SplashScreenFragment;
 import com.vegaasen.fun.radio.pinell.activity.fragment.functions.BrowseFragment;
 import com.vegaasen.fun.radio.pinell.activity.fragment.functions.EqualizerFragment;
@@ -37,7 +38,7 @@ public class MainActivity extends AbstractActivity {
     private EqualizerFragment equalizerFragment;
     private InformationFragment informationFragment;
     private RelativeLayout sectionPlaying, sectionBrowse, sectionSource, sectionEqualizer, sectionInformation;
-    private RelativeLayout currentActiveLayout;
+    private View currentActiveFragmentView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,28 +77,35 @@ public class MainActivity extends AbstractActivity {
     }
 
     private void configureSidebarActionListeners() {
-        sectionPlaying.setOnClickListener(new View.OnClickListener() {
+        configureSidebarFragment(sectionPlaying, nowPlayingFragment);
+        configureSidebarFragment(sectionBrowse, browseFragment);
+        configureSidebarFragment(sectionSource, inputSourceFragment);
+        configureSidebarFragment(sectionEqualizer, equalizerFragment);
+        configureSidebarFragment(sectionInformation, informationFragment);
+    }
+
+    private void configureSidebarFragment(final RelativeLayout candidate, final AbstractFragment fragment) {
+        candidate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragmentReplacer, nowPlayingFragment).commit();
-            }
-        });
-        sectionInformation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragmentReplacer, informationFragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragmentReplacer, fragment).commit();
+                setActiveFragmentLayout(v);
             }
         });
     }
 
-    private void setActiveFragmentLayout(final RelativeLayout candidate) {
+    private void setActiveFragmentLayout(final View candidate) {
         if (candidate != null) {
-            if (currentActiveLayout != null) {
-                Log.d(TAG, String.format("The currentActiveLayout {%s} is not undefined and will be set back to the original defined color", currentActiveLayout.getId()));
-                currentActiveLayout.setBackgroundColor(getResources().getColor(R.color.sidebarBoxColor));
+            if (candidate == currentActiveFragmentView) {
+                Log.d(TAG, "Detected same candidate as the current selected active fragment. Skipping color changes");
+                return;
             }
-            currentActiveLayout = candidate;
-            currentActiveLayout.setBackgroundColor(getResources().getColor(R.color.sidebarBoxSelectedColor));
+            if (currentActiveFragmentView != null) {
+                Log.d(TAG, String.format("The currentActiveFragmentView {%s} is not undefined and will be set back to the original defined color", currentActiveFragmentView.getId()));
+                currentActiveFragmentView.setBackgroundColor(getResources().getColor(R.color.sidebarBoxColor));
+            }
+            currentActiveFragmentView = candidate;
+            currentActiveFragmentView.setBackgroundColor(getResources().getColor(R.color.sidebarBoxSelectedColor));
         }
     }
 

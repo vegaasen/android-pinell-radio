@@ -1,6 +1,7 @@
 package com.vegaasen.lib.ioc.radio.service;
 
 import com.vegaasen.lib.ioc.radio.model.system.connection.Connection;
+import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
 
 /**
  * This interface simplifies the connecting to the FsAPI itself. Users may also use the class ApiConnection.
@@ -9,6 +10,14 @@ import com.vegaasen.lib.ioc.radio.model.system.connection.Connection;
  * @see com.vegaasen.lib.ioc.radio.adapter.fsapi.ApiConnection
  */
 public interface RadioFsApiConnectionService {
+
+    /**
+     * Verifies if the selected candidate host is actually a fsApi host
+     *
+     * @param host _
+     * @return _
+     */
+    boolean isValidDevice(Host host);
 
     /**
      * Finds and returns a set of potential FsAPI-enabled hosts on the net you're currently connected to.

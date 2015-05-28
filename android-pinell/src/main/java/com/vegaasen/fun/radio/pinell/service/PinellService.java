@@ -11,5 +11,6 @@ public interface
         PinellService extends
         PinellHostService,
         PinellDeviceInformationService,
-        PinellVerificationService {
+        PinellVerificationService,
+        PinellRadioService {
 }

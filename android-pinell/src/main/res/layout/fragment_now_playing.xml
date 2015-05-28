@@ -2,7 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:weightSum="1"
+        android:background="@color/defaultBackgroundColor">
     <!--
         This is the "Now Playing" view for the application.
         It mainly provides the following details:
@@ -16,4 +18,67 @@
         @since 27.5.2015
     -->
 
+    <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:layout_marginBottom="30dp"
+            >
+        <TextView
+                android:id="@+id/playingRadioChannelTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/genericUndocumented"
+                />
+    </LinearLayout>
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="#000"
+            android:padding="10dp" android:measureWithLargestChild="false">
+        <ImageView
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:id="@+id/playingRadioChannelImg"
+                android:adjustViewBounds="false"
+                android:scaleType="fitXY"
+                android:layout_gravity="center"
+                android:background="@android:drawable/ic_menu_manage"
+                android:contentDescription="@string/genericUndocumented"/>
+    </LinearLayout>
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:layout_marginTop="-20dp"
+            android:background="@color/sidebarBoxHoverColor"
+            >
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_gravity="center"
+                android:layout_marginTop="30dp">
+            <TextView
+                    android:id="@+id/playingArtistTitleTxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/genericUndocumented"
+                    />
+            <SeekBar
+                    android:id="@+id/playingVolumeControlSeek"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:max="@integer/volumeControlMax"
+                    android:progressDrawable="@color/sidebarBoxSelectedColor"
+                    />
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

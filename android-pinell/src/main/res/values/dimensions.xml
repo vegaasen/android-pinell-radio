@@ -11,4 +11,5 @@
     <dimen name="sidebarBoxInnerWidth">55sp</dimen>
     <dimen name="sidebarBoxInnerMargin">15sp</dimen>
     <dimen name="sidebarBoxText">12sp</dimen>
+    <integer name="volumeControlMax">40</integer>
 </resources>

@@ -1,10 +1,23 @@
 package com.vegaasen.lib.ioc.radio.service.impl;
 
+import com.vegaasen.http.rest.utils.StringUtils;
 import com.vegaasen.lib.ioc.radio.adapter.fsapi.ApiConnection;
+import com.vegaasen.lib.ioc.radio.adapter.fsapi.ApiRequestSystem;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Connection;
+import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
 import com.vegaasen.lib.ioc.radio.service.RadioFsApiConnectionService;
 
 public class RadioFsApiConnectionServiceImpl implements RadioFsApiConnectionService {
+
+    @Override
+    public boolean isValidDevice(Host host) {
+        try {
+            return !StringUtils.isBlank(ApiRequestSystem.INSTANCE.obtainNewDeviceSession(host));
+        } catch (Exception e) {
+            //*gulp*
+        }
+        return false;
+    }
 
     @Override
     public Connection getPotentialHosts() {
