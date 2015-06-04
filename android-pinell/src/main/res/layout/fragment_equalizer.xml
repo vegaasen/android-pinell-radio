@@ -11,4 +11,17 @@
         @since 27.5.2015
     -->
 
+    <ListView
+            android:id="@+id/equalizerListOfEqualizers"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical"
+            android:scrollbarAlwaysDrawVerticalTrack="false"
+            android:overScrollMode="never"
+            android:clickable="true"
+            android:choiceMode="none"
+            android:smoothScrollbar="true"
+            >
+    </ListView>
+
 </LinearLayout>

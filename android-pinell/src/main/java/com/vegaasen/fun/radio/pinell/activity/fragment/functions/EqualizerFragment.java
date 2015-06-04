@@ -27,4 +27,7 @@ public class EqualizerFragment extends AbstractFragment {
         }
         return equalizerView;
     }
+
+
+
 }

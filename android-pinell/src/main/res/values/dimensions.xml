@@ -12,4 +12,7 @@
     <dimen name="sidebarBoxInnerMargin">15sp</dimen>
     <dimen name="sidebarBoxText">12sp</dimen>
     <integer name="volumeControlMax">40</integer>
+    <dimen name="selectableMargin">20dp</dimen>
+    <dimen name="selectableMarginTopBottom">10dp</dimen>
+    <dimen name="selectableImageWidth">60dp</dimen>
 </resources>

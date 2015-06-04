@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/defaultElementColor">
+    <!--
+        Point of this is to show the following elements:
+            - Equalizer
+            - Radio stations
+            - Sources
+        @author vegaasen
+    -->
+
+    <RelativeLayout
+            android:id="@+id/selectableItem"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="@dimen/selectableMargin"
+            android:layout_marginEnd="@dimen/selectableMargin"
+            android:layout_marginTop="@dimen/selectableMarginTopBottom"
+            android:layout_marginBottom="@dimen/selectableMarginTopBottom"
+            android:background="@color/defaultBackgroundColor"
+            >
+        <ImageView
+                android:id="@+id/selectableItemImg"
+                android:layout_width="@dimen/selectableImageWidth"
+                android:layout_height="match_parent"
+                android:background="@color/sidebarBoxSelectedColor"
+                />
+        <TextView
+                android:id="@+id/selectableItemTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/selectableItemImg"
+                android:layout_marginStart="@dimen/selectableMargin"
+                android:layout_centerInParent="true"
+                android:text="@string/genericUndocumented"
+                />
+    </RelativeLayout>
+
+</LinearLayout>

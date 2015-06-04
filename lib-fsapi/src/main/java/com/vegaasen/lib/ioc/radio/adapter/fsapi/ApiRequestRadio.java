@@ -13,6 +13,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Todo: beautify.
+ */
 public enum ApiRequestRadio {
 
     INSTANCE;
