@@ -26,6 +26,8 @@ import java.util.Set;
  */
 public class PinellServiceImpl implements PinellService {
 
+    public static final int AUDIO_LEVEL_MUTE = 0, AUDIO_LEVEL_UNKNOWN = -1;
+
     private static final String TAG = PinellServiceImpl.class.getSimpleName();
 
     private RadioFsApiConnectionService radioFsApiConnectionService;
@@ -135,6 +137,22 @@ public class PinellServiceImpl implements PinellService {
     @Override
     public DeviceCurrentlyPlaying getCurrentlyPlaying() {
         return getRadioService().getCurrentlyPlaying(getSelectedHost());
+    }
+
+    @Override
+    public int setAudioMuted() {
+        DeviceAudio audio = getAudioLevels();
+        setAudioLevel(AUDIO_LEVEL_MUTE);
+        return audio != null ? audio.getLevel() : AUDIO_LEVEL_UNKNOWN;
+    }
+
+    @Override
+    public synchronized void setAudioLevel(int level) {
+        if (level < 0) {
+            Log.i(TAG, String.format("Audio level {%s} wanted, resetting to default setAudioMuted-level {%s} instead", level, AUDIO_LEVEL_MUTE));
+            level = AUDIO_LEVEL_MUTE;
+        }
+        getRadioService().setAudioLevel(getSelectedHost(), level);
     }
 
     private RadioFsApiConnectionService getRadioConnectionService() {

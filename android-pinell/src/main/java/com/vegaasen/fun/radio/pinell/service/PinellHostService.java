@@ -1,6 +1,5 @@
 package com.vegaasen.fun.radio.pinell.service;
 
-import com.vegaasen.lib.ioc.radio.model.device.DeviceAudio;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Connection;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
 
@@ -70,12 +69,5 @@ interface PinellHostService {
      * @param currentSubnet _
      */
     void setCurrentSubnet(String currentSubnet);
-
-    /**
-     * Get the current device audio levels, included the current state (muted, unmuted etc)
-     *
-     * @return _
-     */
-    DeviceAudio getAudioLevels();
 
 }

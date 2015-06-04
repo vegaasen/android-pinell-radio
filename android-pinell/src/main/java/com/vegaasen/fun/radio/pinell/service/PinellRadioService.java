@@ -1,5 +1,6 @@
 package com.vegaasen.fun.radio.pinell.service;
 
+import com.vegaasen.lib.ioc.radio.model.device.DeviceAudio;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceCurrentlyPlaying;
 
 /**
@@ -19,5 +20,26 @@ interface PinellRadioService {
      * @return _
      */
     DeviceCurrentlyPlaying getCurrentlyPlaying();
+
+    /**
+     * Mutes the radio
+     *
+     * @return volume muted from
+     */
+    int setAudioMuted();
+
+    /**
+     * Get the current device audio levels, included the current state (muted, unmuted etc)
+     *
+     * @return _
+     */
+    DeviceAudio getAudioLevels();
+
+    /**
+     * Set the wanted audioLevel for the Pinell-device
+     *
+     * @param level (0-40)
+     */
+    void setAudioLevel(int level);
 
 }

@@ -53,23 +53,34 @@ public class NowPlayingFragment extends AbstractFragment {
         volumeControl = (SeekBar) nowPlayingView.findViewById(R.id.playingVolumeControlSeek);
     }
 
+    //todo: the rest
     private void configureVolumeController() {
         volumeControl.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                Log.d(TAG, "Progress changed..?");
+                configureVolume(seekBar);
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                Log.d(TAG, "Started tracking touches");
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                Log.d(TAG, "Stopped tracking touches");
             }
         });
+    }
+
+    private void configureVolume(SeekBar seekBar) {
+        if (seekBar != null) {
+            int candidateLevel = seekBar.getProgress();
+            if (candidateLevel == 0) {
+                getPinellService().setAudioMuted();
+                return;
+            }
+            getPinellService().setAudioLevel(candidateLevel);
+            Log.d(TAG, String.format("AudioLevel set to {%s}", candidateLevel));
+        }
     }
 
     //todo: this might be better to put into a separate Thread.
