@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.vegaasen.fun.radio.pinell.service.PinellService;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceAudio;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceCurrentlyPlaying;
+import com.vegaasen.lib.ioc.radio.model.system.Equalizer;
 import com.vegaasen.lib.ioc.radio.model.system.PowerState;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Connection;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
@@ -153,6 +154,11 @@ public class PinellServiceImpl implements PinellService {
             level = AUDIO_LEVEL_MUTE;
         }
         getRadioService().setAudioLevel(getSelectedHost(), level);
+    }
+
+    @Override
+    public Equalizer listEqualizers() {
+        return null;
     }
 
     private RadioFsApiConnectionService getRadioConnectionService() {

@@ -26,7 +26,9 @@ import com.vegaasen.lib.ioc.radio.model.system.PowerState;
 public class NowPlayingFragment extends AbstractFragment {
 
     private static final String TAG = NowPlayingFragment.class.getSimpleName();
+    public static final long DEFAULT_WAIT = 350;
 
+    private long lastMove = 0L;
     private View nowPlayingView;
     private TextView radioTitle;
     private ImageView radioImage;
@@ -58,7 +60,7 @@ public class NowPlayingFragment extends AbstractFragment {
         volumeControl.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                configureVolume(seekBar);
+                configureVolume(seekBar, false);
             }
 
             @Override
@@ -67,20 +69,30 @@ public class NowPlayingFragment extends AbstractFragment {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                configureVolume(seekBar, true);
             }
         });
     }
 
-    private void configureVolume(SeekBar seekBar) {
+    private void configureVolume(SeekBar seekBar, boolean overrideWait) {
         if (seekBar != null) {
             int candidateLevel = seekBar.getProgress();
             if (candidateLevel == 0) {
                 getPinellService().setAudioMuted();
                 return;
             }
-            getPinellService().setAudioLevel(candidateLevel);
-            Log.d(TAG, String.format("AudioLevel set to {%s}", candidateLevel));
+            if (isEligableForVolumeChange()) {
+                getPinellService().setAudioLevel(candidateLevel);
+                Log.d(TAG, String.format("AudioLevel set to {%s}", candidateLevel));
+            }
         }
+    }
+
+    private boolean isEligableForVolumeChange() {
+        final long now = System.currentTimeMillis();
+        final boolean candidate = (now - lastMove) > DEFAULT_WAIT;
+        lastMove = now;
+        return candidate;
     }
 
     //todo: this might be better to put into a separate Thread.

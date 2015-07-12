@@ -170,8 +170,8 @@ public enum ApiConnection {
         LOG.info(String.format("Fetching potentialHosts for {%s}", preEnteredSubnet));
         final Set<Host> hosts = new HashSet<>();
         for (final String host : preEnteredSubnet == null || preEnteredSubnet.isEmpty() ?
-                TelnetUtil.findPotentialLocalSubnetNetworkHosts() :
-                TelnetUtil.findPotentialLocalSubnetNetworkHosts(preEnteredSubnet)) {
+                TelnetUtil.findPotentialLocalSubnetNetworkHosts(DEFAULT_FS_PORT) :
+                TelnetUtil.findPotentialLocalSubnetNetworkHosts(preEnteredSubnet, DEFAULT_FS_PORT)) {
             if (TelnetUtil.isAlive(host, DEFAULT_FS_PORT)) {
                 LOG.info(String.format("Found potential FSRadio client on {%s}", host));
                 hosts.add(Host.create(host, DEFAULT_FS_PORT, DEFAULT_CODE));

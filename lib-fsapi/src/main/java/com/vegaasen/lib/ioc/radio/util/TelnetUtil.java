@@ -44,13 +44,13 @@ public final class TelnetUtil {
     private TelnetUtil() {
     }
 
-    public static Set<String> findPotentialLocalSubnetNetworkHosts() {
+    public static Set<String> findPotentialLocalSubnetNetworkHosts(int port) {
         try {
             final ActiveSubnetFinder task = new ActiveSubnetFinder();
             final Future<String> future = ACTIVE_SUBNET.submit(task);
             task.getCountDownLatch().await(TIMEOUT_DETECT_SUBNET, TimeUnit.SECONDS);
             final String subnet = future.get();
-            return findPotentialLocalSubnetNetworkHosts(subnet);
+            return findPotentialLocalSubnetNetworkHosts(subnet, port);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -94,7 +94,7 @@ public final class TelnetUtil {
                 });
             }
             if (!runnables.isEmpty()) {
-                LOG.info(String.format("Detected {%s} runnables for potential subnet on local network host", runnables.size()));
+                LOG.info(String.format("Detected {%s} runnable for potential subnet {%s} on local network host using port {%s}", runnables.size(), subnet, portToVerify));
                 for (final Runnable runnable : runnables) {
                     EXECUTOR_SERVICE.execute(runnable);
                 }
@@ -158,24 +158,14 @@ public final class TelnetUtil {
      * @return _
      */
     public static boolean isAliveWithoutThreading(final String hostName, final int port) {
-        final Socket pingSocket = new Socket();
-        try {
+        try (Socket pingSocket = new Socket()) {
             LOG.info(String.format("Checking {%s} for port opened on {%s}", hostName, port));
-            pingSocket.setSoTimeout(TIMEOUT_SOCKET_MS);
-            pingSocket.connect(new InetSocketAddress(hostName, port), TIMEOUT_SOCKET_MS);
-            pingSocket.isBound();
-            pingSocket.setKeepAlive(false);
-            if (pingSocket.isConnected()) {
+            pingSocket.connect(new InetSocketAddress(hostName, port));
+            if (pingSocket.isConnected() || pingSocket.isBound()) {
                 return true;
             }
         } catch (final IOException e) {
             // gasp
-        } finally {
-            try {
-                pingSocket.close();
-            } catch (IOException e) {
-                //jeje
-            }
         }
         return false;
     }

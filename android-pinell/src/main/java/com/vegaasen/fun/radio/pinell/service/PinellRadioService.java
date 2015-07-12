@@ -2,6 +2,7 @@ package com.vegaasen.fun.radio.pinell.service;
 
 import com.vegaasen.lib.ioc.radio.model.device.DeviceAudio;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceCurrentlyPlaying;
+import com.vegaasen.lib.ioc.radio.model.system.Equalizer;
 
 /**
  * Services related to radio-tasks. Example:
@@ -41,5 +42,12 @@ interface PinellRadioService {
      * @param level (0-40)
      */
     void setAudioLevel(int level);
+
+    /**
+     * List all available equalizers that is configured in the device
+     *
+     * @return available equalizers
+     */
+    Equalizer listEqualizers();
 
 }
