@@ -5,8 +5,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractFragment;
+import com.vegaasen.fun.radio.pinell.adapter.EqualizerAdapter;
+import com.vegaasen.fun.radio.pinell.util.CollectionUtils;
+import com.vegaasen.fun.radio.pinell.util.Comparators;
+import com.vegaasen.lib.ioc.radio.model.system.Equalizer;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * This fragment holds the information regarding the various equalizers available on the selected Pinell device
@@ -34,8 +43,55 @@ public class EqualizerFragment extends AbstractFragment {
             Log.e(TAG, "For some reason, the view were unable to be found. Dying");
             throw new RuntimeException("Missing required view in the initialization of the application");
         }
+        listEqualizersAvailable();
         return equalizerView;
     }
 
+    private void listEqualizersAvailable() {
+        if (equalizerView == null) {
+            Log.w(TAG, "Unable to list equalizers, as the equalizerView is not available");
+            return;
+        }
+        final ListView equalizerOverview = (ListView) equalizerView.findViewById(R.id.equalizerListOfEqualizers);
+        if (equalizerOverview == null) {
+            Log.w(TAG, "It seems like the equalizerOverview is nilled, skipping");
+            return;
+        }
+        final EqualizerAdapter equalizerAdapter = getEqualizerOverview(equalizerOverview);
+        equalizerOverview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(TAG, String.format("Position {%s} and id {%s} clicked", position, id));
+                final Equalizer selectedEqualizer = equalizerAdapter.getItem(position);
+                getPinellService().setEqualizer(selectedEqualizer);
+                // Perform a refresh of the list of available equalizers
+                listEqualizersAvailable();
+            }
+        });
+    }
+
+    private EqualizerAdapter getEqualizerOverview(ListView equalizerOverview) {
+        EqualizerAdapter equalizerAdapter;
+        if (equalizerOverview.getAdapter() == null) {
+            equalizerAdapter = new EqualizerAdapter(equalizerView.getContext(), getEqualizers(), getCurrentEqualizer());
+            equalizerOverview.setAdapter(equalizerAdapter);
+        } else {
+            equalizerAdapter = (EqualizerAdapter) equalizerOverview.getAdapter();
+            equalizerAdapter.updateEqualizers(getEqualizers());
+            equalizerAdapter.updateCurrentEqualizer(getCurrentEqualizer());
+            equalizerAdapter.notifyDataSetChanged();
+        }
+        return equalizerAdapter;
+    }
+
+    public Equalizer getCurrentEqualizer() {
+        return getPinellService().getCurrentEqualizer();
+    }
+
+    private List<Equalizer> getEqualizers() {
+        final List<Equalizer> equalizers = CollectionUtils.toList(getPinellService().listEqualizers());
+        Collections.sort(equalizers, new Comparators.EqualizerComparator());
+        return equalizers;
+    }
 
 }

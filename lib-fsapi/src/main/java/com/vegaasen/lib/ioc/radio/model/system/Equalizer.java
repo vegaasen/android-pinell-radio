@@ -18,12 +18,7 @@ public class Equalizer {
     }
 
     public static Equalizer create(Item item) {
-        if (item != null) {
-            return new Equalizer(
-                    item.getKeyId(),
-                    item.getFields().isEmpty() ? UNKNOWN : item.getFields().get(ApiResponse.LABEL));
-        }
-        return null;
+        return item != null && item.getFields() != null && !item.getFields().isEmpty() ? new Equalizer(item.getKeyId(), item.getFields().get(ApiResponse.LABEL)) : null;
     }
 
     public int getKey() {

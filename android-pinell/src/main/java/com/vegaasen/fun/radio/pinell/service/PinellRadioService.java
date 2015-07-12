@@ -52,4 +52,18 @@ interface PinellRadioService {
      */
     Set<Equalizer> listEqualizers();
 
+    /**
+     * Set a new current equalizer for the device
+     *
+     * @param equalizer _
+     */
+    void setEqualizer(Equalizer equalizer);
+
+    /**
+     * Get the currently defined equalizer
+     *
+     * @return the currently defined equalizer
+     */
+    Equalizer getCurrentEqualizer();
+
 }

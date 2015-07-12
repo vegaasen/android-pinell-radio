@@ -161,6 +161,19 @@ public class PinellServiceImpl implements PinellService {
         return getRadioService().listEqualizers(getSelectedHost());
     }
 
+    @Override
+    public void setEqualizer(Equalizer equalizer) {
+        if (equalizer == null) {
+            Log.w(TAG, "Expected equalizer, but no item provided");
+        }
+        getRadioService().setEqualizer(getSelectedHost(), equalizer);
+    }
+
+    @Override
+    public Equalizer getCurrentEqualizer() {
+        return getRadioService().getEqualizer(getSelectedHost());
+    }
+
     private RadioFsApiConnectionService getRadioConnectionService() {
         return radioFsApiConnectionService;
     }

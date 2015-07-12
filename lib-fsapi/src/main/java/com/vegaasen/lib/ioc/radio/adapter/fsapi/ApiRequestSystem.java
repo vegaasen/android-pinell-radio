@@ -46,7 +46,10 @@ public enum ApiRequestSystem {
         if (document != null && ApiConnection.INSTANCE.verifyResponseOk(document)) {
             Set<Equalizer> equalizers = new HashSet<>();
             for (final Item item : XmlUtils.INSTANCE.getItems(document.getDocumentElement())) {
-                equalizers.add(Equalizer.create(item));
+                final Equalizer candidate = Equalizer.create(item);
+                if (candidate != null) {
+                    equalizers.add(candidate);
+                }
             }
             return equalizers;
         }
