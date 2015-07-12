@@ -4,6 +4,8 @@ import com.vegaasen.lib.ioc.radio.model.device.DeviceAudio;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceCurrentlyPlaying;
 import com.vegaasen.lib.ioc.radio.model.system.Equalizer;
 
+import java.util.Set;
+
 /**
  * Services related to radio-tasks. Example:
  * - Currently playing
@@ -48,6 +50,6 @@ interface PinellRadioService {
      *
      * @return available equalizers
      */
-    Equalizer listEqualizers();
+    Set<Equalizer> listEqualizers();
 
 }

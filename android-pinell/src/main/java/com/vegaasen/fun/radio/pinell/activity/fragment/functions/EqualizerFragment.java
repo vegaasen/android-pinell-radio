@@ -9,6 +9,15 @@ import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractFragment;
 
 /**
+ * This fragment holds the information regarding the various equalizers available on the selected Pinell device
+ * It handles the following action points:
+ * - Lists all equalizers
+ * - Select new equalizer
+ * - Fetches the current selected equalizer
+ * <p/>
+ * It does not:
+ * Support redefinition of existing "My Eq"
+ *
  * @author <a href="mailto:vegaasen@gmail.com">vegaasen</a>
  * @since 27.5.2015
  */
@@ -27,7 +36,6 @@ public class EqualizerFragment extends AbstractFragment {
         }
         return equalizerView;
     }
-
 
 
 }

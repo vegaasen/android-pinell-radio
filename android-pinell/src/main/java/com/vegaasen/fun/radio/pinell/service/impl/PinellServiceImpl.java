@@ -157,8 +157,8 @@ public class PinellServiceImpl implements PinellService {
     }
 
     @Override
-    public Equalizer listEqualizers() {
-        return null;
+    public Set<Equalizer> listEqualizers() {
+        return getRadioService().listEqualizers(getSelectedHost());
     }
 
     private RadioFsApiConnectionService getRadioConnectionService() {
