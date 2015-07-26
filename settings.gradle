@@ -1,4 +1,3 @@
-include ':rest-utils', ':lib-fsapi'
+include ':lib-rest-utils', ':lib-fsapi'
 include ':android-pinell'
 include 'lib-telnet'
-
