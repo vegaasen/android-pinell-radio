@@ -1,5 +1,6 @@
 package com.vegaasen.fun.radio.pinell.service;
 
+import com.vegaasen.lib.ioc.radio.model.dab.RadioStation;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceAudio;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceCurrentlyPlaying;
 import com.vegaasen.lib.ioc.radio.model.system.Equalizer;
@@ -87,5 +88,28 @@ interface PinellRadioService {
      * @return _
      */
     RadioMode getCurrentInputSource();
+
+    /**
+     * List all radioStations available in the current selected radio mode (e.g DAB, Internet Radio etc)
+     *
+     * @param from from which index should the search start?
+     * @return potential radio stations
+     */
+    Set<RadioStation> listRadioStations(int from);
+
+    /**
+     * Enter the selected RadioStation (as its a container) and list its content
+     *
+     * @param radioContainer the radio container
+     * @return the detected radioStations
+     */
+    Set<RadioStation> enterContainerAndListStations(RadioStation radioContainer);
+
+    /**
+     * Select the chosen radioStation. This will choose the selected radio station
+     *
+     * @param radioStation _
+     */
+    DeviceCurrentlyPlaying setRadioStation(RadioStation radioStation);
 
 }

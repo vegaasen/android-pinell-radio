@@ -2,7 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:scrollbars="vertical"
+        android:scrollbarAlwaysDrawVerticalTrack="true">
     <!--
         This is the view related to browsing. Here you will be able to browse through a list
         of current detected radiostations, or similar.
@@ -13,5 +15,29 @@
         @author vegaasen
         @since 27.5.2015
     -->
-
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <ListView
+                android:id="@+id/browseListOfStations"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical"
+                android:scrollbarAlwaysDrawVerticalTrack="false"
+                android:overScrollMode="never"
+                android:clickable="true"
+                android:choiceMode="none"
+                android:smoothScrollbar="true"
+                >
+        </ListView>
+    </LinearLayout>
+    <Button
+            android:id="@+id/browseButtonLoadMore"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginStart="@dimen/selectableMargin"
+            android:layout_marginEnd="@dimen/selectableMargin"
+            android:layout_marginTop="@dimen/selectableMargin"
+            android:text="@string/btnLoadMore"
+            />
 </LinearLayout>

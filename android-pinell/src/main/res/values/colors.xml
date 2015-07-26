@@ -6,6 +6,8 @@
     <color name="defaultElementSelectedColor">#ffc8edfe</color>
     <color name="sidebarBackgroundColor">#2D2D2D</color>
     <color name="sidebarBoxColor">#ff202020</color>
+    <color name="listBoxSelectedColor">#039BE5</color>
+    <color name="listBoxContainerColor">#ffff6bd9</color>
     <color name="sidebarBoxSelectedColor">#039BE5</color>
     <color name="sidebarBoxHoverColor">#eeeeee</color>
     <color name="sidebarBoxTextColor">#ffffff</color>

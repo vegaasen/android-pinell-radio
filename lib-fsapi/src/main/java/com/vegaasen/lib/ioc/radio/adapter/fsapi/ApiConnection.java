@@ -14,8 +14,8 @@ import com.vegaasen.lib.ioc.radio.model.response.FsApiResponseState;
 import com.vegaasen.lib.ioc.radio.model.system.auth.RadioSession;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Connection;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
-import com.vegaasen.lib.utils.TelnetUtil;
 import com.vegaasen.lib.ioc.radio.util.XmlUtils;
+import com.vegaasen.lib.utils.TelnetUtil;
 import org.w3c.dom.Document;
 
 import java.io.IOException;
@@ -70,6 +70,15 @@ public enum ApiConnection {
         if (document != null && verifyResponseOk(document)) {
             host.setRadioSession(RadioSession.create(XmlUtils.INSTANCE.getTextContentByNode(document.getDocumentElement(), ApiResponse.SESSION_SESSION_ID)));
         }
+    }
+
+    public void requestAsync(final URI uri) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                request(uri);
+            }
+        }).run();
     }
 
     public Document request(URI uri) {

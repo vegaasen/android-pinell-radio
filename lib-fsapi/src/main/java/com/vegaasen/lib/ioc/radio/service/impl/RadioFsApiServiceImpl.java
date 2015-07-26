@@ -21,8 +21,6 @@ import java.util.logging.Logger;
  */
 public class RadioFsApiServiceImpl implements RadioFsApiService {
 
-    public static final int DEFAULT_MAX_ITEMS = 20, DEFAULT_START_INDEX = -1;
-
     private static final Logger LOG = Logger.getLogger(RadioFsApiServiceImpl.class.getSimpleName());
 
     @Override

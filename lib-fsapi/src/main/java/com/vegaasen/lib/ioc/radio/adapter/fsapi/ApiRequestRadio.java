@@ -64,7 +64,7 @@ public enum ApiRequestRadio {
 
     //TODO: There is, for some reason, something not working as it should regarding the listing of radio stations/containers. Look into the sniffing session
     public Set<RadioStation> getRadioStations(Host host, int fromIndex, int maxItems) {
-        preGetRadioStations(host);
+        preGenericRadioStations(host);
         final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
         params.put(Parameter.QueryParameter.MAX_ITEMS, Integer.toString(maxItems));
         final Document document = ApiConnection.INSTANCE.request(
@@ -86,19 +86,22 @@ public enum ApiRequestRadio {
                 return radioStations;
             }
         } finally {
-            postGetRadioStations(host);
+            postGenericRadioStations(host);
         }
         return Collections.emptySet();
     }
 
     public void selectRadioStation(Host host, RadioStation radioStation) {
-        if (host == null || radioStation == null) {
-            return;
+        try {
+            if (host == null || radioStation == null) {
+                return;
+            }
+            final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
+            params.put(Parameter.QueryParameter.VALUE, radioStation.getKeyIdAsString());
+            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.STATION_SELECT, params));
+        } finally {
+            postSelectRadioStation(host);
         }
-        final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
-        params.put(Parameter.QueryParameter.VALUE, radioStation.getKeyIdAsString());
-        ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.STATION_SELECT, params));
-        postSelectRadioStation(host);
     }
 
     /**
@@ -107,7 +110,7 @@ public enum ApiRequestRadio {
      *
      * @param host _
      */
-    private void preGetRadioStations(Host host) {
+    private void preGenericRadioStations(Host host) {
         try {
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_CAPS));
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_STATE));
@@ -137,11 +140,11 @@ public enum ApiRequestRadio {
      *
      * @param host _
      */
-    private void postGetRadioStations(Host host) {
+    private void postGenericRadioStations(Host host) {
         try {
             final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
             params.put(Parameter.QueryParameter.VALUE, "0");
-            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_SET_NAV_STATE, params));
+            ApiConnection.INSTANCE.requestAsync(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_SET_NAV_STATE, params));
         } catch (final Exception e) {
             //*gulp*
         }
@@ -154,7 +157,8 @@ public enum ApiRequestRadio {
      */
     private void postSelectRadioStation(Host host) {
         try {
-            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NOTIFIES));
+            ApiConnection.INSTANCE.requestAsync(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NOTIFIES));
+            postGenericRadioStations(host);
         } catch (Exception e) {
             // *gulp*
         }

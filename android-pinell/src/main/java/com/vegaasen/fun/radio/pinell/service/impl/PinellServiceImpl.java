@@ -3,6 +3,7 @@ package com.vegaasen.fun.radio.pinell.service.impl;
 import android.util.Log;
 import com.google.common.collect.Lists;
 import com.vegaasen.fun.radio.pinell.service.PinellService;
+import com.vegaasen.lib.ioc.radio.model.dab.RadioStation;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceAudio;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceCurrentlyPlaying;
 import com.vegaasen.lib.ioc.radio.model.system.Equalizer;
@@ -193,6 +194,38 @@ public class PinellServiceImpl implements PinellService {
     @Override
     public RadioMode getCurrentInputSource() {
         return getRadioService().getRadioMode(getSelectedHost());
+    }
+
+    @Override
+    public Set<RadioStation> listRadioStations(int from) {
+        if (from < -1) {
+            from = RadioFsApiService.DEFAULT_START_INDEX;
+        }
+        Set<RadioStation> radioStations = getRadioService().listStations(getSelectedHost(), from, RadioFsApiService.DEFAULT_MAX_ITEMS);
+        Log.d(TAG, String.format("Found {%s} radioStations", radioStations.size()));
+        return radioStations;
+    }
+
+    @Override
+    public Set<RadioStation> enterContainerAndListStations(RadioStation radioContainer) {
+        if (radioContainer == null) {
+            Log.w(TAG, "Ops, it seems like the radioContainer is nilled");
+            return Collections.emptySet();
+        }
+        if (radioContainer.isRadioStation()) {
+            Log.w(TAG, String.format("It seems like the selected container {%s} is actually a station. How did you manage this?", radioContainer.toString()));
+            return Collections.emptySet();
+        }
+        return getRadioService().enterContainerAndListStations(getSelectedHost(), radioContainer, RadioFsApiService.DEFAULT_MAX_ITEMS);
+    }
+
+    @Override
+    public DeviceCurrentlyPlaying setRadioStation(RadioStation radioStation) {
+        if (radioStation == null) {
+            Log.d(TAG, "Unable to select the radio station as it seems to be nilled");
+            return null;
+        }
+        return getRadioService().selectStation(getSelectedHost(), radioStation);
     }
 
     private RadioFsApiConnectionService getRadioConnectionService() {

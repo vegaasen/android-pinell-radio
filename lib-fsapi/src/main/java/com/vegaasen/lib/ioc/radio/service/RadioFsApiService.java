@@ -18,6 +18,8 @@ import java.util.Set;
  */
 public interface RadioFsApiService {
 
+    static final int DEFAULT_MAX_ITEMS = 20, DEFAULT_START_INDEX = -1;
+
     /**
      * Gets the current state
      *

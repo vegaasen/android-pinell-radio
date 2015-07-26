@@ -6,12 +6,12 @@
               android:background="@color/defaultElementColor">
     <!--
         Point of this is to show the following elements:
-            - Equalizer
-            - Sources
+            - Radio stations
         @author vegaasen
+        @since 26.7.2015
     -->
     <RelativeLayout
-            android:id="@+id/selectableItem"
+            android:id="@+id/selectableAdvancedItem"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginStart="@dimen/selectableMargin"
@@ -20,17 +20,23 @@
             android:layout_marginBottom="@dimen/selectableMarginTopBottom"
             android:background="@color/defaultBackgroundColor"
             >
-        <ImageView
-                android:id="@+id/selectableItemImg"
+        <LinearLayout
+                android:id="@+id/selectableAdvancedItemContainer"
                 android:layout_width="@dimen/selectableImageWidth"
                 android:layout_height="match_parent"
                 android:background="@color/listBoxSelectedColor"
-                />
+                >
+            <ImageView
+                    android:id="@+id/selectableAdvancedItemImg"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    />
+        </LinearLayout>
         <TextView
-                android:id="@+id/selectableItemTxt"
+                android:id="@+id/selectableAdvancedItemTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/selectableItemImg"
+                android:layout_toEndOf="@id/selectableAdvancedItemContainer"
                 android:layout_marginStart="@dimen/selectableMargin"
                 android:layout_centerInParent="true"
                 android:text="@string/genericUndocumented"

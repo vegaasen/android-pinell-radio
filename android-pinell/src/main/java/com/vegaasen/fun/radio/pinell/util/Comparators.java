@@ -1,5 +1,6 @@
 package com.vegaasen.fun.radio.pinell.util;
 
+import com.vegaasen.lib.ioc.radio.model.dab.RadioStation;
 import com.vegaasen.lib.ioc.radio.model.system.Equalizer;
 import com.vegaasen.lib.ioc.radio.model.system.RadioMode;
 
@@ -29,6 +30,14 @@ public final class Comparators {
 
         @Override
         public int compare(RadioMode one, RadioMode two) {
+            return one.getName().compareTo(two.getName());
+        }
+    }
+
+    public static final class RadioStationsComparator implements Comparator<RadioStation> {
+
+        @Override
+        public int compare(RadioStation one, RadioStation two) {
             return one.getName().compareTo(two.getName());
         }
     }

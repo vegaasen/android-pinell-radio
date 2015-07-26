@@ -5,11 +5,30 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ListView;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractFragment;
+import com.vegaasen.fun.radio.pinell.adapter.BrowseStationsActivity;
+import com.vegaasen.fun.radio.pinell.util.CollectionUtils;
+import com.vegaasen.fun.radio.pinell.util.Comparators;
+import com.vegaasen.lib.ioc.radio.model.dab.RadioStation;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
+ * Represents the browsing features of the Pinell device. This is only related to the various radio stations available.
+ * It does not support FM tuning
+ * <p/>
+ * Browsing features supported
+ * - DAB
+ * - Internet Radio
+ * - FM presets
+ *
  * @author <a href="mailto:vegaasen@gmail.com">vegaasen</a>
+ * @version 26.7.2015
  * @since 27.5.2015
  */
 public class BrowseFragment extends AbstractFragment {
@@ -17,6 +36,7 @@ public class BrowseFragment extends AbstractFragment {
     private static final String TAG = BrowseFragment.class.getSimpleName();
 
     private View browseFragment;
+    private List<RadioStation> radioStations;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -25,6 +45,63 @@ public class BrowseFragment extends AbstractFragment {
             Log.e(TAG, "For some reason, the view were unable to be found. Dying");
             throw new RuntimeException("Missing required view in the initialization of the application");
         }
+        listRadioStationsAvailable();
         return browseFragment;
     }
+
+    private void listRadioStationsAvailable() {
+        if (browseFragment == null) {
+            Log.w(TAG, "Unable to list radioStations, as the browseFragment is not available");
+            return;
+        }
+        final ListView radioStationsOverview = (ListView) browseFragment.findViewById(R.id.browseListOfStations);
+        if (radioStationsOverview == null) {
+            Log.w(TAG, "It seems like the radioStationsOverview is nilled, skipping");
+            return;
+        }
+        final BrowseStationsActivity adapter = getRadioStationsActivity(radioStationsOverview, radioStations);
+        radioStationsOverview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(TAG, String.format("Position {%s} and id {%s} clicked", position, id));
+                final RadioStation radioStation = adapter.getItem(position);
+                if (radioStation.isRadioStationContainer()) {
+                    Log.d(TAG, String.format("RadioContainer {%s} selected. Opening the container", radioStation.toString()));
+                    radioStations = CollectionUtils.toList(getPinellService().enterContainerAndListStations(radioStation));
+                } else {
+                    Log.d(TAG, String.format("RadioStation {%s} selected. Switching to this station", radioStation.toString()));
+                    getPinellService().setRadioStation(radioStation);
+                }
+                listRadioStationsAvailable();
+            }
+        });
+        final Button loadMoreItemsButton = (Button) browseFragment.findViewById(R.id.browseButtonLoadMore);
+        loadMoreItemsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "hwha");
+            }
+        });
+    }
+
+    private BrowseStationsActivity getRadioStationsActivity(ListView overview, List<RadioStation> updatedList) {
+        BrowseStationsActivity adapter;
+        final List<RadioStation> radioStations = updatedList == null ? getRadioStations() : updatedList;
+        if (overview.getAdapter() == null) {
+            adapter = new BrowseStationsActivity(browseFragment.getContext(), radioStations);
+            overview.setAdapter(adapter);
+        } else {
+            adapter = (BrowseStationsActivity) overview.getAdapter();
+            adapter.updateRadioStations(radioStations);
+            adapter.notifyDataSetChanged();
+        }
+        return adapter;
+    }
+
+    private List<RadioStation> getRadioStations() {
+        final List<RadioStation> radioStations = CollectionUtils.toList(getPinellService().listRadioStations(0));
+        Collections.sort(radioStations, new Comparators.RadioStationsComparator());
+        return radioStations;
+    }
+
 }
