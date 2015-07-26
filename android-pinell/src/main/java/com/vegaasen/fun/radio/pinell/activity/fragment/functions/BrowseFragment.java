@@ -36,7 +36,7 @@ public class BrowseFragment extends AbstractFragment {
     private static final String TAG = BrowseFragment.class.getSimpleName();
 
     private View browseFragment;
-    private List<RadioStation> radioStations;
+    private List<RadioStation> loadedRadioStations;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -59,7 +59,7 @@ public class BrowseFragment extends AbstractFragment {
             Log.w(TAG, "It seems like the radioStationsOverview is nilled, skipping");
             return;
         }
-        final BrowseStationsActivity adapter = getRadioStationsActivity(radioStationsOverview, radioStations);
+        final BrowseStationsActivity adapter = getRadioStationsActivity(radioStationsOverview);
         radioStationsOverview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -67,7 +67,7 @@ public class BrowseFragment extends AbstractFragment {
                 final RadioStation radioStation = adapter.getItem(position);
                 if (radioStation.isRadioStationContainer()) {
                     Log.d(TAG, String.format("RadioContainer {%s} selected. Opening the container", radioStation.toString()));
-                    radioStations = CollectionUtils.toList(getPinellService().enterContainerAndListStations(radioStation));
+                    loadedRadioStations = CollectionUtils.toList(getPinellService().enterContainerAndListStations(radioStation));
                 } else {
                     Log.d(TAG, String.format("RadioStation {%s} selected. Switching to this station", radioStation.toString()));
                     getPinellService().setRadioStation(radioStation);
@@ -79,14 +79,18 @@ public class BrowseFragment extends AbstractFragment {
         loadMoreItemsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "hwha");
+                Log.d(TAG, "haha");
+                if (loadedRadioStations != null) {
+                    loadedRadioStations.addAll(assembleRadioStations(loadedRadioStations.size() - 1));
+                    listRadioStationsAvailable();
+                }
             }
         });
     }
 
-    private BrowseStationsActivity getRadioStationsActivity(ListView overview, List<RadioStation> updatedList) {
+    private BrowseStationsActivity getRadioStationsActivity(ListView overview) {
         BrowseStationsActivity adapter;
-        final List<RadioStation> radioStations = updatedList == null ? getRadioStations() : updatedList;
+        final List<RadioStation> radioStations = loadedRadioStations == null ? assembleRadioStations() : loadedRadioStations;
         if (overview.getAdapter() == null) {
             adapter = new BrowseStationsActivity(browseFragment.getContext(), radioStations);
             overview.setAdapter(adapter);
@@ -95,11 +99,19 @@ public class BrowseFragment extends AbstractFragment {
             adapter.updateRadioStations(radioStations);
             adapter.notifyDataSetChanged();
         }
+        loadedRadioStations = radioStations;
         return adapter;
     }
 
-    private List<RadioStation> getRadioStations() {
-        final List<RadioStation> radioStations = CollectionUtils.toList(getPinellService().listRadioStations(0));
+    private List<RadioStation> assembleRadioStations() {
+        return assembleRadioStations(0);
+    }
+
+    private List<RadioStation> assembleRadioStations(int from) {
+        return sortRadioStations(CollectionUtils.toList(getPinellService().listRadioStations(from)));
+    }
+
+    private List<RadioStation> sortRadioStations(final List<RadioStation> radioStations) {
         Collections.sort(radioStations, new Comparators.RadioStationsComparator());
         return radioStations;
     }

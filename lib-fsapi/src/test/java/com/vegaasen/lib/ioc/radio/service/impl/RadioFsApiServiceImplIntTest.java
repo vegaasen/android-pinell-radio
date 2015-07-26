@@ -166,6 +166,14 @@ public class RadioFsApiServiceImplIntTest {
     @Test
     public void enterContainerAndListStations_normalProcedure() throws InterruptedException {
         turnDeviceOn();
+        final Set<RadioMode> radioModes = service.listAvailableRadioModes(host);
+        RadioMode radioModeSelected = null;
+        for(RadioMode radioMode : radioModes) {
+            if(radioMode.getKey() == 0) {
+                radioModeSelected = radioMode;
+            }
+        }
+        service.setRadioMode(host, radioModeSelected);
         List<RadioStation> radioStations = new ArrayList<>(service.listStations(host, RadioFsApiServiceImpl.DEFAULT_START_INDEX, RadioFsApiServiceImpl.DEFAULT_MAX_ITEMS));
         assertNotNull(radioStations);
         assertFalse(radioStations.isEmpty());
