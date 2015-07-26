@@ -14,7 +14,7 @@ import com.vegaasen.lib.ioc.radio.model.response.FsApiResponseState;
 import com.vegaasen.lib.ioc.radio.model.system.auth.RadioSession;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Connection;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
-import com.vegaasen.lib.ioc.radio.util.TelnetUtil;
+import com.vegaasen.lib.utils.TelnetUtil;
 import com.vegaasen.lib.ioc.radio.util.XmlUtils;
 import org.w3c.dom.Document;
 

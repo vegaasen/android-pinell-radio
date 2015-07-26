@@ -1,9 +1,13 @@
-package com.vegaasen.lib.ioc.radio.util;
+package com.vegaasen.lib.utils;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,7 +37,7 @@ public final class TelnetUtil {
     // todo: The timeout portion may need to be moved around a bit, as it may be too "slow" or "too quick" in regards to Android devices. We'll see..
     private static final long WAIT = TimeUnit.SECONDS.toMillis(8);
     private static final int NUM_OF_HOSTS = 250, NUM_THREADS = 250, NUM_THREADS_ALIVE_ACTIVE = 1;
-    private static final int TIMEOUT_SOCKET_MS = (int) TimeUnit.SECONDS.toMillis(10), TIMEOUT_DETECT_SUBNET = 20, TIMEOUT_IS_ALIVE = 10;
+    private static final int TIMEOUT_SOCKET_MS = (int) TimeUnit.SECONDS.toMillis(10), TIMEOUT_DETECT_SUBNET = 20, TIMEOUT_IS_ALIVE = 10, CONNECTION_TIMEOUT = 3600;
     private static final ExecutorService
             EXECUTOR_SERVICE = Executors.newFixedThreadPool(NUM_THREADS),
             ACTIVE_SUBNET = Executors.newFixedThreadPool(NUM_THREADS_ALIVE_ACTIVE),
@@ -47,12 +51,12 @@ public final class TelnetUtil {
     public static Set<String> findPotentialLocalSubnetNetworkHosts(int port) {
         try {
             final ActiveSubnetFinder task = new ActiveSubnetFinder();
-            final Future<String> future = ACTIVE_SUBNET.submit(task);
+            final Future<String> potentialSubnets = ACTIVE_SUBNET.submit(task);
             task.getCountDownLatch().await(TIMEOUT_DETECT_SUBNET, TimeUnit.SECONDS);
-            final String subnet = future.get();
+            final String subnet = potentialSubnets.get();
             return findPotentialLocalSubnetNetworkHosts(subnet, port);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.warning(String.format("Unable to find potential subnets that was opened on port {%s}", port));
         }
         return Collections.emptySet();
     }
@@ -160,12 +164,31 @@ public final class TelnetUtil {
     public static boolean isAliveWithoutThreading(final String hostName, final int port) {
         try (Socket pingSocket = new Socket()) {
             LOG.info(String.format("Checking {%s} for port opened on {%s}", hostName, port));
-            pingSocket.connect(new InetSocketAddress(hostName, port));
+            pingSocket.bind(null);
+            pingSocket.connect(new InetSocketAddress(hostName, port), CONNECTION_TIMEOUT);
             if (pingSocket.isConnected() || pingSocket.isBound()) {
                 return true;
             }
         } catch (final IOException e) {
-            // gasp
+            try {
+                HttpURLConnection connection = (HttpURLConnection) new URL(String.format("http://%s:%s/", hostName, port)).openConnection();
+                if (connection != null) {
+                    final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    final String s = bufferedReader.readLine();
+                    return s != null && !s.isEmpty();
+                }
+            } catch (Exception e1) {
+                LOG.warning("Second attempt failed.");
+                try {
+                    InetAddress a = InetAddress.getByName(hostName);
+                    final boolean reachable = a.isReachable(CONNECTION_TIMEOUT);
+                    LOG.warning(String.format("Is reachable: {%s}? : %s", hostName, reachable));
+                    return reachable;
+                } catch (Exception e2) {
+                    LOG.warning(String.format("Third try failed {%s, %s}", hostName, port));
+                    return false;
+                }
+            }
         }
         return false;
     }
@@ -248,6 +271,7 @@ public final class TelnetUtil {
         private String findActiveSubnet() throws UnknownHostException {
             final String hostAddress = InetAddress.getLocalHost().getHostAddress();
             countDownLatch.countDown();
+            LOG.info(String.format("Found potential activeSubnet {%s}", hostAddress));
             return hostAddress;
         }
 

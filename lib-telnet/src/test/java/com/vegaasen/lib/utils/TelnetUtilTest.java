@@ -1,4 +1,4 @@
-package com.vegaasen.lib.ioc.radio.util;
+package com.vegaasen.lib.utils;
 
 import org.junit.Test;
 
@@ -22,13 +22,19 @@ public class TelnetUtilTest {
     }
 
     @Test
+    public void isAlive_locally_ok() {
+        final boolean alive = TelnetUtil.isAlive("192.168.0.102", 2244);
+        assertTrue(alive);
+    }
+
+    @Test
     public void findPotentialLocalSubnetNetworkHosts_port2244_localHosts() {
         final long start = System.currentTimeMillis();
         final Set<String> potentialLocalSubnetNetworkHosts = TelnetUtil.findPotentialLocalSubnetNetworkHosts(2244);
         assertNotNull(potentialLocalSubnetNetworkHosts);
         assertEquals(1, potentialLocalSubnetNetworkHosts.size());
         final long stop = System.currentTimeMillis();
-        System.out.println("Test took ~" + (stop - start) + "ms");
+        System.out.println("Test took ~" + (stop - start) + "ms" + ". Found " + potentialLocalSubnetNetworkHosts.size());
     }
 
     @Test
@@ -46,5 +52,6 @@ public class TelnetUtilTest {
         final long stop = System.currentTimeMillis();
         System.out.println("Test took ~" + (stop - start) + "ms");
     }
+
 
 }
