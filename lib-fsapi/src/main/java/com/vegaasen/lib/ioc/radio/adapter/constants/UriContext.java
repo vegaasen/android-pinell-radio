@@ -47,7 +47,7 @@ public final class UriContext {
         public static final String PRE_GET_NAV_CAPS = SLASH + "GET/netRemote.nav.caps";
         public static final String PRE_GET_NUM_ITEMS = SLASH + "GET/netRemote.nav.numItems";
         public static final String PRE_GET_NAV_STATE = SLASH + "GET/netRemote.nav.state";
-        public static final String PRE_SET_NAV_STATE = SLASH + "GET/netRemote.nav.state";
+        public static final String PRE_SET_NAV_STATE = SLASH + "SET/netRemote.nav.state";
         public static final String PRE_GET_NAV_STATUS = SLASH + "GET/netRemote.nav.status";
         public static final String PRE_GET_NOTIFIES = SLASH + "GET_NOTIFIES";
     }

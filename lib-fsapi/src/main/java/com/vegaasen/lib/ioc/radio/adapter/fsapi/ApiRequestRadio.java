@@ -74,15 +74,19 @@ public enum ApiRequestRadio {
                         params
                 )
         );
-        if (document != null && ApiConnection.INSTANCE.verifyResponseOk(document)) {
-            Set<RadioStation> radioStations = new HashSet<>();
-            for (final Item item : XmlUtils.INSTANCE.getItems(document.getDocumentElement())) {
-                final RadioStation candidate = RadioStation.create(item);
-                if (candidate != null) {
-                    radioStations.add(candidate);
+        try {
+            if (document != null && ApiConnection.INSTANCE.verifyResponseOk(document)) {
+                Set<RadioStation> radioStations = new HashSet<>();
+                for (final Item item : XmlUtils.INSTANCE.getItems(document.getDocumentElement())) {
+                    final RadioStation candidate = RadioStation.create(item);
+                    if (candidate != null) {
+                        radioStations.add(candidate);
+                    }
                 }
+                return radioStations;
             }
-            return radioStations;
+        } finally {
+            postGetRadioStations(host);
         }
         return Collections.emptySet();
     }
@@ -122,6 +126,22 @@ public enum ApiRequestRadio {
                 //*gulp*
             }
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NUM_ITEMS));
+        } catch (final Exception e) {
+            //*gulp*
+        }
+    }
+
+    /**
+     * This is some of the required API calls that have to be issued after showing the various RadioStations
+     * At least, that is what it looks like.
+     *
+     * @param host _
+     */
+    private void postGetRadioStations(Host host) {
+        try {
+            final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
+            params.put(Parameter.QueryParameter.VALUE, "0");
+            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_SET_NAV_STATE, params));
         } catch (final Exception e) {
             //*gulp*
         }

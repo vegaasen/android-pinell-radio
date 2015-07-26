@@ -10,6 +10,7 @@ import com.vegaasen.lib.ioc.radio.model.system.PowerState;
 import com.vegaasen.lib.ioc.radio.model.system.RadioMode;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
 import com.vegaasen.lib.ioc.radio.service.RadioFsApiService;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,6 +37,11 @@ public class RadioFsApiServiceImplIntTest {
         host = Host.create(HelperUtils.VEGARDS_PINELL_HOST, 2244, "1234");
         assertNotNull(host);
         service = new RadioFsApiServiceImpl();
+    }
+
+    @After
+    public void tearDown() {
+        turnDeviceOff();
     }
 
     @Test
@@ -76,7 +82,6 @@ public class RadioFsApiServiceImplIntTest {
         turnDeviceOn();
         DeviceCurrentlyPlaying currentlyPlaying = service.getCurrentlyPlaying(host);
         assertNotNull(currentlyPlaying);
-        turnDeviceOff();
     }
 
     @Test
@@ -84,7 +89,6 @@ public class RadioFsApiServiceImplIntTest {
         turnDeviceOn();
         Set<RadioMode> radioModes = service.listAvailableRadioModes(host);
         assertNotNull(radioModes);
-        turnDeviceOff();
     }
 
     @Test
@@ -92,7 +96,6 @@ public class RadioFsApiServiceImplIntTest {
         turnDeviceOn();
         RadioMode radioMode = service.getRadioMode(host);
         assertNotNull(radioMode);
-        turnDeviceOff();
     }
 
     @Test
@@ -103,7 +106,6 @@ public class RadioFsApiServiceImplIntTest {
         service.setRadioMode(host, radioModes.get(1));
         Thread.sleep(2000);
         service.setRadioMode(host, originalMode);
-        turnDeviceOff();
     }
 
     @Test
@@ -111,7 +113,6 @@ public class RadioFsApiServiceImplIntTest {
         turnDeviceOn();
         DeviceAudio audio = service.getCurrentAudioInformation(host);
         assertNotNull(audio);
-        turnDeviceOff();
     }
 
     @Test
@@ -122,7 +123,6 @@ public class RadioFsApiServiceImplIntTest {
         DeviceAudio audio = service.getCurrentAudioInformation(host);
         assertNotNull(audio);
         assertEquals(expectedLevel, audio.getLevel());
-        turnDeviceOff();
     }
 
     @Test
@@ -130,7 +130,6 @@ public class RadioFsApiServiceImplIntTest {
         turnDeviceOn();
         Set<Equalizer> equalizers = service.listEqualizers(host);
         assertNotNull(equalizers);
-        turnDeviceOff();
     }
 
     @Test
@@ -138,7 +137,6 @@ public class RadioFsApiServiceImplIntTest {
         turnDeviceOn();
         Equalizer equalizer = service.getEqualizer(host);
         assertNotNull(equalizer);
-        turnDeviceOff();
     }
 
     @Test
@@ -155,7 +153,6 @@ public class RadioFsApiServiceImplIntTest {
         assertNotNull(newSet);
         assertEquals(expectedEqualizer.getKey(), newSet.getKey());
         service.setEqualizer(host, originallySet);
-        turnDeviceOff();
     }
 
     @Test
@@ -164,7 +161,6 @@ public class RadioFsApiServiceImplIntTest {
         Set<RadioStation> radioStations = service.listStations(host, RadioFsApiServiceImpl.DEFAULT_START_INDEX, RadioFsApiServiceImpl.DEFAULT_MAX_ITEMS);
         assertNotNull(radioStations);
         assertFalse(radioStations.isEmpty());
-        turnDeviceOff();
     }
 
     @Test
@@ -176,7 +172,6 @@ public class RadioFsApiServiceImplIntTest {
         Set<RadioStation> oneLevelDownStation = service.enterContainerAndListStations(host, radioStations.get(0), RadioFsApiServiceImpl.DEFAULT_MAX_ITEMS);
         assertNotNull(oneLevelDownStation);
         assertFalse(oneLevelDownStation.isEmpty());
-        turnDeviceOff();
     }
 
     @Test
@@ -191,7 +186,6 @@ public class RadioFsApiServiceImplIntTest {
         assertNotNull(oneLevelDownStation);
         assertFalse(oneLevelDownStation.isEmpty());
         assertNotEquals(oneLevelUpStation.size(), oneLevelDownStation.size());
-        turnDeviceOff();
     }
 
     @Test
@@ -210,7 +204,6 @@ public class RadioFsApiServiceImplIntTest {
         Thread.sleep(1500);
         DeviceCurrentlyPlaying playing = service.selectStation(host, radioStations.get(1));
         System.out.println(playing.toString());
-        turnDeviceOff();
     }
 
     private void turnDeviceOff() {
