@@ -92,6 +92,7 @@ public enum ApiRequestRadio {
     }
 
     public void selectRadioStation(Host host, RadioStation radioStation) {
+        preGenericRadioStations(host);
         try {
             if (host == null || radioStation == null) {
                 return;
@@ -105,7 +106,7 @@ public enum ApiRequestRadio {
     }
 
     /**
-     * For some odd reason, Pinell radios requires this sequence to be sent.
+     * For some odd reason, Pinell radios requires this sequence to be sent when dealing with radioStations.
      * It looks a bit messy, just because it is a bit messy. Awesome..
      *
      * @param host _

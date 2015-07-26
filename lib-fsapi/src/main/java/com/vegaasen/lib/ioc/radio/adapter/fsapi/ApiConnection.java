@@ -78,7 +78,7 @@ public enum ApiConnection {
             public void run() {
                 request(uri);
             }
-        }).run();
+        }).start();
     }
 
     public Document request(URI uri) {
