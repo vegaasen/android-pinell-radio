@@ -105,14 +105,14 @@ public enum XmlUtils {
      * @return _
      */
     public Set<Item> getItems(final Element ele) {
-        final Set<Item> items = new HashSet<Item>();
+        final Set<Item> items = new HashSet<>();
         final NodeList candidates = ele.getElementsByTagName(ApiResponse.ITEM);
         if (candidates == null) {
             return items;
         }
         int i = INIT;
         while (i++ != candidates.getLength()) {
-            final Map<String, String> fieldValues = new HashMap<String, String>();
+            final Map<String, String> fieldValues = new HashMap<>();
             final Element item = (Element) candidates.item(i);
             if (item != null) {
                 int found = INIT;

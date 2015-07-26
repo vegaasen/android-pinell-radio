@@ -61,6 +61,9 @@ public class InputSourceAdapter extends BaseAdapter {
                 RelativeLayout equalizerContainer = (RelativeLayout) convertView.findViewById(R.id.selectableItem);
                 equalizerContainer.setBackgroundColor(context.getResources().getColor(R.color.defaultElementSelectedColor));
             }
+            if (!candidateEqualizer.isSelectable()) {
+                convertView.setEnabled(false);
+            }
             return convertView;
         }
         Log.e(TAG, "How did we get here?");

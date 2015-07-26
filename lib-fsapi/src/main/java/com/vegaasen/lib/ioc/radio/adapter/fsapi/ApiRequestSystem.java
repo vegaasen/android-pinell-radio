@@ -27,6 +27,7 @@ import java.util.Set;
  * Todo: Prettify
  *
  * @author vegaasen
+ * @version 26.07.2015
  */
 public enum ApiRequestSystem {
 
@@ -65,12 +66,15 @@ public enum ApiRequestSystem {
                             Collections.<String, String>emptyMap()
                     )
             );
-            for (final Equalizer candidate : getEqualizers(host)) {
-                if (candidate.getKey() == equalizer.getKey()) {
-                    return candidate;
+            if (equalizer != null) {
+                for (final Equalizer candidate : getEqualizers(host)) {
+                    if (candidate != null)
+                        if (candidate.getKey() == equalizer.getKey()) {
+                            return candidate;
+                        }
                 }
+                return equalizer;
             }
-            return equalizer;
         }
         return null;
     }
@@ -90,7 +94,11 @@ public enum ApiRequestSystem {
         if (document != null && ApiConnection.INSTANCE.verifyResponseOk(document)) {
             Set<RadioMode> radioStations = new HashSet<>();
             for (final Item item : XmlUtils.INSTANCE.getItems(document.getDocumentElement())) {
-                radioStations.add(RadioMode.create(item));
+                final RadioMode e = RadioMode.create(item);
+                //todo: should this actually be ignored, or should it rather be up to the service showing the stuff..? (e.g Android Adapter or similar)
+                if (e.isSelectable()) {
+                    radioStations.add(e);
+                }
             }
             return radioStations;
         }
@@ -201,7 +209,7 @@ public enum ApiRequestSystem {
         return EMPTY;
     }
 
-    private void removeSession(Host host) {
+    private void revokeSession(Host host) {
         host.removeRadioSession();
     }
 
