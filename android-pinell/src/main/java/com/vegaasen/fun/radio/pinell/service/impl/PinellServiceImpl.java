@@ -7,6 +7,7 @@ import com.vegaasen.lib.ioc.radio.model.device.DeviceAudio;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceCurrentlyPlaying;
 import com.vegaasen.lib.ioc.radio.model.system.Equalizer;
 import com.vegaasen.lib.ioc.radio.model.system.PowerState;
+import com.vegaasen.lib.ioc.radio.model.system.RadioMode;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Connection;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
 import com.vegaasen.lib.ioc.radio.service.RadioFsApiConnectionService;
@@ -165,6 +166,7 @@ public class PinellServiceImpl implements PinellService {
     public void setEqualizer(Equalizer equalizer) {
         if (equalizer == null) {
             Log.w(TAG, "Expected equalizer, but no item provided");
+            return;
         }
         getRadioService().setEqualizer(getSelectedHost(), equalizer);
     }
@@ -172,6 +174,25 @@ public class PinellServiceImpl implements PinellService {
     @Override
     public Equalizer getCurrentEqualizer() {
         return getRadioService().getEqualizer(getSelectedHost());
+    }
+
+    @Override
+    public Set<RadioMode> listInputSources() {
+        return getRadioService().listAvailableRadioModes(getSelectedHost());
+    }
+
+    @Override
+    public void setInputSource(RadioMode radioMode) {
+        if (radioMode == null || !radioMode.isSelectable()) {
+            Log.w(TAG, "Unable to set the radioMode as the radioMode seems to be nilled or not selectable");
+            return;
+        }
+        getRadioService().setRadioMode(getSelectedHost(), radioMode);
+    }
+
+    @Override
+    public RadioMode getCurrentInputSource() {
+        return getRadioService().getRadioMode(getSelectedHost());
     }
 
     private RadioFsApiConnectionService getRadioConnectionService() {

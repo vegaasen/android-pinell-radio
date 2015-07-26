@@ -1,6 +1,7 @@
 package com.vegaasen.fun.radio.pinell.util;
 
 import com.vegaasen.lib.ioc.radio.model.system.Equalizer;
+import com.vegaasen.lib.ioc.radio.model.system.RadioMode;
 
 import java.util.Comparator;
 
@@ -8,6 +9,8 @@ import java.util.Comparator;
  * Collection of comparators out there
  *
  * @author <a href="mailto:vegaasen@gmail.com">vegaasen</a>
+ * @version 26.7.2015
+ * @since 25.5.2015
  */
 public final class Comparators {
 
@@ -18,6 +21,14 @@ public final class Comparators {
 
         @Override
         public int compare(Equalizer one, Equalizer two) {
+            return one.getName().compareTo(two.getName());
+        }
+    }
+
+    public static final class InputSourceComparator implements Comparator<RadioMode> {
+
+        @Override
+        public int compare(RadioMode one, RadioMode two) {
             return one.getName().compareTo(two.getName());
         }
     }

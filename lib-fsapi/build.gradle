@@ -9,5 +9,6 @@ repositories {
 
 dependencies {
     compile project(':rest-utils')
+    compile project(':lib-telnet')
     testCompile group: 'junit', name: 'junit', version: '4.11';
 }

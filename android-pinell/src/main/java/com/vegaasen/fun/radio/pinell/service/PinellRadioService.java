@@ -3,6 +3,7 @@ package com.vegaasen.fun.radio.pinell.service;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceAudio;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceCurrentlyPlaying;
 import com.vegaasen.lib.ioc.radio.model.system.Equalizer;
+import com.vegaasen.lib.ioc.radio.model.system.RadioMode;
 
 import java.util.Set;
 
@@ -65,5 +66,26 @@ interface PinellRadioService {
      * @return the currently defined equalizer
      */
     Equalizer getCurrentEqualizer();
+
+    /**
+     * List all available inputSources for the Pinell device
+     *
+     * @return available inputSources / radioModes
+     */
+    Set<RadioMode> listInputSources();
+
+    /**
+     * Set the wanted radioMode / inputSource to the Pinell Device
+     *
+     * @param radioMode _
+     */
+    void setInputSource(RadioMode radioMode);
+
+    /**
+     * Get the current defined inputSource (AUX, DAB, InternetRadio etc)
+     *
+     * @return _
+     */
+    RadioMode getCurrentInputSource();
 
 }
