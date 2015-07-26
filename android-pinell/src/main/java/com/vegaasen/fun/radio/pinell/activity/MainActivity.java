@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractActivity;
@@ -39,16 +40,16 @@ public class MainActivity extends AbstractActivity {
     private InformationFragment informationFragment;
     private RelativeLayout sectionPlaying, sectionBrowse, sectionSource, sectionEqualizer, sectionInformation;
     private View currentActiveFragmentView;
+    private ImageButton buttonChangePinellHost;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         configureUiElements();
+        configureButtonActionListeners();
         configureSidebarActionListeners();
         renderSplashScreen();
-        final Intent intent = new Intent(this, SelectHostActivity.class);
-        startActivityForResult(intent, REQUEST_CODE);
     }
 
     @Override
@@ -56,7 +57,6 @@ public class MainActivity extends AbstractActivity {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG, String.format("Response from request {%s} was {%s}", requestCode, resultCode));
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
-            //todo: use replace instead of add?
             getSupportFragmentManager().beginTransaction().replace(R.id.fragmentReplacer, informationFragment).commit();
             informationFragment.refreshDeviceInformation();
         }
@@ -74,6 +74,16 @@ public class MainActivity extends AbstractActivity {
         sectionSource = (RelativeLayout) findViewById(R.id.sectionSource);
         sectionEqualizer = (RelativeLayout) findViewById(R.id.sectionEqualizer);
         sectionInformation = (RelativeLayout) findViewById(R.id.sectionInformation);
+        buttonChangePinellHost = (ImageButton) findViewById(R.id.btnCurrentApplicationSelectDevice);
+    }
+
+    private void configureButtonActionListeners() {
+        buttonChangePinellHost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                renderSplashScreen();
+            }
+        });
     }
 
     private void configureSidebarActionListeners() {
@@ -114,6 +124,8 @@ public class MainActivity extends AbstractActivity {
         getSupportFragmentManager().beginTransaction().setTransitionStyle(TRANSIT_FRAGMENT_FADE).commit();
         Log.d(TAG, "Displaying splashScreen for the application");
         getSupportFragmentManager().beginTransaction().replace(R.id.fragmentReplacer, splashScreen).commit();
+        final Intent intent = new Intent(this, SelectHostActivity.class);
+        startActivityForResult(intent, REQUEST_CODE);
     }
 
 }
