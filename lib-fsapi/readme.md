@@ -3,7 +3,11 @@ Library for FSAPI-enable Radios
 
 # Introduction
 
-This library is actually meant to target Pinell-radios, however it may also be used with other devices out there supporting the FSAPI standard.
+FS API = Frontier Silicon API
+
+This library is actually meant to target Pinell-radios, however it may also be used with other devices out there supporting the standard FSAPI.
+
+Please note that the Pinell devices is not using all functionalities that is exposed/supported by the Frontier Silicon API itself.
 
 # Usage
 
