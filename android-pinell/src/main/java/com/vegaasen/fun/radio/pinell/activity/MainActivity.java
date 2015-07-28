@@ -24,6 +24,7 @@ import com.vegaasen.fun.radio.pinell.activity.host.SelectHostActivity;
  * Please note that the SelectHostActivity does not spin or search for hosts itself for the moment. This will be fixed in the near future.
  *
  * @author vegaasen
+ * @version 26.7.2015
  * @since 0.1-SNAPSHOT
  */
 public class MainActivity extends AbstractActivity {

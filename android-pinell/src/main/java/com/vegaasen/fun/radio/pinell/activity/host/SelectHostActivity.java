@@ -62,7 +62,6 @@ public class SelectHostActivity extends AbstractActivity {
                 final DeviceArrayAdapter adapter = (DeviceArrayAdapter) deviceOverview.getAdapter();
                 adapter.updateDeviceList(pinellHosts);
                 adapter.notifyDataSetChanged();
-//                deviceOverview.deferNotifyDataSetChanged();
             }
         }
     }
