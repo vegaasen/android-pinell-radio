@@ -29,4 +29,9 @@ public class SplashScreenFragment extends AbstractFragment {
         }
         return splashScreenView;
     }
+
+    @Override
+    protected void changeActiveContent(ViewGroup container) {
+
+    }
 }

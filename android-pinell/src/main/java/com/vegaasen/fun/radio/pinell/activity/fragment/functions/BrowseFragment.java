@@ -45,8 +45,14 @@ public class BrowseFragment extends AbstractFragment {
             Log.e(TAG, "For some reason, the view were unable to be found. Dying");
             throw new RuntimeException("Missing required view in the initialization of the application");
         }
+        changeActiveContent(container);
         listRadioStationsAvailable();
         return browseFragment;
+    }
+
+    @Override
+    protected void changeActiveContent(ViewGroup container) {
+        changeCurrentActiveApplicationContextContent(container, R.drawable.ic_queue_music_black, R.string.sidebarBrowse);
     }
 
     private void listRadioStationsAvailable() {
