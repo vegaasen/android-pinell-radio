@@ -40,7 +40,7 @@
                         android:layout_height="@dimen/iconSizeHeight"
                         android:contentDescription="@string/genericUndocumented"
                         android:layout_gravity="center"
-                        android:src="@android:drawable/ic_btn_speak_now"
+                        android:src="@drawable/ic_volume_up_white"
                         />
                 <TextView
                         android:id="@+id/nowPlayingTxt"
@@ -73,7 +73,7 @@
                         android:layout_height="@dimen/iconSizeHeight"
                         android:layout_gravity="center"
                         android:contentDescription="@string/genericUndocumented"
-                        android:src="@android:drawable/ic_menu_compass"
+                        android:src="@drawable/ic_queue_music_white"
                         />
                 <TextView
                         android:id="@+id/browseTxt"
@@ -106,7 +106,7 @@
                         android:layout_height="@dimen/iconSizeHeight"
                         android:layout_gravity="center"
                         android:contentDescription="@string/genericUndocumented"
-                        android:src="@android:drawable/ic_delete"
+                        android:src="@drawable/ic_settings_input_composite_white"
                         />
                 <TextView
                         android:id="@+id/sourceTxt"
@@ -139,7 +139,7 @@
                         android:layout_height="@dimen/iconSizeHeight"
                         android:layout_gravity="center"
                         android:contentDescription="@string/genericUndocumented"
-                        android:src="@android:drawable/ic_menu_rotate"
+                        android:src="@drawable/ic_equalizer_white"
                         />
                 <TextView
                         android:id="@+id/equalizerTxt"
@@ -173,7 +173,7 @@
                         android:layout_height="@dimen/iconSizeHeight"
                         android:layout_gravity="center"
                         android:contentDescription="@string/genericUndocumented"
-                        android:src="@android:drawable/ic_menu_info_details"
+                        android:src="@drawable/ic_radio_white"
                         />
                 <TextView
                         android:id="@+id/informationTxt"
