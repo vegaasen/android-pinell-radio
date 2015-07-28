@@ -5,4 +5,7 @@
     <string name="dialogChooserDeviceNotFound">No device found</string>
     <string name="dialogIconDescription">RadioSymbol</string>
     <string name="genericUndocumented">Undocumented</string>
+    <string name="dialogWifiContent">In order to control Pinell devices, you need to be connected to a Wifi network</string>
+    <string name="dialogWifiEnable">Connect to Wifi</string>
+    <string name="dialogWifiCancel">Exit</string>
 </resources>
