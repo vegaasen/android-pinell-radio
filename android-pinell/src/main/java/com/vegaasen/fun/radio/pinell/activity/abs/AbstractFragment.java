@@ -1,6 +1,7 @@
 package com.vegaasen.fun.radio.pinell.activity.abs;
 
 import android.support.v4.app.Fragment;
+import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.context.ApplicationContext;
 import com.vegaasen.fun.radio.pinell.service.PinellService;
 
@@ -24,6 +25,10 @@ public abstract class AbstractFragment extends Fragment {
 
     protected static String getSafeString(final String candidate, int length) {
         return candidate.length() > length ? candidate.substring(0, length) + ADDITION : candidate;
+    }
+
+    protected String getUnavailableString() {
+        return getString(R.string.unavailable);
     }
 
 }

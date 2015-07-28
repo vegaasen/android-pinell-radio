@@ -68,18 +68,32 @@ public class InformationFragment extends AbstractFragment {
     private void configureElementValues() {
         final DeviceAudio audioLevels = getPinellService().getAudioLevels();
         final Host host = getPinellService().getSelectedHost();
+        if (host == null) {
+            allUnavailable();
+            return;
+        }
         final DeviceInformation deviceInformation = host.getDeviceInformation();
         listDeviceInformationSoundLevelText.setText(audioLevels == null ?
-                getString(R.string.unavailable) :
+                getUnavailableString() :
                 String.format("%s/%s", Integer.toString(audioLevels.getLevel()), getString(R.integer.volumeControlMax)));
         listDeviceInformationPinellInformationText.setText(host.getHost());
         if (deviceInformation != null) {
             listDeviceInformationPinellHostNameText.setText(getSafeString(deviceInformation.getName()));
             listDeviceInformationPinellHostVersionText.setText(getSafeString(deviceInformation.getVersion()));
         } else {
-            listDeviceInformationPinellHostNameText.setText(getString(R.string.unavailable));
-            listDeviceInformationPinellHostVersionText.setText(getString(R.string.unavailable));
+            pinellUnavailable();
         }
+    }
+
+    private void allUnavailable() {
+        pinellUnavailable();
+        listDeviceInformationPinellInformationText.setText(getUnavailableString());
+        listDeviceInformationSoundLevelText.setText(getUnavailableString());
+    }
+
+    private void pinellUnavailable() {
+        listDeviceInformationPinellHostNameText.setText(getUnavailableString());
+        listDeviceInformationPinellHostVersionText.setText(getUnavailableString());
     }
 
     private void configurePowerSwitch() {
