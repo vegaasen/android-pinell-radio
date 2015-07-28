@@ -60,6 +60,7 @@ public class MainActivity extends AbstractActivity {
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragmentReplacer, informationFragment).commit();
             informationFragment.refreshDeviceInformation();
+            setActiveFragmentLayout(currentActiveFragmentView);
         }
     }
 

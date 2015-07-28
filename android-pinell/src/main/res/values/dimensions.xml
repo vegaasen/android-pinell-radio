@@ -7,7 +7,8 @@
     <dimen name="listElementSpacing">2dp</dimen>
     <dimen name="listGenericTextSpacing">30dp</dimen>
     <dimen name="textDefaultHeight">18sp</dimen>
-    <dimen name="sidebarBoxOuterMargin">20sp</dimen>
+    <dimen name="sidebarBoxOuterMarginStartAndEnd">20sp</dimen>
+    <dimen name="sidebarBoxOuterMarginTop">15sp</dimen>
     <dimen name="sidebarBoxInnerWidth">55sp</dimen>
     <dimen name="sidebarBoxInnerMargin">25sp</dimen>
     <dimen name="sidebarBoxText">12sp</dimen>

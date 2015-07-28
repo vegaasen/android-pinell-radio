@@ -116,9 +116,12 @@ public class InformationFragment extends AbstractFragment {
     private void postActivities() {
         Log.d(TAG, "Activating postActivities - e.g disabling functions and so on");
         powerSwitch = (Switch) informationView.findViewById(R.id.listDeviceInformationPowerSwitcher);
-        final boolean enabled = !getPinellService().isPinellDevice();
+        final boolean enabled = getPinellService().isPinellDevice();
+        if(enabled) {
+            return;
+        }
         Log.d(TAG, "The current host is not an actual Pinell host. Disabling the powerSwitch selector");
-        powerSwitch.setEnabled(enabled);
+        powerSwitch.setClickable(false);
     }
 
 }
