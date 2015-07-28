@@ -40,10 +40,16 @@ public class NowPlayingFragment extends AbstractFragment {
             Log.e(TAG, "For some reason, the view were unable to be found. Dying");
             throw new RuntimeException("Missing required view in the initialization of the application");
         }
+        changeActiveContent(container);
         configureViewComponents();
         configureVolumeController();
         refreshCurrentlyPlaying();
         return nowPlayingView;
+    }
+
+    @Override
+    protected void changeActiveContent(ViewGroup container) {
+        changeCurrentActiveApplicationContextContent(container, R.drawable.ic_volume_up_black, R.string.sidebarNowPlaying);
     }
 
     private void configureViewComponents() {

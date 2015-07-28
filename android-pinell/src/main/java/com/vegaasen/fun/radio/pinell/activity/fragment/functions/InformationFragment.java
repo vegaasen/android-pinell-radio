@@ -35,6 +35,7 @@ public class InformationFragment extends AbstractFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         informationView = inflater.inflate(R.layout.fragment_information, container, false);
+        changeActiveContent(container);
         configureElements();
         configureElementValues();
         configureBehaviors();
@@ -48,6 +49,11 @@ public class InformationFragment extends AbstractFragment {
             return;
         }
         postActivities();
+    }
+
+    @Override
+    protected void changeActiveContent(ViewGroup container) {
+        changeCurrentActiveApplicationContextContent(container, R.drawable.ic_radio_black, R.string.sidebarInformation);
     }
 
     private void configureElements() {

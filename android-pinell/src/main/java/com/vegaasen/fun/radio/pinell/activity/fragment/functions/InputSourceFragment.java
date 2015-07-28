@@ -37,8 +37,14 @@ public class InputSourceFragment extends AbstractFragment {
             Log.e(TAG, "For some reason, the view were unable to be found. Dying");
             throw new RuntimeException("Missing required view in the initialization of the application");
         }
+        changeActiveContent(container);
         listInputSourcesAvailable();
         return inputSourceView;
+    }
+
+    @Override
+    protected void changeActiveContent(ViewGroup container) {
+        changeCurrentActiveApplicationContextContent(container, R.drawable.ic_settings_input_composite_black, R.string.sidebarSource);
     }
 
     private void listInputSourcesAvailable() {

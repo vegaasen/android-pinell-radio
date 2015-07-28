@@ -22,4 +22,9 @@ This is the port-scanning for my own Pinell device.
 
     ^------------ those were open for 192.168.0.104
 
+# Known errors
+
+* GET_NOTIFIERS is hanging. This should be put in its own thread as it can cause application stop
+* The discovery/TelnetUtils does not work as intended on Android. Sometimes it does not discover the devices, which is quite odd.
+
 # Contributors
