@@ -4,6 +4,8 @@
     <string name="deviceInformationValue">Value</string>
     <string name="deviceInformationPowerState">Power</string>
     <string name="deviceInformationSoundLevel">Sound level</string>
-    <string name="deviceInformationPinellInformation">Pinell device information</string>
-    <string name="deviceInformationAppInformation">Application information c(",)</string>
+    <string name="deviceInformationPinellHost">Pinell host</string>
+    <string name="deviceInformationPinellHostName">Pinell name</string>
+    <string name="deviceInformationPinellHostVersion">Pinell version</string>
+    <string name="deviceInformationAppInformation">Version</string>
 </resources>

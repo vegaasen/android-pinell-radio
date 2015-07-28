@@ -90,7 +90,7 @@ public class BrowseFragment extends AbstractFragment {
 
     private BrowseStationsActivity getRadioStationsActivity(ListView overview) {
         BrowseStationsActivity adapter;
-        final List<RadioStation> radioStations = loadedRadioStations == null ? assembleRadioStations() : loadedRadioStations;
+        final List<RadioStation> radioStations = CollectionUtils.isEmpty(loadedRadioStations) ? assembleRadioStations() : loadedRadioStations;
         if (overview.getAdapter() == null) {
             adapter = new BrowseStationsActivity(browseFragment.getContext(), radioStations);
             overview.setAdapter(adapter);

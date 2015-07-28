@@ -24,7 +24,9 @@
                 android:id="@+id/sectionPlaying"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/sidebarBoxOuterMargin"
+                android:layout_marginTop="@dimen/sidebarBoxOuterMarginTop"
+                android:layout_marginStart="@dimen/sidebarBoxOuterMarginStartAndEnd"
+                android:layout_marginEnd="@dimen/sidebarBoxOuterMarginStartAndEnd"
                 android:background="@color/sidebarBoxColor">
             <LinearLayout
                     android:layout_width="@dimen/sidebarBoxInnerWidth"
@@ -55,7 +57,9 @@
                 android:id="@+id/sectionBrowse"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/sidebarBoxOuterMargin"
+                android:layout_marginTop="@dimen/sidebarBoxOuterMarginTop"
+                android:layout_marginStart="@dimen/sidebarBoxOuterMarginStartAndEnd"
+                android:layout_marginEnd="@dimen/sidebarBoxOuterMarginStartAndEnd"
                 android:background="@color/sidebarBoxColor">
             <LinearLayout
                     android:layout_width="@dimen/sidebarBoxInnerWidth"
@@ -86,7 +90,9 @@
                 android:id="@+id/sectionSource"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/sidebarBoxOuterMargin"
+                android:layout_marginTop="@dimen/sidebarBoxOuterMarginTop"
+                android:layout_marginStart="@dimen/sidebarBoxOuterMarginStartAndEnd"
+                android:layout_marginEnd="@dimen/sidebarBoxOuterMarginStartAndEnd"
                 android:background="@color/sidebarBoxColor">
             <LinearLayout
                     android:layout_width="@dimen/sidebarBoxInnerWidth"
@@ -117,7 +123,9 @@
                 android:id="@+id/sectionEqualizer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/sidebarBoxOuterMargin"
+                android:layout_marginTop="@dimen/sidebarBoxOuterMarginTop"
+                android:layout_marginStart="@dimen/sidebarBoxOuterMarginStartAndEnd"
+                android:layout_marginEnd="@dimen/sidebarBoxOuterMarginStartAndEnd"
                 android:background="@color/sidebarBoxColor">
             <LinearLayout
                     android:layout_width="@dimen/sidebarBoxInnerWidth"
@@ -148,7 +156,10 @@
                 android:id="@+id/sectionInformation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/sidebarBoxOuterMargin"
+                android:layout_marginTop="@dimen/sidebarBoxOuterMarginTop"
+                android:layout_marginStart="@dimen/sidebarBoxOuterMarginStartAndEnd"
+                android:layout_marginEnd="@dimen/sidebarBoxOuterMarginStartAndEnd"
+                android:layout_marginBottom="@dimen/sidebarBoxOuterMarginTop"
                 android:background="@color/sidebarBoxColor">
             <LinearLayout
                     android:layout_width="@dimen/sidebarBoxInnerWidth"

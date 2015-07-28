@@ -6,18 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.ListView;
 import android.widget.Switch;
+import android.widget.TextView;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractFragment;
-import com.vegaasen.fun.radio.pinell.adapter.DeviceInformationAdapter;
-import com.vegaasen.fun.radio.pinell.model.PinellProperties;
+import com.vegaasen.lib.ioc.radio.model.device.DeviceAudio;
+import com.vegaasen.lib.ioc.radio.model.device.DeviceInformation;
 import com.vegaasen.lib.ioc.radio.model.system.PowerState;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
-
-import java.util.Collections;
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Representation of the information regarding the selected device is represented through this fragment
@@ -30,10 +26,17 @@ public class InformationFragment extends AbstractFragment {
     private static final String TAG = InformationFragment.class.getSimpleName();
 
     private View informationView;
+    private TextView listDeviceInformationSoundLevelText;
+    private TextView listDeviceInformationPinellInformationText;
+    private TextView listDeviceInformationPinellHostNameText;
+    private TextView listDeviceInformationPinellHostVersionText;
+    private Switch powerSwitch;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         informationView = inflater.inflate(R.layout.fragment_information, container, false);
+        configureElements();
+        configureElementValues();
         configureBehaviors();
         refreshDeviceInformation();
         return informationView;
@@ -44,21 +47,15 @@ public class InformationFragment extends AbstractFragment {
             Log.w(TAG, "Unable to refresh device information. It seems like the view is nilled for some reason.");
             return;
         }
-        final ListView deviceOverview = (ListView) informationView.findViewById(R.id.listDeviceInformation);
-        if (deviceOverview != null) {
-            final Map<String, String> information = generateMapOfDeviceInformation();
-            if (deviceOverview.getAdapter() == null) {
-                DeviceInformationAdapter deviceInformationAdapter = new DeviceInformationAdapter(information, informationView.getContext());
-                deviceOverview.setAdapter(deviceInformationAdapter);
-            } else {
-                Log.d(TAG, "Refreshing existing device information");
-                DeviceInformationAdapter adapter = (DeviceInformationAdapter) deviceOverview.getAdapter();
-                adapter.updateDeviceInformation(information);
-                adapter.notifyDataSetChanged();
-//                deviceOverview.deferNotifyDataSetChanged();
-            }
-            postActivities();
-        }
+        postActivities();
+    }
+
+    private void configureElements() {
+        powerSwitch = (Switch) informationView.findViewById(R.id.listDeviceInformationPowerSwitcher);
+        listDeviceInformationSoundLevelText = (TextView) informationView.findViewById(R.id.listDeviceInformationSoundLevelText);
+        listDeviceInformationPinellInformationText = (TextView) informationView.findViewById(R.id.listDeviceInformationPinellInformationText);
+        listDeviceInformationPinellHostNameText = (TextView) informationView.findViewById(R.id.listDeviceInformationPinellHostNameText);
+        listDeviceInformationPinellHostVersionText = (TextView) informationView.findViewById(R.id.listDeviceInformationPinellHostVersionText);
     }
 
     private void configureBehaviors() {
@@ -68,9 +65,39 @@ public class InformationFragment extends AbstractFragment {
         }
     }
 
+    private void configureElementValues() {
+        final DeviceAudio audioLevels = getPinellService().getAudioLevels();
+        final Host host = getPinellService().getSelectedHost();
+        if (host == null) {
+            allUnavailable();
+            return;
+        }
+        final DeviceInformation deviceInformation = host.getDeviceInformation();
+        listDeviceInformationSoundLevelText.setText(audioLevels == null ?
+                getUnavailableString() :
+                String.format("%s/%s", Integer.toString(audioLevels.getLevel()), getString(R.integer.volumeControlMax)));
+        listDeviceInformationPinellInformationText.setText(host.getHost());
+        if (deviceInformation != null) {
+            listDeviceInformationPinellHostNameText.setText(getSafeString(deviceInformation.getName()));
+            listDeviceInformationPinellHostVersionText.setText(getSafeString(deviceInformation.getVersion()));
+        } else {
+            pinellUnavailable();
+        }
+    }
+
+    private void allUnavailable() {
+        pinellUnavailable();
+        listDeviceInformationPinellInformationText.setText(getUnavailableString());
+        listDeviceInformationSoundLevelText.setText(getUnavailableString());
+    }
+
+    private void pinellUnavailable() {
+        listDeviceInformationPinellHostNameText.setText(getUnavailableString());
+        listDeviceInformationPinellHostVersionText.setText(getUnavailableString());
+    }
+
     private void configurePowerSwitch() {
         Log.d(TAG, "Configuring the powerSwitch");
-        final Switch powerSwitch = (Switch) informationView.findViewById(R.id.listDeviceInformationPowerSwitcher);
         if (powerSwitch != null) {
             powerSwitch.setChecked(getPinellService().isPoweredOn());
             powerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -86,32 +113,15 @@ public class InformationFragment extends AbstractFragment {
         }
     }
 
-    private Map<String, String> generateMapOfDeviceInformation() {
-        if (!getPinellService().isHostConfigured()) {
-            return Collections.emptyMap();
-        }
-        Host host = getPinellService().getSelectedHost();
-        Map<String, String> information = new TreeMap<>();
-        information.put(PinellProperties.CODE.getKey(), host.getCode());
-        information.put(PinellProperties.HOST.getKey(), host.getHost());
-        information.put(PinellProperties.PORT.getKey(), Integer.toString(host.getPort()));
-        information.put(PinellProperties.CONNECTION_STRING.getKey(), host.getConnectionString());
-        if (host.getRadioSession() != null) {
-            information.put(PinellProperties.RADIO_SESSION.getKey(), host.getRadioSession().toString());
-        }
-        if (host.getDeviceInformation() != null) {
-            information.put(PinellProperties.DEVICE_NAME.getKey(), host.getDeviceInformation().getName());
-            information.put(PinellProperties.DEVICE_VERSION.getKey(), host.getDeviceInformation().getVersion());
-            information.put(PinellProperties.DEVICE_API.getKey(), host.getDeviceInformation().getApiUrl());
-        }
-        return information;
-    }
-
     private void postActivities() {
         Log.d(TAG, "Activating postActivities - e.g disabling functions and so on");
-        final Switch powerSwitch = (Switch) informationView.findViewById(R.id.listDeviceInformationPowerSwitcher);
-        //todo: enable the powerSwitch enable/disable-ability upon selection of the current pinell device
-//        powerSwitch.setEnabled(!getPinellService().isPinellDevice());
+        powerSwitch = (Switch) informationView.findViewById(R.id.listDeviceInformationPowerSwitcher);
+        final boolean enabled = getPinellService().isPinellDevice();
+        if(enabled) {
+            return;
+        }
+        Log.d(TAG, "The current host is not an actual Pinell host. Disabling the powerSwitch selector");
+        powerSwitch.setClickable(false);
     }
 
 }

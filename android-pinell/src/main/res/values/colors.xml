@@ -2,6 +2,7 @@
 <resources>
     <!-- Can also be transparent, however I'd like to control this color scheme anyway.. -->
     <color name="defaultBackgroundColor">#FFFFFF</color>
+    <color name="defaultElementBackgroundColor">#f1f8f9</color>
     <color name="defaultElementColor">#E1F5FE</color>
     <color name="defaultElementSelectedColor">#ffc8edfe</color>
     <color name="sidebarBackgroundColor">#2D2D2D</color>
