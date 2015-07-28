@@ -38,7 +38,7 @@ public enum ApplicationContext {
         this.context = context;
     }
 
-    protected WifiManager getWifiManager() {
+    public WifiManager getWifiManager() {
         return (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
     }
 

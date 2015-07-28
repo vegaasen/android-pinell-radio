@@ -11,6 +11,7 @@ import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractActivity;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractFragment;
 import com.vegaasen.fun.radio.pinell.activity.fragment.SplashScreenFragment;
+import com.vegaasen.fun.radio.pinell.activity.fragment.dialog.EnableWifiDialogFragment;
 import com.vegaasen.fun.radio.pinell.activity.fragment.functions.BrowseFragment;
 import com.vegaasen.fun.radio.pinell.activity.fragment.functions.EqualizerFragment;
 import com.vegaasen.fun.radio.pinell.activity.fragment.functions.InformationFragment;
@@ -49,8 +50,9 @@ public class MainActivity extends AbstractActivity {
         setContentView(R.layout.main);
         configureUiElements();
         configureButtonActionListeners();
-        configureSidebarActionListeners();
-        renderSelectPinellHost();
+        if (renderSelectPinellHost()) {
+            configureSidebarActionListeners();
+        }
     }
 
     @Override
@@ -83,7 +85,9 @@ public class MainActivity extends AbstractActivity {
         buttonChangePinellHost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                renderSelectPinellHost();
+                if(renderSelectPinellHost()) {
+                    configureSidebarActionListeners();
+                }
             }
         });
     }
@@ -121,13 +125,22 @@ public class MainActivity extends AbstractActivity {
         }
     }
 
-    private void renderSelectPinellHost() {
+    private boolean renderSelectPinellHost() {
+        renderDefaultSplashScreen();
+        if (!isWifiEnabled()) {
+            final EnableWifiDialogFragment enableWifiDialogFragment = new EnableWifiDialogFragment();
+            enableWifiDialogFragment.show(getFragmentManager(), TAG);
+            return false;
+        }
+        startActivityForResult(new Intent(this, SelectHostActivity.class), REQUEST_CODE);
+        return true;
+    }
+
+    private void renderDefaultSplashScreen() {
         Log.i(TAG, String.format("Configuring the transit to use {%s} as the transition style (see FragmentTransaction for more details)", TRANSIT_FRAGMENT_FADE));
         getSupportFragmentManager().beginTransaction().setTransitionStyle(TRANSIT_FRAGMENT_FADE).commit();
         Log.d(TAG, "Displaying splashScreen for the application");
         getSupportFragmentManager().beginTransaction().replace(R.id.fragmentReplacer, splashScreen).commit();
-        final Intent intent = new Intent(this, SelectHostActivity.class);
-        startActivityForResult(intent, REQUEST_CODE);
     }
 
 }

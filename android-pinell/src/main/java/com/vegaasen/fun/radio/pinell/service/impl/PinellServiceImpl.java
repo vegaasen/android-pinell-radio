@@ -3,6 +3,7 @@ package com.vegaasen.fun.radio.pinell.service.impl;
 import android.util.Log;
 import com.google.common.collect.Lists;
 import com.vegaasen.fun.radio.pinell.service.PinellService;
+import com.vegaasen.fun.radio.pinell.util.CollectionUtils;
 import com.vegaasen.lib.ioc.radio.model.dab.RadioStation;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceAudio;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceCurrentlyPlaying;
@@ -202,6 +203,9 @@ public class PinellServiceImpl implements PinellService {
             from = RadioFsApiService.DEFAULT_START_INDEX;
         }
         Set<RadioStation> radioStations = getRadioService().listStations(getSelectedHost(), from, RadioFsApiService.DEFAULT_MAX_ITEMS);
+        if (CollectionUtils.isEmpty(radioStations)) {
+            radioStations = Collections.emptySet();
+        }
         Log.d(TAG, String.format("Found {%s} radioStations", radioStations.size()));
         return radioStations;
     }
