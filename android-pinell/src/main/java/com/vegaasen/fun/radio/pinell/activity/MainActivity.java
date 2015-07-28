@@ -50,7 +50,7 @@ public class MainActivity extends AbstractActivity {
         configureUiElements();
         configureButtonActionListeners();
         configureSidebarActionListeners();
-        renderSplashScreen();
+        renderSelectPinellHost();
     }
 
     @Override
@@ -82,7 +82,7 @@ public class MainActivity extends AbstractActivity {
         buttonChangePinellHost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                renderSplashScreen();
+                renderSelectPinellHost();
             }
         });
     }
@@ -120,7 +120,7 @@ public class MainActivity extends AbstractActivity {
         }
     }
 
-    private void renderSplashScreen() {
+    private void renderSelectPinellHost() {
         Log.i(TAG, String.format("Configuring the transit to use {%s} as the transition style (see FragmentTransaction for more details)", TRANSIT_FRAGMENT_FADE));
         getSupportFragmentManager().beginTransaction().setTransitionStyle(TRANSIT_FRAGMENT_FADE).commit();
         Log.d(TAG, "Displaying splashScreen for the application");

@@ -131,9 +131,10 @@ public enum ApiRequestSystem {
     }
 
     public DeviceAudio getDeviceAudioInformation(Host host) {
+        final String volumeLevelCandidate = getResponse(host, UriContext.Device.AUDIO_VOLUME_LEVEL);
         return DeviceAudio.create(
                 AudioStatus.fromValue(getResponse(host, UriContext.Device.AUDIO_VOLUME_MUTED)),
-                Integer.parseInt(getResponse(host, UriContext.Device.AUDIO_VOLUME_LEVEL))
+                volumeLevelCandidate == null || volumeLevelCandidate.isEmpty() ? 0 : Integer.parseInt(volumeLevelCandidate)
         );
     }
 
