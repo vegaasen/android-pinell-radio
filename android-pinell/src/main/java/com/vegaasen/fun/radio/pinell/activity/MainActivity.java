@@ -60,6 +60,7 @@ public class MainActivity extends AbstractActivity {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG, String.format("Response from request {%s} was {%s}", requestCode, resultCode));
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+            buttonChangePinellHost.setBackgroundResource(R.drawable.ic_cast_connected_black);
             getSupportFragmentManager().beginTransaction().replace(R.id.fragmentReplacer, informationFragment).commit();
             informationFragment.refreshDeviceInformation();
             setActiveFragmentLayout(currentActiveFragmentView);
@@ -85,7 +86,7 @@ public class MainActivity extends AbstractActivity {
         buttonChangePinellHost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(renderSelectPinellHost()) {
+                if (renderSelectPinellHost()) {
                     configureSidebarActionListeners();
                 }
             }
