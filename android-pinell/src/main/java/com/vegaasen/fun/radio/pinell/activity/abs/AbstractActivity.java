@@ -1,6 +1,8 @@
 package com.vegaasen.fun.radio.pinell.activity.abs;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import com.vegaasen.fun.radio.pinell.context.ApplicationContext;
@@ -36,7 +38,17 @@ public abstract class AbstractActivity extends FragmentActivity {
      * @return state of WiFi
      */
     protected boolean isWifiEnabled() {
-        return ApplicationContext.INSTANCE.getWifiManager().isWifiEnabled();
+        if (!ApplicationContext.INSTANCE.getWifiManager().isWifiEnabled()) {
+            Log.d(TAG, "Wifi is not enabled");
+            return false;
+        }
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager == null) {
+            Log.d(TAG, "The connectionManager is nilled");
+            return false;
+        }
+        NetworkInfo wifiInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        return wifiInfo != null && wifiInfo.isConnected();
     }
 
 }

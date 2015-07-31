@@ -3,5 +3,5 @@
     This file configures the skeleton used in the FragmentActivities throughout the application
 -->
 <resources>
-    <string name="txtApplicationCaptionInformation">Information</string>
+    <string name="defaultTitlebarCaption">Pinell Radio</string>
 </resources>

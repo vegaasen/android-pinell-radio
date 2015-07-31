@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="dialogChooserTitle">Connect to</string>
+    <string name="dialogChooserTitle">Find and connect to Radio</string>
     <string name="dialogSearchingForDevices">Scanning for devices</string>
     <string name="dialogChooserDeviceNotFound">No device found</string>
     <string name="dialogIconDescription">RadioSymbol</string>
