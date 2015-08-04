@@ -19,7 +19,7 @@
                 android:layout_centerVertical="true"
                 android:layout_alignParentStart="true"
                 android:contentDescription="@string/dialogIconDescription"
-                android:src="@android:drawable/ic_btn_speak_now"
+                android:src="@drawable/ic_radio_black"
                 />
         <TextView
                 android:id="@+id/listDeviceRadioName"

@@ -1,14 +1,12 @@
 package com.vegaasen.lib.utils;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.URL;
 import java.net.UnknownHostException;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.nio.channels.SocketChannel;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -28,6 +26,7 @@ import java.util.logging.Logger;
  * Simple tools used to help with capturing and requesting status of remote services
  *
  * @author <a href="mailto:vegard.aasen@telenor.com">Vegard Aasen</a>
+ * @version 04.08.2015
  * @since 10:40 AM
  */
 public final class TelnetUtil {
@@ -37,7 +36,7 @@ public final class TelnetUtil {
     // todo: The timeout portion may need to be moved around a bit, as it may be too "slow" or "too quick" in regards to Android devices. We'll see..
     private static final long WAIT = TimeUnit.SECONDS.toMillis(8);
     private static final int NUM_OF_HOSTS = 250, NUM_THREADS = 250, NUM_THREADS_ALIVE_ACTIVE = 1;
-    private static final int TIMEOUT_SOCKET_MS = (int) TimeUnit.SECONDS.toMillis(10), TIMEOUT_DETECT_SUBNET = 20, TIMEOUT_IS_ALIVE = 10, CONNECTION_TIMEOUT = 3600;
+    private static final int TIMEOUT_DETECT_SUBNET = 20, TIMEOUT_IS_ALIVE = 10;
     private static final ExecutorService
             EXECUTOR_SERVICE = Executors.newFixedThreadPool(NUM_THREADS),
             ACTIVE_SUBNET = Executors.newFixedThreadPool(NUM_THREADS_ALIVE_ACTIVE),
@@ -67,6 +66,7 @@ public final class TelnetUtil {
      *
      * @return the lot.
      */
+    @SuppressWarnings("unused")
     public static Set<String> findPotentialLocalSubnetNetworkHosts(final String subnet) {
         return findPotentialLocalSubnetNetworkHosts(subnet, 80);
     }
@@ -82,7 +82,7 @@ public final class TelnetUtil {
         final Set<Runnable> runnables = new HashSet<>();
         final Set<String> hosts = new HashSet<>();
         final CountDownLatch potentialSubnetLatch = new CountDownLatch(NUM_OF_HOSTS);
-        try {
+        try (final Selector selector = Selector.open()) {
             for (int i = 0; i <= NUM_OF_HOSTS; i++) {
                 final int currPort = i;
                 runnables.add(new Runnable() {
@@ -90,7 +90,7 @@ public final class TelnetUtil {
                     public void run() {
                         LOG.fine(splittedSubnet + currPort);
                         final String host = splittedSubnet + currPort;
-                        if (isAliveWithoutThreading(host, portToVerify)) {
+                        if (isAliveWithoutThreading(host, portToVerify, selector)) {
                             hosts.add(host);
                         }
                         potentialSubnetLatch.countDown();
@@ -103,6 +103,10 @@ public final class TelnetUtil {
                     EXECUTOR_SERVICE.execute(runnable);
                 }
                 potentialSubnetLatch.await();
+            }
+            Set<SelectionKey> selectionKeys = selector.keys();
+            if (selectionKeys != null && !selectionKeys.isEmpty()) {
+                LOG.fine(String.format("Found {%s} selectionKeys", selectionKeys.size()));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -161,34 +165,17 @@ public final class TelnetUtil {
      * @param port     _
      * @return _
      */
-    public static boolean isAliveWithoutThreading(final String hostName, final int port) {
-        try (Socket pingSocket = new Socket()) {
+    public static boolean isAliveWithoutThreading(final String hostName, final int port, Selector selector) {
+        try (SocketChannel socket = SocketChannel.open()) {
             LOG.info(String.format("Checking {%s} for port opened on {%s}", hostName, port));
-            pingSocket.bind(null);
-            pingSocket.connect(new InetSocketAddress(hostName, port), CONNECTION_TIMEOUT);
-            if (pingSocket.isConnected() || pingSocket.isBound()) {
-                return true;
-            }
+            socket.configureBlocking(false);
+            socket.connect(new InetSocketAddress(InetAddress.getByName(hostName), port));
+            Data data = new Data();
+            data.setPort(port);
+            data.setStart(System.nanoTime());
+            socket.register(selector, SelectionKey.OP_CONNECT, data);
         } catch (final IOException e) {
-            try {
-                HttpURLConnection connection = (HttpURLConnection) new URL(String.format("http://%s:%s/", hostName, port)).openConnection();
-                if (connection != null) {
-                    final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    final String s = bufferedReader.readLine();
-                    return s != null && !s.isEmpty();
-                }
-            } catch (Exception e1) {
-                LOG.warning("Second attempt failed.");
-                try {
-                    InetAddress a = InetAddress.getByName(hostName);
-                    final boolean reachable = a.isReachable(CONNECTION_TIMEOUT);
-                    LOG.warning(String.format("Is reachable: {%s}? : %s", hostName, reachable));
-                    return reachable;
-                } catch (Exception e2) {
-                    LOG.warning(String.format("Third try failed {%s, %s}", hostName, port));
-                    return false;
-                }
-            }
+            //whatever
         }
         return false;
     }
@@ -227,24 +214,18 @@ public final class TelnetUtil {
         }
 
         private boolean detectAliveness() {
-            final Socket pingSocket = new Socket();
-            try {
+            try (SocketChannel socket = SocketChannel.open()) {
                 LOG.info(String.format("Checking {%s} for port opened on {%s}", hostName, port));
-                pingSocket.setSoTimeout(TIMEOUT_SOCKET_MS);
-                pingSocket.connect(new InetSocketAddress(hostName, port), TIMEOUT_SOCKET_MS);
-                pingSocket.isBound();
-                pingSocket.setKeepAlive(false);
-                if (pingSocket.isConnected()) {
-                    return true;
-                }
+                socket.configureBlocking(false);
+                socket.connect(new InetSocketAddress(InetAddress.getByName(hostName), port));
+                Data data = new Data();
+                data.setPort(port);
+                data.setStart(System.nanoTime());
+                //socket.register(selector, SelectionKey.OP_CONNECT, data);
+                return socket.isConnected();
             } catch (final IOException e) {
                 // gasp
             } finally {
-                try {
-                    pingSocket.close();
-                } catch (IOException e) {
-                    //jeje
-                }
                 countDownLatch.countDown();
             }
             return false;
@@ -277,6 +258,32 @@ public final class TelnetUtil {
 
         public CountDownLatch getCountDownLatch() {
             return countDownLatch;
+        }
+    }
+
+    private static final class Data {
+
+        private final static int FILTERED = -1;
+
+        private int state = FILTERED;
+        private int port;
+        private long start;
+        private int pass = 0;
+
+        public int getState() {
+            return state;
+        }
+
+        public void setState(int state) {
+            this.state = state;
+        }
+
+        public void setPort(int port) {
+            this.port = port;
+        }
+
+        public void setStart(long start) {
+            this.start = start;
         }
     }
 

@@ -27,20 +27,29 @@
                 android:paddingBottom="@dimen/elementSpacing"
                 >
             <ImageView
+                    android:id="@+id/imgCurrentApplicationDrawer"
+                    android:layout_width="@dimen/iconBarSizeWidth"
+                    android:layout_height="@dimen/iconBarSizeHeight"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentStart="true"
+                    android:src="@drawable/ic_drawer"
+                    android:contentDescription="@string/genericUndocumented"/>
+            <ImageView
                     android:id="@+id/imgCurrentApplicationContext"
                     android:layout_width="@dimen/iconBarSizeWidth"
                     android:layout_height="@dimen/iconBarSizeHeight"
                     android:layout_marginEnd="15dp"
-                    android:layout_marginStart="10dp"
                     android:layout_centerVertical="true"
-                    android:layout_alignParentStart="true"
+                    android:layout_toEndOf="@id/imgCurrentApplicationDrawer"
                     android:src="@drawable/ic_radio_black"
+                    android:contentDescription="@string/genericUndocumented"
                     />
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toEndOf="@id/imgCurrentApplicationContext"
                     android:layout_centerVertical="true"
+                    android:paddingTop="3dp"
                     android:text="@string/defaultTitlebarCaption"
                     android:id="@+id/txtCurrentApplicationContext"
                     />
