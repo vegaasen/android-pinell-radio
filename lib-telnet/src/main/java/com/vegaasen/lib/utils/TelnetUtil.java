@@ -167,6 +167,9 @@ public final class TelnetUtil {
      */
     public static boolean isAliveWithoutThreading(final String hostName, final int port, Selector selector) {
         try (SocketChannel socket = SocketChannel.open()) {
+            if (!selector.isOpen()) {
+                selector.wakeup();
+            }
             LOG.info(String.format("Checking {%s} for port opened on {%s}", hostName, port));
             socket.configureBlocking(false);
             socket.connect(new InetSocketAddress(InetAddress.getByName(hostName), port));
@@ -174,8 +177,11 @@ public final class TelnetUtil {
             data.setPort(port);
             data.setStart(System.nanoTime());
             socket.register(selector, SelectionKey.OP_CONNECT, data);
-        } catch (final IOException e) {
-            //whatever
+            boolean connected = socket.isConnected();
+            LOG.info(String.format("{%s:%s} is connected {%s}", hostName, port, connected));
+            return connected;
+        } catch (final Exception e) {
+            LOG.warning(String.format("%s:%s -- %s", hostName, port, e.getMessage()));
         }
         return false;
     }

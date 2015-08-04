@@ -40,13 +40,17 @@ public class BrowseFragment extends AbstractFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        browseFragment = inflater.inflate(R.layout.fragment_browse, container, false);
-        if (browseFragment == null) {
-            Log.e(TAG, "For some reason, the view were unable to be found. Dying");
-            throw new RuntimeException("Missing required view in the initialization of the application");
+        if (!getPinellService().isPinellDevice()) {
+            browseFragment = inflater.inflate(R.layout.fragment_pinell_na, container, false);
+        } else {
+            browseFragment = inflater.inflate(R.layout.fragment_browse, container, false);
+            if (browseFragment == null) {
+                Log.e(TAG, "For some reason, the view were unable to be found. Dying");
+                throw new RuntimeException("Missing required view in the initialization of the application");
+            }
+            changeActiveContent(container);
+            listRadioStationsAvailable();
         }
-        changeActiveContent(container);
-        listRadioStationsAvailable();
         return browseFragment;
     }
 

@@ -35,15 +35,19 @@ public class NowPlayingFragment extends AbstractFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        nowPlayingView = inflater.inflate(R.layout.fragment_now_playing, container, false);
-        if (nowPlayingView == null) {
-            Log.e(TAG, "For some reason, the view were unable to be found. Dying");
-            throw new RuntimeException("Missing required view in the initialization of the application");
+        if (!getPinellService().isPinellDevice()) {
+            nowPlayingView = inflater.inflate(R.layout.fragment_pinell_na, container, false);
+        } else {
+            nowPlayingView = inflater.inflate(R.layout.fragment_now_playing, container, false);
+            if (nowPlayingView == null) {
+                Log.e(TAG, "For some reason, the view were unable to be found. Dying");
+                throw new RuntimeException("Missing required view in the initialization of the application");
+            }
+            changeActiveContent(container);
+            configureViewComponents();
+            configureVolumeController();
+            refreshCurrentlyPlaying();
         }
-        changeActiveContent(container);
-        configureViewComponents();
-        configureVolumeController();
-        refreshCurrentlyPlaying();
         return nowPlayingView;
     }
 

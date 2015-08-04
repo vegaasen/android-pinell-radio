@@ -34,12 +34,16 @@ public class InformationFragment extends AbstractFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        informationView = inflater.inflate(R.layout.fragment_information, container, false);
-        changeActiveContent(container);
-        configureElements();
-        configureElementValues();
-        configureBehaviors();
-        refreshDeviceInformation();
+        if (!getPinellService().isPinellDevice()) {
+            informationView = inflater.inflate(R.layout.fragment_pinell_na, container, false);
+        } else {
+            informationView = inflater.inflate(R.layout.fragment_information, container, false);
+            changeActiveContent(container);
+            configureElements();
+            configureElementValues();
+            configureBehaviors();
+            refreshDeviceInformation();
+        }
         return informationView;
     }
 
