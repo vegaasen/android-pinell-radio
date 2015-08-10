@@ -37,7 +37,7 @@ public abstract class AbstractActivity extends FragmentActivity {
      *
      * @return state of WiFi
      */
-    protected boolean isWifiEnabled() {
+    protected boolean isWifiEnabledAndConnected() {
         if (!ApplicationContext.INSTANCE.getWifiManager().isWifiEnabled()) {
             Log.d(TAG, "Wifi is not enabled");
             return false;

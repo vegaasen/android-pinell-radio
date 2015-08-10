@@ -18,6 +18,7 @@ import java.util.List;
 
 /**
  * This represents the selectable host activity. Its main objective is just to let the user select which host that he/she would like to connect to.
+ * Todo: This activity must fetch its hosts from a AsyncActivity instead of using the TelnetUtils :-/ Too bad!
  *
  * @author <a href="mailto:vegaasen@gmail.com">vegaasen</a>
  * @version 0.1
