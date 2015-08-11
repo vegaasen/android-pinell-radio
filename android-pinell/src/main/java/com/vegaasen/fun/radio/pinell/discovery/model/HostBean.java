@@ -2,22 +2,12 @@ package com.vegaasen.fun.radio.pinell.discovery.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import com.vegaasen.fun.radio.pinell.common.Constants;
 
 import java.util.HashMap;
 import java.util.List;
 
 public class HostBean implements Parcelable {
 
-    public static final String EXTRA = HostBean.class.getPackage().getName() + ".extra";
-    public static final String EXTRA_POSITION = Constants.PACKAGE + ".extra_position";
-    public static final String EXTRA_HOST = Constants.PACKAGE + ".extra_host";
-    public static final String EXTRA_TIMEOUT = Constants.PACKAGE + ".network.extra_timeout";
-    public static final String EXTRA_HOSTNAME = Constants.PACKAGE + ".extra_hostname";
-    public static final String EXTRA_BANNERS = Constants.PACKAGE + ".extra_banners";
-    public static final String EXTRA_PORTSO = Constants.PACKAGE + ".extra_ports_o";
-    public static final String EXTRA_PORTSC = Constants.PACKAGE + ".extra_ports_c";
-    public static final String EXTRA_SERVICES = Constants.PACKAGE + ".extra_services";
     public static final int TYPE_GATEWAY = 0;
     public static final int TYPE_COMPUTER = 1;
 

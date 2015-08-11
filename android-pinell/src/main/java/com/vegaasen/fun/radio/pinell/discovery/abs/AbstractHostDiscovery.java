@@ -6,9 +6,11 @@ import android.os.Vibrator;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractActivity;
 import com.vegaasen.fun.radio.pinell.discovery.model.HostBean;
-import com.vegaasen.fun.radio.pinell.discovery.utils.Prefs;
 
 import java.lang.ref.WeakReference;
+
+import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_VIBRATE_FINISH;
+import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_VIBRATE_FINISH;
 
 /**
  * This is used in order to define the abstract layer related to the network discovery
@@ -68,7 +70,7 @@ public abstract class AbstractHostDiscovery extends AsyncTask<Void, HostBean, Vo
     protected void onPostExecute(Void unused) {
         final AbstractActivity discover = activity.get();
         if (discover != null) {
-            if (discover.prefs.getBoolean(Prefs.KEY_VIBRATE_FINISH, Prefs.DEFAULT_VIBRATE_FINISH)) {
+            if (discover.prefs.getBoolean(KEY_VIBRATE_FINISH, DEFAULT_VIBRATE_FINISH)) {
                 Vibrator v = (Vibrator) discover.getSystemService(Context.VIBRATOR_SERVICE);
                 v.vibrate(AbstractActivity.VIBRATE);
             }

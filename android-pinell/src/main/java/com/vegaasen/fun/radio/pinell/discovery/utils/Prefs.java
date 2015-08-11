@@ -31,112 +31,55 @@ import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_IP_END;
+import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_IP_START;
+import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_PORT_END;
+import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_PORT_START;
+import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_CIDR_CUSTOM;
+import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_DONATE;
+import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_EMAIL;
+import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_INTF;
+import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_IP_CUSTOM;
+import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_IP_END;
+import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_IP_START;
+import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_PORT_END;
+import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_PORT_START;
+import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_RATECTRL_ENABLE;
+import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_TIMEOUT_DISCOVER;
+import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_VERSION;
+import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_WEBSITE;
+import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_WIFI;
+
+/**
+ * @author vegaasen
+ * @author unknown
+ */
 public class Prefs extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 
-    // TODO: Show values in summary
+    private static final String TAG = Prefs.class.getSimpleName();
 
-    private final String TAG = "Prefs";
+    private static final String URL_DONATE = "paypal-link";
+    private static final String URL_WEB = "github-link";
+    public static final String MAIL_TYPE = "plain/text";
 
-    public final static String KEY_RESOLVE_NAME = "resolve_name";
-    public final static boolean DEFAULT_RESOLVE_NAME = true;
-
-    public final static String KEY_VIBRATE_FINISH = "vibrate_finish";
-    public final static boolean DEFAULT_VIBRATE_FINISH = false;
-
-    public final static String KEY_PORT_START = "port_start";
-    public final static String DEFAULT_PORT_START = "1";
-
-    public final static String KEY_PORT_END = "port_end";
-    public final static String DEFAULT_PORT_END = "1024";
-    public final static int MAX_PORT_END = 65535;
-
-    public static final String KEY_SSH_USER = "ssh_user";
-    public static final String DEFAULT_SSH_USER = "root";
-
-    //public static final String KEY_NTHREADS = "nthreads";
-    //public static final String DEFAULT_NTHREADS = "8";
-
-    public static final String KEY_RESET_NICDB = "resetdb";
-    public static final int DEFAULT_RESET_NICDB = 1;
-
-    public static final String KEY_RESET_SERVICESDB = "resetservicesdb";
-    public static final int DEFAULT_RESET_SERVICESDB = 1;
-
-    public static final String KEY_METHOD_DISCOVER = "discovery_method";
-    public static final String DEFAULT_METHOD_DISCOVER = "0";
-
-    // public static final String KEY_METHOD_PORTSCAN = "method_portscan";
-    // public static final String DEFAULT_METHOD_PORTSCAN = "0";
-
-    public final static String KEY_TIMEOUT_FORCE = "timeout_force";
-    public final static boolean DEFAULT_TIMEOUT_FORCE = false;
-
-    public final static String KEY_TIMEOUT_PORTSCAN = "timeout_portscan";
-    public final static String DEFAULT_TIMEOUT_PORTSCAN = "500";
-
-    public static final String KEY_RATECTRL_ENABLE = "ratecontrol_enable";
-    public static final boolean DEFAULT_RATECTRL_ENABLE = true;
-
-    public final static String KEY_TIMEOUT_DISCOVER = "timeout_discover";
-    public final static String DEFAULT_TIMEOUT_DISCOVER = "500";
-
-    public static final String KEY_BANNER = "banner";
-    public static final boolean DEFAULT_BANNER = true;
-
-    public static final String KEY_MOBILE = "allow_mobile";
-    public static final boolean DEFAULT_MOBILE = false;
-
-    public static final String KEY_INTF = "interface";
-    public static final String DEFAULT_INTF = null;
-
-    public static final String KEY_IP_START = "ip_start";
-    public static final String DEFAULT_IP_START = "0.0.0.0";
-
-    public static final String KEY_IP_END = "ip_end";
-    public static final String DEFAULT_IP_END = "0.0.0.0";
-
-    public static final String KEY_IP_CUSTOM = "ip_custom";
-    public static final boolean DEFAULT_IP_CUSTOM = false;
-
-    public static final String KEY_CIDR_CUSTOM = "cidr_custom";
-    public static final boolean DEFAULT_CIDR_CUSTOM = false;
-
-    public static final String KEY_CIDR = "cidr";
-    public static final String DEFAULT_CIDR = "24";
-
-    public static final String KEY_DONATE = "donate";
-    public static final String KEY_WEBSITE = "website";
-    public static final String KEY_EMAIL = "email";
-    public static final String KEY_VERSION = "version";
-    public static final String KEY_WIFI = "wifi";
-
-    private static final String URL_DONATE = "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=MDSDWG83PJSNG&lc=CH&item_name=Network%20Discovery%20for%20Android&currency_code=CHF&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted";
-    private static final String URL_WEB = "http://rorist.github.com/android-network-discovery/";
-    private static final String URL_EMAIL = "aubort.jeanbaptiste@gmail.com";
-
-    private Context ctxt;
+    private Context context;
     private PreferenceScreen ps = null;
     private String before_ip_start;
     private String before_ip_end;
     private String before_port_start;
     private String before_port_end;
 
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         super.onCreate(savedInstanceState);
-
-//        addPreferencesFromResource(R.xml.preferences);
-        ctxt = getApplicationContext();
-
+        context = getApplicationContext();
         ps = getPreferenceScreen();
         ps.getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
-
         // Default state of checkboxes
         checkTimeout(KEY_TIMEOUT_DISCOVER, KEY_RATECTRL_ENABLE, false);
-
-
         // Before change values
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctxt);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         before_ip_start = prefs.getString(KEY_IP_START, DEFAULT_IP_START);
         before_ip_end = prefs.getString(KEY_IP_END, DEFAULT_IP_END);
         before_port_start = prefs.getString(KEY_PORT_START, DEFAULT_PORT_START);
@@ -153,8 +96,7 @@ public class Prefs extends PreferenceActivity implements OnSharedPreferenceChang
                 String[] intf_entries = new String[len - 1];
                 String[] intf_values = new String[len - 1];
                 int i = 0;
-                for (int j = 0; j < len; j++) {
-                    NetworkInterface ni = nis.get(j);
+                for (NetworkInterface ni : nis) {
                     if (!ni.getName().equals("lo")) {
                         intf_entries[i] = ni.getDisplayName();
                         intf_values[i] = ni.getName();
@@ -172,7 +114,7 @@ public class Prefs extends PreferenceActivity implements OnSharedPreferenceChang
         }
 
         // Wifi settings listener
-        ((Preference) ps.findPreference(KEY_WIFI))
+        ps.findPreference(KEY_WIFI)
                 .setOnPreferenceClickListener(new OnPreferenceClickListener() {
                     public boolean onPreferenceClick(Preference preference) {
                         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
@@ -181,8 +123,9 @@ public class Prefs extends PreferenceActivity implements OnSharedPreferenceChang
                 });
 
         // Donate click listener
-        ((Preference) ps.findPreference(KEY_DONATE))
+        ps.findPreference(KEY_DONATE)
                 .setOnPreferenceClickListener(new OnPreferenceClickListener() {
+                    @Override
                     public boolean onPreferenceClick(Preference preference) {
                         Intent i = new Intent(Intent.ACTION_VIEW);
                         i.setData(Uri.parse(URL_DONATE));
@@ -192,9 +135,10 @@ public class Prefs extends PreferenceActivity implements OnSharedPreferenceChang
                 });
 
         // Website
-        Preference website = (Preference) ps.findPreference(KEY_WEBSITE);
+        Preference website = ps.findPreference(KEY_WEBSITE);
         website.setSummary(URL_WEB);
         website.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+            @Override
             public boolean onPreferenceClick(Preference preference) {
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(URL_WEB));
@@ -204,24 +148,27 @@ public class Prefs extends PreferenceActivity implements OnSharedPreferenceChang
         });
 
         // Contact
-        Preference contact = (Preference) ps.findPreference(KEY_EMAIL);
-        contact.setSummary(URL_EMAIL);
+        Preference contact = ps.findPreference(KEY_EMAIL);
+        final String email = getString(R.string.me_email), subject = getString(R.string.me_email_subject);
+        contact.setSummary(email);
         contact.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+            @Override
             public boolean onPreferenceClick(Preference preference) {
                 final Intent emailIntent = new Intent(Intent.ACTION_SEND);
-                emailIntent.setType("plain/text");
-                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{URL_EMAIL});
-                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Network Discovery");
+                emailIntent.setType(MAIL_TYPE);
+                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{email});
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
                 try {
                     startActivity(emailIntent);
                 } catch (ActivityNotFoundException e) {
+                    //meh
                 }
                 return true;
             }
         });
 
         // Version
-        Preference version = (Preference) ps.findPreference(KEY_VERSION);
+        Preference version = ps.findPreference(KEY_VERSION);
         try {
             version.setSummary(getPackageManager().getPackageInfo(Prefs.class.getPackage().getName(), 0).versionName);
         } catch (NameNotFoundException e) {
@@ -230,27 +177,38 @@ public class Prefs extends PreferenceActivity implements OnSharedPreferenceChang
 
     }
 
+    @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-        if (key.equals(KEY_PORT_START) || key.equals(KEY_PORT_END)) {
-            checkPortRange();
-        } else if (key.equals(KEY_IP_START) || key.equals(KEY_IP_END)) {
-            checkIpRange();
-            //} else if (key.equals(KEY_NTHREADS)) {
-            //    checkMaxThreads();
-        } else if (key.equals(KEY_RATECTRL_ENABLE)) {
-            checkTimeout(KEY_TIMEOUT_DISCOVER, KEY_RATECTRL_ENABLE, false);
-        } else if (key.equals(KEY_CIDR_CUSTOM)) {
-            CheckBoxPreference cb = (CheckBoxPreference) ps.findPreference(KEY_CIDR_CUSTOM);
-            if (cb.isChecked()) {
-                ((CheckBoxPreference) ps.findPreference(KEY_IP_CUSTOM)).setChecked(false);
+        switch (key) {
+            case KEY_PORT_START:
+            case KEY_PORT_END:
+                checkPortRange();
+                break;
+            case KEY_IP_START:
+            case KEY_IP_END:
+                checkIpRange();
+                //} else if (key.equals(KEY_NTHREADS)) {
+                //    checkMaxThreads();
+                break;
+            case KEY_RATECTRL_ENABLE:
+                checkTimeout(KEY_TIMEOUT_DISCOVER, KEY_RATECTRL_ENABLE, false);
+                break;
+            case KEY_CIDR_CUSTOM: {
+                CheckBoxPreference cb = (CheckBoxPreference) ps.findPreference(KEY_CIDR_CUSTOM);
+                if (cb.isChecked()) {
+                    ((CheckBoxPreference) ps.findPreference(KEY_IP_CUSTOM)).setChecked(false);
+                }
+                sendBroadcast(new Intent(WifiManager.WIFI_STATE_CHANGED_ACTION));
+                break;
             }
-            sendBroadcast(new Intent(WifiManager.WIFI_STATE_CHANGED_ACTION));
-        } else if (key.equals(KEY_IP_CUSTOM)) {
-            CheckBoxPreference cb = (CheckBoxPreference) ps.findPreference(KEY_IP_CUSTOM);
-            if (cb.isChecked()) {
-                ((CheckBoxPreference) ps.findPreference(KEY_CIDR_CUSTOM)).setChecked(false);
+            case KEY_IP_CUSTOM: {
+                CheckBoxPreference cb = (CheckBoxPreference) ps.findPreference(KEY_IP_CUSTOM);
+                if (cb.isChecked()) {
+                    ((CheckBoxPreference) ps.findPreference(KEY_CIDR_CUSTOM)).setChecked(false);
+                }
+                sendBroadcast(new Intent(WifiManager.WIFI_STATE_CHANGED_ACTION));
+                break;
             }
-            sendBroadcast(new Intent(WifiManager.WIFI_STATE_CHANGED_ACTION));
         }
     }
 
@@ -278,7 +236,7 @@ public class Prefs extends PreferenceActivity implements OnSharedPreferenceChang
         if (!matcher1.matches() || !matcher2.matches()) {
             ipStartEdit.setText(before_ip_start);
             ipEndEdit.setText(before_ip_end);
-            Toast.makeText(ctxt, R.string.genericUndocumented, Toast.LENGTH_LONG).show();
+            Toast.makeText(context, R.string.genericUndocumented, Toast.LENGTH_LONG).show();
             return;
         }
         // Check if ip start is bigger or equal than ip end
@@ -288,12 +246,12 @@ public class Prefs extends PreferenceActivity implements OnSharedPreferenceChang
             if (ipStart > ipEnd) {
                 ipStartEdit.setText(before_ip_start);
                 ipEndEdit.setText(before_ip_end);
-                Toast.makeText(ctxt, R.string.genericUndocumented, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, R.string.genericUndocumented, Toast.LENGTH_LONG).show();
             }
         } catch (NumberFormatException e) {
             ipStartEdit.setText(before_ip_start);
             ipEndEdit.setText(before_ip_end);
-            Toast.makeText(ctxt, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(context, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -307,12 +265,12 @@ public class Prefs extends PreferenceActivity implements OnSharedPreferenceChang
             if (portStart >= portEnd) {
                 portStartEdit.setText(before_port_start);
                 portEndEdit.setText(before_port_end);
-                Toast.makeText(ctxt, R.string.genericUndocumented, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, R.string.genericUndocumented, Toast.LENGTH_LONG).show();
             }
         } catch (NumberFormatException e) {
             portStartEdit.setText(before_port_start);
             portEndEdit.setText(before_port_end);
-            Toast.makeText(ctxt, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(context, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
         }
     }
 }

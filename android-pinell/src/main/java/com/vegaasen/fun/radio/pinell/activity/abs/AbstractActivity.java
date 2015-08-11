@@ -21,11 +21,15 @@ import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.context.ApplicationContext;
 import com.vegaasen.fun.radio.pinell.discovery.model.HostBean;
 import com.vegaasen.fun.radio.pinell.discovery.model.NetInfo;
-import com.vegaasen.fun.radio.pinell.discovery.utils.Prefs;
 import com.vegaasen.fun.radio.pinell.service.PinellService;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_INTF;
+import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_MOBILE;
+import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_INTF;
+import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_MOBILE;
 
 /**
  * Simple layer abstraction for all common screens in the application.
@@ -191,8 +195,8 @@ public abstract class AbstractActivity extends FragmentActivity {
                                     R.string.genericUndocumented, net.speed, WifiInfo.LINK_SPEED_UNITS));
                         }
                     } else if (type == ConnectivityManager.TYPE_MOBILE) { // 3G
-                        if (prefs.getBoolean(Prefs.KEY_MOBILE, Prefs.DEFAULT_MOBILE)
-                                || prefs.getString(Prefs.KEY_INTF, Prefs.DEFAULT_INTF) != null) {
+                        if (prefs.getBoolean(KEY_MOBILE, DEFAULT_MOBILE)
+                                || prefs.getString(KEY_INTF, DEFAULT_INTF) != null) {
                             net.getMobileInfo();
                             if (net.carrier != null) {
                                 net.getIp();

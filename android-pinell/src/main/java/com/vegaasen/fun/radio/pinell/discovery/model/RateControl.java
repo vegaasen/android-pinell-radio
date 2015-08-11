@@ -1,8 +1,3 @@
-/*
- * Copyright (C) 2009-2010 Aubort Jean-Baptiste (Rorist)
- * Licensed under GNU's GPL 2, see README
- */
-
 package com.vegaasen.fun.radio.pinell.discovery.model;
 
 import android.util.Log;
@@ -16,23 +11,24 @@ import java.util.regex.Pattern;
 
 public class RateControl {
 
-    private final String TAG = "RateControl";
+    private static final String TAG = RateControl.class.getSimpleName();
     private static final int BUF = 512;
-    private final int REACH_TIMEOUT = 5000;
-    private final String CMD = "/system/bin/ping -A -q -n -w 3 -W 2 -c 3 ";
-    private final String PTN = "^rtt min\\/avg\\/max\\/mdev = [0-9\\.]+\\/[0-9\\.]+\\/([0-9\\.]+)\\/[0-9\\.]+ ms.*";
-    private Pattern mPattern;
-    private String line;
+    private static final int REACH_TIMEOUT = 5000;
+    private static final String CMD = "/system/bin/ping -A -q -n -w 3 -W 2 -c 3 ";
+    private static final String PTN = "^rtt min\\/avg\\/max\\/mdev = [0-9\\.]+\\/[0-9\\.]+\\/([0-9\\.]+)\\/[0-9\\.]+ ms.*";
+
     public String indicator = null;
     public int rate = 800; // Slow start
+
+    private Pattern mPattern;
 
     public RateControl() {
         mPattern = Pattern.compile(PTN);
     }
 
     public void adaptRate() {
-        int response_time = 0;
-        if ((response_time = getAvgResponseTime(indicator)) > 0) {
+        int response_time = getAvgResponseTime(indicator);
+        if (response_time > 0) {
             if (response_time > 100) { // Most distanced hosts
                 rate = response_time * 5; // Minimum 500ms
             } else {
@@ -51,6 +47,7 @@ public class RateControl {
         try {
             final Process proc = Runtime.getRuntime().exec(CMD + host);
             reader = new BufferedReader(new InputStreamReader(proc.getInputStream()), BUF);
+            String line;
             while ((line = reader.readLine()) != null) {
                 matcher = mPattern.matcher(line);
                 if (matcher.matches()) {
@@ -72,10 +69,11 @@ public class RateControl {
             }
         } finally {
             try {
-            if (reader != null) {
-                reader.close();
-            }
-            } catch(IOException e){
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (IOException e) {
+                //meh
             }
         }
         return rate;

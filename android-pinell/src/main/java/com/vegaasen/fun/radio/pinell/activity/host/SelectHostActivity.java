@@ -13,10 +13,20 @@ import com.vegaasen.fun.radio.pinell.adapter.HostArrayAdapter;
 import com.vegaasen.fun.radio.pinell.discovery.abs.AbstractHostDiscovery;
 import com.vegaasen.fun.radio.pinell.discovery.mode.XANHostDiscovery;
 import com.vegaasen.fun.radio.pinell.discovery.model.NetInfo;
-import com.vegaasen.fun.radio.pinell.discovery.utils.Prefs;
 import com.vegaasen.fun.radio.pinell.listeners.DeviceListListener;
 
 import java.lang.ref.WeakReference;
+
+import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_CIDR;
+import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_CIDR_CUSTOM;
+import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_IP_CUSTOM;
+import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_IP_END;
+import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_IP_START;
+import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_CIDR;
+import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_CIDR_CUSTOM;
+import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_IP_CUSTOM;
+import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_IP_END;
+import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_IP_START;
 
 /**
  * This represents the selectable host activity. Its main objective is just to let the user select which host that he/she would like to connect to.
@@ -62,16 +72,14 @@ public class SelectHostActivity extends AbstractActivity {
         }
         // Get ip information
         networkIp = NetInfo.getUnsignedLongFromIp(net.ip);
-        if (prefs.getBoolean(Prefs.KEY_IP_CUSTOM, Prefs.DEFAULT_IP_CUSTOM)) {
+        if (prefs.getBoolean(KEY_IP_CUSTOM, DEFAULT_IP_CUSTOM)) {
             // Custom IP
-            networkStart = NetInfo.getUnsignedLongFromIp(prefs.getString(Prefs.KEY_IP_START,
-                    Prefs.DEFAULT_IP_START));
-            networkEnd = NetInfo.getUnsignedLongFromIp(prefs.getString(Prefs.KEY_IP_END,
-                    Prefs.DEFAULT_IP_END));
+            networkStart = NetInfo.getUnsignedLongFromIp(prefs.getString(KEY_IP_START, DEFAULT_IP_START));
+            networkEnd = NetInfo.getUnsignedLongFromIp(prefs.getString(KEY_IP_END, DEFAULT_IP_END));
         } else {
             // Custom CIDR
-            if (prefs.getBoolean(Prefs.KEY_CIDR_CUSTOM, Prefs.DEFAULT_CIDR_CUSTOM)) {
-                net.cidr = Integer.parseInt(prefs.getString(Prefs.KEY_CIDR, Prefs.DEFAULT_CIDR));
+            if (prefs.getBoolean(KEY_CIDR_CUSTOM, DEFAULT_CIDR_CUSTOM)) {
+                net.cidr = Integer.parseInt(prefs.getString(KEY_CIDR, DEFAULT_CIDR));
             }
             // Detected IP
             int shift = (32 - net.cidr);
@@ -84,8 +92,8 @@ public class SelectHostActivity extends AbstractActivity {
             }
             // Reset ip start-end (is it really convenient ?)
             SharedPreferences.Editor edit = prefs.edit();
-            edit.putString(Prefs.KEY_IP_START, NetInfo.getIpFromLongUnsigned(networkStart));
-            edit.putString(Prefs.KEY_IP_END, NetInfo.getIpFromLongUnsigned(networkEnd));
+            edit.putString(KEY_IP_START, NetInfo.getIpFromLongUnsigned(networkStart));
+            edit.putString(KEY_IP_END, NetInfo.getIpFromLongUnsigned(networkEnd));
             edit.apply();
         }
     }

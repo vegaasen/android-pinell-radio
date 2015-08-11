@@ -7,7 +7,6 @@ import com.vegaasen.fun.radio.pinell.discovery.model.HardwareAddress;
 import com.vegaasen.fun.radio.pinell.discovery.model.HostBean;
 import com.vegaasen.fun.radio.pinell.discovery.model.NetInfo;
 import com.vegaasen.fun.radio.pinell.discovery.model.RateControl;
-import com.vegaasen.fun.radio.pinell.discovery.utils.Prefs;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -17,6 +16,13 @@ import java.net.UnknownHostException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
+import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_RATECTRL_ENABLE;
+import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_RESOLVE_NAME;
+import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_TIMEOUT_DISCOVER;
+import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_RATECTRL_ENABLE;
+import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_RESOLVE_NAME;
+import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_TIMEOUT_DISCOVER;
 
 /**
  * Finding hosts on the X-AN (WAN, LAN)
@@ -50,8 +56,7 @@ public final class XANHostDiscovery extends AbstractHostDiscovery {
         super.onPreExecute();
         final AbstractActivity discover = activity.get();
         if (discover != null) {
-            doRateControl = discover.prefs.getBoolean(Prefs.KEY_RATECTRL_ENABLE,
-                    Prefs.DEFAULT_RATECTRL_ENABLE);
+            doRateControl = discover.prefs.getBoolean(KEY_RATECTRL_ENABLE, DEFAULT_RATECTRL_ENABLE);
         }
     }
 
@@ -133,8 +138,7 @@ public final class XANHostDiscovery extends AbstractHostDiscovery {
 
         final AbstractActivity discover = activity.get();
         if (discover != null) {
-            return Integer.parseInt(discover.prefs.getString(Prefs.KEY_TIMEOUT_DISCOVER,
-                    Prefs.DEFAULT_TIMEOUT_DISCOVER));
+            return Integer.parseInt(discover.prefs.getString(KEY_TIMEOUT_DISCOVER, DEFAULT_TIMEOUT_DISCOVER));
         }
         return 1;
     }
@@ -241,9 +245,6 @@ public final class XANHostDiscovery extends AbstractHostDiscovery {
                 host.setHardwareAddress(HardwareAddress.getHardwareAddress(host.getIpAddress()));
             }
 
-            // NIC vendor
-            host.setNicVendor(HardwareAddress.getNicVendor(host.getHardwareAddress()));
-
             // Is gateway ?
             if (discover.net.gatewayIp.equals(host.getIpAddress())) {
                 host.setDeviceType(HostBean.TYPE_GATEWAY);
@@ -252,7 +253,7 @@ public final class XANHostDiscovery extends AbstractHostDiscovery {
             // FQDN
             // Static
             // DNS
-            if (discover.prefs.getBoolean(Prefs.KEY_RESOLVE_NAME, Prefs.DEFAULT_RESOLVE_NAME)) {
+            if (discover.prefs.getBoolean(KEY_RESOLVE_NAME, DEFAULT_RESOLVE_NAME)) {
                 try {
                     host.setHostname((InetAddress.getByName(host.getIpAddress())).getCanonicalHostName());
                 } catch (UnknownHostException e) {
