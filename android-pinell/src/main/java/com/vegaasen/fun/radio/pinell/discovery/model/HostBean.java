@@ -1,9 +1,3 @@
-/*
- * Copyright (C) 2009-2010 Aubort Jean-Baptiste (Rorist)
- * Licensed under GNU's GPL 2, see README
- */
-
-// Inspired by http://connectbot.googlecode.com/svn/trunk/connectbot/src/org/connectbot/bean/HostBean.java
 package com.vegaasen.fun.radio.pinell.discovery.model;
 
 import android.os.Parcel;
@@ -47,6 +41,17 @@ public class HostBean implements Parcelable {
     public HostBean(Parcel in) {
         readFromParcel(in);
     }
+
+    @SuppressWarnings("unchecked")
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public HostBean createFromParcel(Parcel in) {
+            return new HostBean(in);
+        }
+
+        public HostBean[] newArray(int size) {
+            return new HostBean[size];
+        }
+    };
 
     public int getDeviceType() {
         return deviceType;
@@ -174,6 +179,25 @@ public class HostBean implements Parcelable {
         dest.writeList(portsClosed);
     }
 
+    @Override
+    public String toString() {
+        return "HostBean{" +
+                "deviceType=" + deviceType +
+                ", isAlive=" + isAlive +
+                ", position=" + position +
+                ", responseTime=" + responseTime +
+                ", ipAddress='" + ipAddress + '\'' +
+                ", hostname='" + hostname + '\'' +
+                ", hardwareAddress='" + hardwareAddress + '\'' +
+                ", nicVendor='" + nicVendor + '\'' +
+                ", os='" + os + '\'' +
+                ", services=" + services +
+                ", banners=" + banners +
+                ", portsOpen=" + portsOpen +
+                ", portsClosed=" + portsClosed +
+                '}';
+    }
+
     @SuppressWarnings("unchecked")
     private void readFromParcel(Parcel in) {
         deviceType = in.readInt();
@@ -190,15 +214,4 @@ public class HostBean implements Parcelable {
         portsOpen = in.readArrayList(Integer.class.getClassLoader());
         portsClosed = in.readArrayList(Integer.class.getClassLoader());
     }
-
-    @SuppressWarnings("unchecked")
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
-        public HostBean createFromParcel(Parcel in) {
-            return new HostBean(in);
-        }
-
-        public HostBean[] newArray(int size) {
-            return new HostBean[size];
-        }
-    };
 }

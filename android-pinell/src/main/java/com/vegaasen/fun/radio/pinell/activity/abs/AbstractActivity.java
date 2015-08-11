@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 import com.vegaasen.fun.radio.pinell.R;
@@ -70,6 +71,15 @@ public abstract class AbstractActivity extends FragmentActivity {
 
     public List<HostBean> getHosts() {
         return hosts;
+    }
+
+    protected void clearHosts() {
+        hosts.clear();
+    }
+
+    protected void enableTaskbarSpinner() {
+        requestWindowFeature(Window.FEATURE_PROGRESS);
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
     }
 
     /**

@@ -46,4 +46,12 @@ public class RadioFsApiConnectionServiceImpl implements RadioFsApiConnectionServ
         ApiConnection.INSTANCE.setPreSubnet(subnet);
         ApiConnection.INSTANCE.detach();
     }
+
+    @Override
+    public Host createHost(String host, int port) {
+        if (host == null || host.isEmpty()) {
+            throw new IllegalArgumentException("Required parameter was nilled or empty");
+        }
+        return ApiConnection.INSTANCE.createHost(host, port);
+    }
 }

@@ -1,5 +1,6 @@
 package com.vegaasen.fun.radio.pinell.service;
 
+import com.vegaasen.fun.radio.pinell.discovery.model.HostBean;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Connection;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
 
@@ -18,12 +19,28 @@ interface PinellHostService {
     boolean isHostConfigured();
 
     /**
+     * Assemble a host based on the provided hostBean
+     *
+     * @param hostBean _
+     * @return _
+     */
+    Host assembleHost(HostBean hostBean);
+
+    /**
      * Set the wanted pinellHost by the index. The index is determined by the host of indexes.
      *
      * @param index _
      * @return _
      */
     boolean setCurrentPinellHost(int index);
+
+    /**
+     * Set the wanted pinellHost by a supplied host
+     *
+     * @param host _
+     * @return _
+     */
+    boolean setCurrentPinellHost(Host host);
 
     /**
      * Get a list of all the availble pinellHosts

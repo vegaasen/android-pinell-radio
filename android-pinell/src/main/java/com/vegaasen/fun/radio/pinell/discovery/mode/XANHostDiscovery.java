@@ -28,14 +28,15 @@ import java.util.concurrent.TimeUnit;
  */
 public final class XANHostDiscovery extends AbstractHostDiscovery {
 
-    private final String TAG = "DefaultDiscovery";
-    private final static int[] DPORTS = {139, 445, 22, 80};
-    private final static int TIMEOUT_SCAN = 3600; // seconds
-    private final static int TIMEOUT_SHUTDOWN = 10; // seconds
-    private final static int THREADS = 10; //FIXME: Test, plz set in options again ?
-    private final int mRateMult = 5; // Number of alive hosts between Rate
-    private int pt_move = 2; // 1=backward 2=forward
-    private final ExecutorService mPool = Executors.newFixedThreadPool(THREADS);
+    private static final String TAG = XANHostDiscovery.class.getSimpleName();
+    private static final int[] OPTIONS_PORTS = {139, 445, 22, 80};
+    private static final int TIMEOUT_SCAN = 3600, TIMEOUT_SHUTDOWN = 10;
+    private static final int NUM_THREADS = 10; //FIXME: Test, plz set in options again ?
+    private static final int RATE_ALIVE_HOSTS = 5; // Number of alive hosts between Rate
+
+    private final ExecutorService mPool = Executors.newFixedThreadPool(NUM_THREADS);
+
+    private int move = 2; // 1=backward 2=forward
     private boolean doRateControl;
     private RateControl mRateControl;
 
@@ -58,39 +59,34 @@ public final class XANHostDiscovery extends AbstractHostDiscovery {
     protected Void doInBackground(Void... params) {
         final AbstractActivity discover = activity.get();
         if (discover != null) {
-            Log.v(TAG, "start=" + NetInfo.getIpFromLongUnsigned(start) + " (" + start
+            Log.d(TAG, "start=" + NetInfo.getIpFromLongUnsigned(start) + " (" + start
                     + "), end=" + NetInfo.getIpFromLongUnsigned(end) + " (" + end
                     + "), length=" + size);
             if (ip <= end && ip >= start) {
-                Log.i(TAG, "Back and forth scanning");
+                Log.d(TAG, "Back and forth scanning");
                 // gateway
                 launch(start);
-
                 // hosts
-                long pt_backward = ip;
-                long pt_forward = ip + 1;
-                long size_hosts = size - 1;
-
-                for (int i = 0; i < size_hosts; i++) {
+                long ptBackward = ip, ptForward = ip + 1, sizeHosts = size - 1;
+                for (int i = 0; i < sizeHosts; i++) {
                     // Set pointer if of limits
-                    if (pt_backward <= start) {
-                        pt_move = 2;
-                    } else if (pt_forward > end) {
-                        pt_move = 1;
+                    if (ptBackward <= start) {
+                        move = 2;
+                    } else if (ptForward > end) {
+                        move = 1;
                     }
                     // Move back and forth
-                    if (pt_move == 1) {
-                        launch(pt_backward);
-                        pt_backward--;
-                        pt_move = 2;
-                    } else if (pt_move == 2) {
-                        launch(pt_forward);
-                        pt_forward++;
-                        pt_move = 1;
+                    if (move == 1) {
+                        launch(ptBackward);
+                        ptBackward--;
+                        move = 2;
+                    } else if (move == 2) {
+                        launch(ptForward);
+                        ptForward++;
+                        move = 1;
                     }
                 }
             } else {
-                Log.i(TAG, "Sequencial scanning");
                 for (long i = start; i <= end; i++) {
                     launch(i);
                 }
@@ -99,9 +95,9 @@ public final class XANHostDiscovery extends AbstractHostDiscovery {
             try {
                 if (!mPool.awaitTermination(TIMEOUT_SCAN, TimeUnit.SECONDS)) {
                     mPool.shutdownNow();
-                    Log.e(TAG, "Shutting down pool");
+                    Log.i(TAG, "Shutting down pool");
                     if (!mPool.awaitTermination(TIMEOUT_SHUTDOWN, TimeUnit.SECONDS)) {
-                        Log.e(TAG, "Pool did not terminate");
+                        Log.w(TAG, "Pool did not terminate");
                     }
                 }
             } catch (InterruptedException e) {
@@ -154,7 +150,7 @@ public final class XANHostDiscovery extends AbstractHostDiscovery {
             if (isCancelled()) {
                 publish(null);
             }
-            Log.e(TAG, "run=" + addr);
+            Log.d(TAG, String.format("Checking {%s}", addr));
             // Create host object
             final HostBean host = new HostBean();
             host.setResponseTime(getRate());
@@ -162,7 +158,7 @@ public final class XANHostDiscovery extends AbstractHostDiscovery {
             try {
                 InetAddress h = InetAddress.getByName(addr);
                 // Rate control check
-                if (doRateControl && mRateControl.indicator != null && hosts_done % mRateMult == 0) {
+                if (doRateControl && mRateControl.indicator != null && hosts_done % RATE_ALIVE_HOSTS == 0) {
                     mRateControl.adaptRate();
                 }
                 // Arp Check #1
@@ -193,17 +189,19 @@ public final class XANHostDiscovery extends AbstractHostDiscovery {
                 // Custom check
                 int port;
                 // TODO: Get ports from options
-                Socket s = new Socket();
-                for (int DPORT : DPORTS) {
+                for (int optionsPort : OPTIONS_PORTS) {
+                    Socket socket = new Socket();
                     try {
-                        s.bind(null);
-                        s.connect(new InetSocketAddress(addr, DPORT), getRate());
-                        Log.v(TAG, "found using TCP connect " + addr + " on port=" + DPORT);
+                        socket.bind(null);
+                        socket.connect(new InetSocketAddress(addr, optionsPort), getRate());
+                        Log.v(TAG, "found using TCP connect " + addr + " on port=" + optionsPort);
                     } catch (IOException | IllegalArgumentException e) {
+                        //nvm
                     } finally {
                         try {
-                            s.close();
+                            socket.close();
                         } catch (Exception e) {
+                            //nvm
                         }
                     }
                 }

@@ -14,7 +14,7 @@ import com.vegaasen.fun.radio.pinell.discovery.abs.AbstractHostDiscovery;
 import com.vegaasen.fun.radio.pinell.discovery.mode.XANHostDiscovery;
 import com.vegaasen.fun.radio.pinell.discovery.model.NetInfo;
 import com.vegaasen.fun.radio.pinell.discovery.utils.Prefs;
-import com.vegaasen.fun.radio.pinell.listener.DeviceListListener;
+import com.vegaasen.fun.radio.pinell.listeners.DeviceListListener;
 
 import java.lang.ref.WeakReference;
 
@@ -40,6 +40,7 @@ public class SelectHostActivity extends AbstractActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        enableTaskbarSpinner();
         discoveryOnCreate(savedInstanceState);
         setContentView(R.layout.dialog_device_chooser);
         configureActions();
@@ -108,16 +109,19 @@ public class SelectHostActivity extends AbstractActivity {
                 adapter = new HostArrayAdapter(context, R.layout.listview_device, R.id.listDeviceRadioName, new WeakReference<AbstractActivity>(this));
                 deviceOverview.setAdapter(adapter);
                 deviceOverview.setItemsCanFocus(false);
-                deviceOverview.setOnItemClickListener(new DeviceListListener(activity, getPinellService()));
+                deviceOverview.setOnItemClickListener(new DeviceListListener(new WeakReference<>(activity), getPinellService()));
 //                deviceOverview.setEmptyView();
             } else {
                 Log.d(TAG, "Updating existing adapter");
                 adapter.clear();
+                clearHosts();
             }
         }
         hostDiscovery = new XANHostDiscovery(activity);
         hostDiscovery.setNetwork(networkIp, networkStart, networkEnd);
         hostDiscovery.execute();
+        setProgressBarVisibility(true);
+        setProgressBarIndeterminateVisibility(true);
     }
 
 }

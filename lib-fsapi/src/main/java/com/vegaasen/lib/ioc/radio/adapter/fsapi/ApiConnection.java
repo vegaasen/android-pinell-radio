@@ -35,6 +35,8 @@ public enum ApiConnection {
 
     INSTANCE;
 
+    public static final int DEFAULT_FS_PORT = 2244, ALTERNATIVE_FS_PORT = 80;
+
     private static final Logger LOG = Logger.getLogger(ApiConnection.class.getSimpleName());
     //todo: change the header so that it identifies the library correctly.
     private static final Header USER_AGENT = new Header("User-Agent", "Pinell/1.1 CFNetwork/711.3.18 Darwin/14.0.0");
@@ -42,7 +44,6 @@ public enum ApiConnection {
     private static final Header ACCEPT_LANGUAGE = new Header("Accept-Language", "en-us");
     private static final Header CONNECTION = new Header("Connection", "keep-alive");
     private static final Header ACCEPT_ENCODING = new Header("Accept-Encoding", "gzip, deflate");
-    private static final int DEFAULT_FS_PORT = 2244, ALTERNATIVE_FS_PORT = 80;
     private static final String DEFAULT_CODE = "1234";
     private static final String EMPTY = "";
 
@@ -137,6 +138,10 @@ public enum ApiConnection {
         parameters.put(Parameter.QueryParameter.PIN_NUMBER, host.getCode());
         parameters.put(Parameter.QueryParameter.SESSION_ID, getSession(host));
         return parameters;
+    }
+
+    public Host createHost(final String candidate, int port) {
+        return Host.create(candidate, port, DEFAULT_CODE);
     }
 
     /**

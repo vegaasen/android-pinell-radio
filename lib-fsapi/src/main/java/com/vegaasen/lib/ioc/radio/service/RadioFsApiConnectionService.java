@@ -51,4 +51,13 @@ public interface RadioFsApiConnectionService {
      */
     void setSubnet(String subnet);
 
+    /**
+     * Assemble a Host object defined by a candidateIp or DNS and a port. This does not touch any functionality related to the API itself
+     *
+     * @param host _
+     * @param port _
+     * @return _
+     */
+    Host createHost(String host, int port);
+
 }

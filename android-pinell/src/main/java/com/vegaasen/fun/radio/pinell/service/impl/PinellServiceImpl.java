@@ -1,9 +1,12 @@
 package com.vegaasen.fun.radio.pinell.service.impl;
 
 import android.util.Log;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.vegaasen.fun.radio.pinell.discovery.model.HostBean;
 import com.vegaasen.fun.radio.pinell.service.PinellService;
 import com.vegaasen.fun.radio.pinell.util.CollectionUtils;
+import com.vegaasen.lib.ioc.radio.adapter.fsapi.ApiConnection;
 import com.vegaasen.lib.ioc.radio.model.dab.RadioStation;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceAudio;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceCurrentlyPlaying;
@@ -66,13 +69,33 @@ public class PinellServiceImpl implements PinellService {
     }
 
     @Override
+    public Host assembleHost(HostBean candidate) {
+        if (candidate == null || Strings.isNullOrEmpty(candidate.getIpAddress())) {
+            Log.w(TAG, "Unable to create host by the selected candidate as the candidate is nilled, no ipAddress detected or no ports opened");
+            return null;
+        }
+        return getRadioConnectionService().createHost(
+                candidate.getIpAddress(),
+                CollectionUtils.isEmpty(candidate.getPortsOpen()) ? ApiConnection.DEFAULT_FS_PORT : candidate.getPortsOpen().iterator().next());
+    }
+
+    @Override
     public boolean setCurrentPinellHost(int index) {
         Log.d(TAG, String.format("Setting pinellHost from index {%s}", index));
         if (index >= getPinellHosts().size()) {
-            Log.w(TAG, "The wanted index was greater than the hostsList. Ignoring action.");
+            Log.w(TAG, "The wanted index was greater than the hostsList. Ignoring");
             return false;
         }
         setSelectedHost(Lists.newArrayList(getPinellHosts()).get(index));
+        return true;
+    }
+
+    @Override
+    public boolean setCurrentPinellHost(Host host) {
+        if (host == null) {
+            return false;
+        }
+        setSelectedHost(host);
         return true;
     }
 
