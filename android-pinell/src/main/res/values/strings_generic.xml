@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="unavailable">Unavailable</string>
-    <string name="pinellNotAvailMain">Connected :-)..and so close!</string>
-    <string name="pinellNotAvailReason">..but it does not seem like a Pinell device?</string>
+    <string name="pinellNotAvailMain">Connected :-)</string>
+    <string name="pinellNotAvailReason">..but it does not seem like a Pinell device :-/?</string>
 </resources>

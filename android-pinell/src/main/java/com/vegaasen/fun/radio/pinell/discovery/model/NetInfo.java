@@ -10,6 +10,7 @@ import android.net.wifi.WifiManager;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import com.google.common.base.Strings;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -102,7 +103,7 @@ public class NetInfo {
     public void getIp() {
         intf = prefs.getString(KEY_INTF, DEFAULT_INTF);
         try {
-            if (intf.equals(DEFAULT_INTF) || NOIF.equals(intf)) {
+            if (Strings.isNullOrEmpty(intf) || intf.equals(DEFAULT_INTF) || NOIF.equals(intf)) {
                 // Automatic interface selection
                 for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en
                         .hasMoreElements(); ) {
