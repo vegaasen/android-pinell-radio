@@ -36,7 +36,8 @@ public class DeviceListListener implements AdapterView.OnItemClickListener {
             Log.e(TAG, "Unable to set the current pinell host due to pinellService being nilled");
             return;
         }
-        Log.d(TAG, String.format("Selecting {%s} as the wanted host. Selection was successful {%s}", position, pinellService.setCurrentPinellHost(position)));
+        final boolean pinellHostSet = pinellService.setCurrentPinellHost(position);
+        Log.d(TAG, String.format("Selecting {%s} as the wanted host. Selection was successful {%s}", position, pinellHostSet));
         hideDialogBoxPostHostSelection();
     }
 

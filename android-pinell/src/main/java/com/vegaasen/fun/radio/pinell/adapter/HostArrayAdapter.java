@@ -5,11 +5,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import com.vegaasen.fun.radio.pinell.R;
-import com.vegaasen.fun.radio.pinell.adapter.abs.AbstractArrayAdapter;
-import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
+import com.vegaasen.fun.radio.pinell.activity.abs.AbstractActivity;
+import com.vegaasen.fun.radio.pinell.discovery.model.HostBean;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
@@ -17,33 +19,32 @@ import java.util.List;
  *
  * @author <a href="mailto:vegaasen@gmail.com">vegaasen</a>
  * @version 0.1
- * @since 11.03.2015
+ * @since 11.08.2015
  */
-public class DeviceArrayAdapter extends AbstractArrayAdapter<Host> {
+public class HostArrayAdapter extends ArrayAdapter<HostBean> {
 
     private static final String TAG = DeviceArrayAdapter.class.getSimpleName();
     private static final int MAX_HOSTNAME_LENGTH = 20, START = 0;
 
     private final Context context;
-    private final List<Host> devices;
+    private final WeakReference<AbstractActivity> activity;
 
-    public DeviceArrayAdapter(Context context, int resource, List<Host> objects) {
-        super(context, resource, objects);
+    public HostArrayAdapter(Context context, int resource, int textResource, WeakReference<AbstractActivity> activity) {
+        super(context, resource, textResource);
         this.context = context;
-        this.devices = objects;
-        Log.d(TAG, String.format("Detected {%s} hosts", objects.size()));
+        this.activity = activity;
     }
 
     @Override
-    public View getView(final int position, final View convertView, final ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent) {
         Log.d(TAG, String.format("Iterating through position {%s}", position));
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (layoutInflater != null) {
             final View deviceListView = layoutInflater.inflate(R.layout.listview_device, parent, false);
             final TextView radioName = (TextView) deviceListView.findViewById(R.id.listDeviceRadioName);
-            final Host host = devices.get(position);
+            final HostBean host = getHost(position);
             if (host != null) {
-                final String hostName = host.getHost();
+                final String hostName = host.getHostname();
                 Log.d(TAG, String.format("Host is now being handled {%s}", hostName));
                 radioName.setText(hostName.toCharArray(), START, hostName.length() > MAX_HOSTNAME_LENGTH ? MAX_HOSTNAME_LENGTH : hostName.length());
             }
@@ -52,13 +53,15 @@ public class DeviceArrayAdapter extends AbstractArrayAdapter<Host> {
         return super.getView(position, convertView, parent);
     }
 
-    @Override
-    public void updateElements(List<Host> hosts) {
-        devices.clear();
-        if (hosts == null || hosts.isEmpty()) {
-            Log.d(TAG, "Unable to update the deviceArrayAdapter due to the hostsList being empty. List was cleared, though.");
-            return;
+    private HostBean getHost(int position) {
+        if (activity == null) {
+            return null;
         }
-        devices.addAll(hosts);
+        final List<HostBean> hosts = activity.get().getHosts();
+        if (hosts == null || hosts.isEmpty()) {
+            return null;
+        }
+        return hosts.get(position);
     }
+
 }

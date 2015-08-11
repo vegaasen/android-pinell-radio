@@ -1,31 +1,96 @@
 package com.vegaasen.fun.radio.pinell.activity.abs;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.SupplicantState;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.Toast;
+import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.context.ApplicationContext;
+import com.vegaasen.fun.radio.pinell.discovery.model.HostBean;
+import com.vegaasen.fun.radio.pinell.discovery.model.NetInfo;
+import com.vegaasen.fun.radio.pinell.discovery.utils.Prefs;
 import com.vegaasen.fun.radio.pinell.service.PinellService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Simple layer abstraction for all common screens in the application.
  * It works as the "unibody" design
  * <p/>
  * Todo: move the initialization from the AbstractActivity to a context-wide location instead
+ * Todo: refactor
  *
  * @author <a href="mailto:vegaasen@gmail.com">vegaasen</a>
  */
 public abstract class AbstractActivity extends FragmentActivity {
 
     private static final String TAG = AbstractActivity.class.getSimpleName();
+    private static final String EMPTY = "";
+
+    public static final long VIBRATE = (long) 250;
+
+    private List<HostBean> hosts = new ArrayList<>();
+    private ConnectivityManager connMgr;
+
+    public SharedPreferences prefs = null;
+    public NetInfo net = null;
 
     protected final Context context = this;
+
+    protected ArrayAdapter<?> adapter;
+    protected String info_ip_str = EMPTY;
+    protected String info_in_str = EMPTY;
+    protected String info_mo_str = EMPTY;
 
     public AbstractActivity() {
         super();
         Log.d(TAG, "AbstractActivity is setting the appropriate context");
         ApplicationContext.INSTANCE.setContext(context);
+    }
+
+    public void addHost(HostBean host) {
+        //todo: why?! :-S
+        host.setPosition(hosts.size());
+        hosts.add(host);
+        adapter.add(null);
+    }
+
+    public List<HostBean> getHosts() {
+        return hosts;
+    }
+
+    /**
+     * These settings may be overridden by the implementing classes
+     */
+    protected void configureNetworkInformation() {
+    }
+
+    protected void discoveryOnCreate(Bundle savedInstanceState) {
+//        context = getApplicationContext();
+        prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        net = new NetInfo(context);
+    }
+
+    protected void discoveryOnResume() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        filter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
+        registerReceiver(receiver, filter);
     }
 
     protected PinellService getPinellService() {
@@ -50,5 +115,98 @@ public abstract class AbstractActivity extends FragmentActivity {
         NetworkInfo wifiInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         return wifiInfo != null && wifiInfo.isConnected();
     }
+
+    public void makeToast(int messageReferenceId) {
+        Toast.makeText(getApplicationContext(), messageReferenceId, Toast.LENGTH_SHORT).show();
+    }
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context ctxt, Intent intent) {
+            info_ip_str = EMPTY;
+            info_mo_str = EMPTY;
+            // Wifi state
+            String action = intent.getAction();
+            if (action != null) {
+                if (action.equals(WifiManager.WIFI_STATE_CHANGED_ACTION)) {
+                    int WifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, -1);
+                    //Log.d(TAG, "WifiState=" + WifiState);
+                    switch (WifiState) {
+                        case WifiManager.WIFI_STATE_ENABLING:
+                            info_in_str = getString(R.string.genericUndocumented);
+                            break;
+                        case WifiManager.WIFI_STATE_ENABLED:
+                            info_in_str = getString(R.string.genericUndocumented);
+                            break;
+                        case WifiManager.WIFI_STATE_DISABLING:
+                            info_in_str = getString(R.string.genericUndocumented);
+                            break;
+                        case WifiManager.WIFI_STATE_DISABLED:
+                            info_in_str = getString(R.string.genericUndocumented);
+                            break;
+                        default:
+                            info_in_str = getString(R.string.genericUndocumented);
+                    }
+                }
+
+                if (action.equals(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION) && net.getWifiInfo()) {
+                    SupplicantState sstate = net.getSupplicantState();
+                    if (sstate == SupplicantState.SCANNING) {
+                        info_in_str = getString(R.string.genericUndocumented);
+                    } else if (sstate == SupplicantState.ASSOCIATING) {
+                        info_in_str = getString(R.string.genericUndocumented,
+                                (net.ssid != null ? net.ssid : (net.bssid != null ? net.bssid
+                                        : net.macAddress)));
+                    } else if (sstate == SupplicantState.COMPLETED) {
+                        info_in_str = getString(R.string.genericUndocumented, net.ssid);
+                    }
+                }
+            }
+
+            // 3G(connected) -> Wifi(connected)
+            // Support Ethernet, with ConnectivityManager.TYPE_ETHER=3
+            final NetworkInfo ni = connMgr.getActiveNetworkInfo();
+            if (ni != null) {
+                //Log.i(TAG, "NetworkState="+ni.getDetailedState());
+                if (ni.getDetailedState() == NetworkInfo.DetailedState.CONNECTED) {
+                    int type = ni.getType();
+                    //Log.i(TAG, "NetworkType="+type);
+                    if (type == ConnectivityManager.TYPE_WIFI) { // WIFI
+                        net.getWifiInfo();
+                        if (net.ssid != null) {
+                            net.getIp();
+                            info_ip_str = getString(R.string.genericUndocumented, net.ip, net.cidr, net.intf);
+                            info_in_str = getString(R.string.genericUndocumented, net.ssid);
+                            info_mo_str = getString(R.string.genericUndocumented, getString(
+                                    R.string.genericUndocumented, net.speed, WifiInfo.LINK_SPEED_UNITS));
+                        }
+                    } else if (type == ConnectivityManager.TYPE_MOBILE) { // 3G
+                        if (prefs.getBoolean(Prefs.KEY_MOBILE, Prefs.DEFAULT_MOBILE)
+                                || prefs.getString(Prefs.KEY_INTF, Prefs.DEFAULT_INTF) != null) {
+                            net.getMobileInfo();
+                            if (net.carrier != null) {
+                                net.getIp();
+                                info_ip_str = getString(R.string.genericUndocumented, net.ip, net.cidr, net.intf);
+                                info_in_str = getString(R.string.genericUndocumented, net.carrier);
+                                info_mo_str = getString(R.string.genericUndocumented,
+                                        getString(R.string.genericUndocumented));
+                            }
+                        }
+                    } else if (type == 3 || type == 9) { // ETH
+                        net.getIp();
+                        info_ip_str = getString(R.string.genericUndocumented, net.ip, net.cidr, net.intf);
+                        info_in_str = EMPTY;
+                        info_mo_str = getString(R.string.genericUndocumented) + getString(R.string.genericUndocumented);
+                        Log.i(TAG, "Ethernet connectivity detected!");
+                    } else {
+                        Log.i(TAG, "Connectivity unknown!");
+                        info_mo_str = getString(R.string.genericUndocumented)
+                                + getString(R.string.genericUndocumented);
+                    }
+                }
+            }
+            configureNetworkInformation();
+        }
+    };
 
 }
