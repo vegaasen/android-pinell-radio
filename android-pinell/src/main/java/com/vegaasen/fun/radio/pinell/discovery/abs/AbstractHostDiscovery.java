@@ -88,7 +88,7 @@ public abstract class AbstractHostDiscovery extends AsyncTask<Void, HostBean, Vo
                 Vibrator v = (Vibrator) discover.getSystemService(Context.VIBRATOR_SERVICE);
                 v.vibrate(AbstractActivity.VIBRATE);
             }
-            discover.makeToast(R.string.genericUndocumented);
+            discover.makeToast(R.string.discoveryComplete);
         }
     }
 
@@ -96,7 +96,7 @@ public abstract class AbstractHostDiscovery extends AsyncTask<Void, HostBean, Vo
     protected void onCancelled() {
         final AbstractActivity discover = activity.get();
         if (discover != null) {
-            discover.makeToast(R.string.genericUndocumented);
+            discover.makeToast(R.string.discoveryCancel);
         }
         super.onCancelled();
     }

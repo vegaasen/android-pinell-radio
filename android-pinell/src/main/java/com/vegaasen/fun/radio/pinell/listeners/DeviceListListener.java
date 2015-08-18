@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Toast;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractActivity;
 import com.vegaasen.fun.radio.pinell.discovery.model.HostBean;
 import com.vegaasen.fun.radio.pinell.service.PinellService;
@@ -46,12 +47,12 @@ public class DeviceListListener implements AdapterView.OnItemClickListener {
             Log.w(TAG, "Unable to fetch wanted hostBean");
             return;
         }
-        activity.get().cancel();
         Log.d(TAG, String.format("CandidateHostBean {%s}", hostBean.toString()));
         final Host candidateHost = pinellService.assembleHost(hostBean);
         Log.d(TAG, String.format("CandidateHost {%s}", candidateHost.toString()));
         final boolean pinellHostSet = pinellService.setCurrentPinellHost(candidateHost);
         Log.d(TAG, String.format("Selecting {%s} as the wanted host. Selection was successful {%s}", position, pinellHostSet));
+        Toast.makeText(getActivity().getBaseContext(), String.format("Connected to %s", candidateHost.getHost()), Toast.LENGTH_SHORT).show();
         hideDialogBoxPostHostSelection();
     }
 
@@ -60,6 +61,7 @@ public class DeviceListListener implements AdapterView.OnItemClickListener {
             Log.w(TAG, "Unable to automatically close the activity due to the dialog being nilled");
             return;
         }
+        getActivity().cancel();
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }
