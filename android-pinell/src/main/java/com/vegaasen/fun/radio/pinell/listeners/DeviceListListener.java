@@ -46,6 +46,7 @@ public class DeviceListListener implements AdapterView.OnItemClickListener {
             Log.w(TAG, "Unable to fetch wanted hostBean");
             return;
         }
+        activity.get().cancel();
         Log.d(TAG, String.format("CandidateHostBean {%s}", hostBean.toString()));
         final Host candidateHost = pinellService.assembleHost(hostBean);
         Log.d(TAG, String.format("CandidateHost {%s}", candidateHost.toString()));

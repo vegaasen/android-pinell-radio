@@ -42,6 +42,10 @@ public abstract class AbstractHostDiscovery extends AsyncTask<Void, HostBean, Vo
 
     abstract protected Void doInBackground(Void... params);
 
+    public void hardCancel() {
+        onCancelled();
+    }
+
     @Override
     protected void onPreExecute() {
         size = (int) (end - start + 1);

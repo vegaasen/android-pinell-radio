@@ -66,6 +66,12 @@ public abstract class AbstractActivity extends FragmentActivity {
         ApplicationContext.INSTANCE.setContext(context);
     }
 
+    /**
+     * These settings may be overridden by the implementing classes
+     */
+    public void cancel() {
+    }
+
     public void addHost(HostBean host) {
         //todo: why?! :-S
         host.setPosition(hosts.size());
@@ -105,6 +111,12 @@ public abstract class AbstractActivity extends FragmentActivity {
         filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
         filter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
         registerReceiver(receiver, filter);
+    }
+
+    protected void deregisterReceiver() {
+        if (receiver != null) {
+            unregisterReceiver(receiver);
+        }
     }
 
     protected PinellService getPinellService() {

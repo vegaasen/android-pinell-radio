@@ -63,6 +63,12 @@ public class SelectHostActivity extends AbstractActivity {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        deregisterReceiver();
+    }
+
+    @Override
     protected void configureNetworkInformation() {
         if (currentNetwork != net.hashCode()) {
             Log.d(TAG, "Network info has changed");
@@ -98,6 +104,16 @@ public class SelectHostActivity extends AbstractActivity {
         }
     }
 
+    @Override
+    public void cancel() {
+        Log.i(TAG, "Stopping the discovery of items");
+        if (hostDiscovery != null) {
+            hostDiscovery.cancel(true);
+            hostDiscovery.hardCancel();
+            hostDiscovery = null;
+        }
+    }
+
     private void configureActions() {
         final ImageButton refreshDevices = (ImageButton) findViewById(R.id.btnDialogRefreshDevices);
         final AbstractActivity currentActivity = this;
@@ -123,6 +139,7 @@ public class SelectHostActivity extends AbstractActivity {
                 Log.d(TAG, "Updating existing adapter");
                 adapter.clear();
                 clearHosts();
+                cancel();
             }
         }
         hostDiscovery = new XANHostDiscovery(activity);
