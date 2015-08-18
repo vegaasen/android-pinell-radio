@@ -109,11 +109,13 @@ public class InformationFragment extends AbstractFragment {
     private void configurePowerSwitch() {
         Log.d(TAG, "Configuring the powerSwitch");
         if (powerSwitch != null) {
-            powerSwitch.setChecked(getPinellService().isPoweredOn());
+            //FIXME: some kind of bug here
+            final boolean poweredOn = getPinellService().isPoweredOn();
+            powerSwitch.setChecked(poweredOn);
             powerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked) {
+                    if (isChecked || poweredOn) {
                         getPinellService().setPowerState(PowerState.ON);
                     } else {
                         getPinellService().setPowerState(PowerState.OFF);
@@ -127,7 +129,7 @@ public class InformationFragment extends AbstractFragment {
         Log.d(TAG, "Activating postActivities - e.g disabling functions and so on");
         powerSwitch = (Switch) informationView.findViewById(R.id.listDeviceInformationPowerSwitcher);
         final boolean enabled = getPinellService().isPinellDevice();
-        if(enabled) {
+        if (enabled) {
             return;
         }
         Log.d(TAG, "The current host is not an actual Pinell host. Disabling the powerSwitch selector");

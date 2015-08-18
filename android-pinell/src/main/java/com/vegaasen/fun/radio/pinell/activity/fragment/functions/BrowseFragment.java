@@ -89,7 +89,6 @@ public class BrowseFragment extends AbstractFragment {
         loadMoreItemsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "haha");
                 if (loadedRadioStations != null) {
                     loadedRadioStations.addAll(assembleRadioStations(loadedRadioStations.size() - 1));
                     listRadioStationsAvailable();
