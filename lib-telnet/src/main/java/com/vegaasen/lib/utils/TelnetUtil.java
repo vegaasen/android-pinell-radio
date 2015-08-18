@@ -36,7 +36,7 @@ public final class TelnetUtil {
     // todo: The timeout portion may need to be moved around a bit, as it may be too "slow" or "too quick" in regards to Android devices. We'll see..
     private static final long WAIT = TimeUnit.SECONDS.toMillis(8);
     private static final int NUM_OF_HOSTS = 250, NUM_THREADS = 250, NUM_THREADS_ALIVE_ACTIVE = 1;
-    private static final int TIMEOUT_DETECT_SUBNET = 20, TIMEOUT_IS_ALIVE = 10;
+    private static final int TIMEOUT_DETECT_SUBNET = 20, TIMEOUT_IS_ALIVE = 10, DEFAULT_TIMEOUT = (int) TimeUnit.SECONDS.toMillis(2);
     private static final ExecutorService
             EXECUTOR_SERVICE = Executors.newFixedThreadPool(NUM_THREADS),
             ACTIVE_SUBNET = Executors.newFixedThreadPool(NUM_THREADS_ALIVE_ACTIVE),
@@ -146,7 +146,7 @@ public final class TelnetUtil {
      * @param port     _
      * @return aliveness identification
      */
-    public static boolean isAlive(final String hostName, final int port) {
+    public synchronized static boolean isAlive(final String hostName, final int port) {
         try {
             final AliveCallable task = new AliveCallable(hostName, port);
             final Future<Boolean> future = ALIVE_HOST_SERVICE.submit(task);
@@ -224,11 +224,18 @@ public final class TelnetUtil {
                 LOG.info(String.format("Checking {%s} for port opened on {%s}", hostName, port));
                 socket.configureBlocking(false);
                 socket.connect(new InetSocketAddress(InetAddress.getByName(hostName), port));
-                Data data = new Data();
-                data.setPort(port);
-                data.setStart(System.nanoTime());
-                //socket.register(selector, SelectionKey.OP_CONNECT, data);
-                return socket.isConnected();
+                long lastCheck, firstCheck;
+                lastCheck = firstCheck = System.currentTimeMillis();
+                while (!socket.finishConnect()) {
+                    if ((lastCheck - firstCheck) > DEFAULT_TIMEOUT) {
+                        LOG.info(String.format("Bind not detected. Cancelling for {%s:%s}", hostName, port));
+                        return false;
+                    } else {
+                        LOG.fine(String.format("Waiting for connection for {%s:%s}", hostName, port));
+                        lastCheck = System.currentTimeMillis();
+                    }
+                }
+                return true;
             } catch (final IOException e) {
                 // gasp
             } finally {

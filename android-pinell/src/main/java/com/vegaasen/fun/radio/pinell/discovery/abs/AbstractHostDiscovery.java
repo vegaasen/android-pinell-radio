@@ -3,9 +3,12 @@ package com.vegaasen.fun.radio.pinell.discovery.abs;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Vibrator;
+import android.util.Log;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractActivity;
 import com.vegaasen.fun.radio.pinell.discovery.model.HostBean;
+import com.vegaasen.lib.ioc.radio.adapter.fsapi.ApiConnection;
+import com.vegaasen.lib.utils.TelnetUtil;
 
 import java.lang.ref.WeakReference;
 
@@ -21,6 +24,8 @@ import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_VIBRATE_FINISH;
  * @since 11.8.2015
  */
 public abstract class AbstractHostDiscovery extends AsyncTask<Void, HostBean, Void> {
+
+    private static final String TAG = AbstractHostDiscovery.class.getSimpleName();
 
     protected final WeakReference<AbstractActivity> activity;
 
@@ -40,7 +45,8 @@ public abstract class AbstractHostDiscovery extends AsyncTask<Void, HostBean, Vo
         this.end = end;
     }
 
-    abstract protected Void doInBackground(Void... params);
+    @Override
+    protected abstract Void doInBackground(Void... params);
 
     public void hardCancel() {
         onCancelled();
@@ -60,8 +66,12 @@ public abstract class AbstractHostDiscovery extends AsyncTask<Void, HostBean, Vo
         final AbstractActivity discover = activity.get();
         if (discover != null) {
             if (!isCancelled()) {
-                if (host[0] != null) {
-                    discover.addHost(host[0]);
+                final HostBean candidate = host[0];
+                if (candidate != null) {
+                    Log.i(TAG, String.format("Verifying candidate for aliveness {%s}", candidate.getIpAddress()));
+                    if (TelnetUtil.isAlive(candidate.getIpAddress(), ApiConnection.DEFAULT_FS_PORT)) {
+                        discover.addHost(candidate);
+                    }
                 }
                 if (size > 0) {
                     discover.setProgress((int) (hosts_done * 10000 / size));

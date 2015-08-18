@@ -73,7 +73,6 @@ public abstract class AbstractActivity extends FragmentActivity {
     }
 
     public void addHost(HostBean host) {
-        //todo: why?! :-S
         host.setPosition(hosts.size());
         hosts.add(host);
         adapter.add(null);
