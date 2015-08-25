@@ -6,6 +6,9 @@ import android.util.Log;
 import com.vegaasen.fun.radio.pinell.service.PinellService;
 import com.vegaasen.fun.radio.pinell.service.impl.PinellServiceImpl;
 import com.vegaasen.fun.radio.pinell.util.NetworkUtils;
+import com.vegaasen.lib.ioc.radio.model.dab.RadioStation;
+import com.vegaasen.lib.ioc.radio.model.system.Equalizer;
+import com.vegaasen.lib.ioc.radio.model.system.RadioMode;
 
 /**
  * @author <a href="mailto:vegaasen@gmail.com">vegaasen</a>
@@ -18,6 +21,9 @@ public enum ApplicationContext {
 
     private Context context;
     private PinellService pinellService;
+    private RadioStation activeRadioStation;
+    private Equalizer activeEqualizer;
+    private RadioMode activeRadioMode;
 
     public PinellService getPinellService() {
         if (pinellService == null) {
@@ -42,4 +48,27 @@ public enum ApplicationContext {
         return (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
     }
 
+    public RadioStation getActiveRadioStation() {
+        return activeRadioStation;
+    }
+
+    public void setActiveRadioStation(RadioStation activeRadioStation) {
+        this.activeRadioStation = activeRadioStation;
+    }
+
+    public Equalizer getActiveEqualizer() {
+        return activeEqualizer;
+    }
+
+    public void setActiveEqualizer(Equalizer activeEqualizer) {
+        this.activeEqualizer = activeEqualizer;
+    }
+
+    public RadioMode getActiveRadioMode() {
+        return activeRadioMode;
+    }
+
+    public void setActiveRadioMode(RadioMode activeRadioMode) {
+        this.activeRadioMode = activeRadioMode;
+    }
 }

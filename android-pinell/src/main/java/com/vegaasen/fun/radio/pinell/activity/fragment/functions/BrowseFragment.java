@@ -5,8 +5,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractFragment;
 import com.vegaasen.fun.radio.pinell.adapter.BrowseStationsActivity;
@@ -47,6 +49,7 @@ public class BrowseFragment extends AbstractFragment {
                 Log.e(TAG, "For some reason, the view were unable to be found. Dying");
                 throw new RuntimeException("Missing required view in the initialization of the application");
             }
+            CollectionUtils.clear(loadedRadioStations);
             changeActiveContent(container);
             listRadioStationsAvailable();
         }
@@ -69,6 +72,20 @@ public class BrowseFragment extends AbstractFragment {
             return;
         }
         final BrowseStationsActivity adapter = getRadioStationsActivity(radioStationsOverview);
+        radioStationsOverview.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                int lastInScreen = firstVisibleItem + visibleItemCount;
+                if ((lastInScreen == totalItemCount)) {
+                    Toast.makeText(getActivity(), "Loading of more stations coming in next release", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
         radioStationsOverview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -84,16 +101,6 @@ public class BrowseFragment extends AbstractFragment {
                 listRadioStationsAvailable();
             }
         });
-//        final Button loadMoreItemsButton = (Button) browseFragment.findViewById(R.id.browseButtonLoadMore);
-//        loadMoreItemsButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (loadedRadioStations != null) {
-//                    loadedRadioStations.addAll(assembleRadioStations(loadedRadioStations.size() - 1));
-//                    listRadioStationsAvailable();
-//                }
-//            }
-//        });
     }
 
     private BrowseStationsActivity getRadioStationsActivity(ListView overview) {

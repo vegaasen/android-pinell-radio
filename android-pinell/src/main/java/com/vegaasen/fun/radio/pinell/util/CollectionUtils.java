@@ -40,6 +40,13 @@ public final class CollectionUtils {
         return Lists.newArrayList(candidate);
     }
 
+    public static <T> void clear(List<T> candidate) {
+        if(isEmpty(candidate)) {
+            return;
+        }
+        candidate.clear();
+    }
+
     public static <T> boolean isEmpty(Collection<T> candidate) {
         return candidate == null || candidate.isEmpty();
     }
