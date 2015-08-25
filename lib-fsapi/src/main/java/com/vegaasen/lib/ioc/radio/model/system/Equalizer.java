@@ -7,7 +7,8 @@ import com.vegaasen.lib.ioc.radio.model.response.Item;
 @Immutable
 public class Equalizer {
 
-    private static final String UNKNOWN = "";
+    private static final int SMALLEST = 0;
+    private static final String EMPTY = "";
 
     private final int key;
     private final String name;
@@ -18,7 +19,7 @@ public class Equalizer {
     }
 
     public static Equalizer create(Item item) {
-        return item != null && item.getFields() != null && !item.getFields().isEmpty() ? new Equalizer(item.getKeyId(), item.getFields().get(ApiResponse.LABEL)) : null;
+        return item != null && ((item.getFields() != null && !item.getFields().isEmpty()) || item.getKeyId() > SMALLEST) ? new Equalizer(item.getKeyId(), item.getFields() == null ? EMPTY : item.getFields().get(ApiResponse.LABEL)) : null;
     }
 
     public int getKey() {
@@ -31,5 +32,14 @@ public class Equalizer {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj != null && obj instanceof Equalizer) {
+            Equalizer equalizer = (Equalizer) obj;
+            return getKey() == equalizer.getKey();
+        }
+        return false;
     }
 }

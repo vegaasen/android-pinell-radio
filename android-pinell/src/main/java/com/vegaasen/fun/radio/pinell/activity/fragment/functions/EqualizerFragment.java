@@ -82,13 +82,15 @@ public class EqualizerFragment extends AbstractFragment {
 
     private EqualizerAdapter getEqualizerOverview(ListView equalizerOverview) {
         EqualizerAdapter equalizerAdapter;
+        final Equalizer currentEqualizer = getCurrentEqualizer();
+        final List<Equalizer> equalizers = getEqualizers();
         if (equalizerOverview.getAdapter() == null) {
-            equalizerAdapter = new EqualizerAdapter(equalizerView.getContext(), getEqualizers(), getCurrentEqualizer());
+            equalizerAdapter = new EqualizerAdapter(equalizerView.getContext(), equalizers, currentEqualizer);
             equalizerOverview.setAdapter(equalizerAdapter);
         } else {
             equalizerAdapter = (EqualizerAdapter) equalizerOverview.getAdapter();
-            equalizerAdapter.updateEqualizers(getEqualizers());
-            equalizerAdapter.updateCurrentEqualizer(getCurrentEqualizer());
+            equalizerAdapter.updateEqualizers(equalizers);
+            equalizerAdapter.updateCurrentEqualizer(currentEqualizer);
             equalizerAdapter.notifyDataSetChanged();
         }
         return equalizerAdapter;
