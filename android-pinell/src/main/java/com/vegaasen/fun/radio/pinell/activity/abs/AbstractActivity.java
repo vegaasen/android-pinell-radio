@@ -141,6 +141,15 @@ public abstract class AbstractActivity extends FragmentActivity {
         return wifiInfo != null && wifiInfo.isConnected();
     }
 
+    /**
+     * Is the current device connected to something? Does not imply that the device is a Pinell
+     *
+     * @return _
+     */
+    protected boolean isConnectedToSomeDevice() {
+        return getPinellService().getSelectedHost() != null;
+    }
+
     public void makeToast(int messageReferenceId) {
         Toast.makeText(getApplicationContext(), messageReferenceId, Toast.LENGTH_SHORT).show();
     }

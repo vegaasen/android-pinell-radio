@@ -66,6 +66,7 @@ public class SelectHostActivity extends AbstractActivity {
     protected void onStop() {
         super.onStop();
         deregisterReceiver();
+        cancel();
     }
 
     @Override

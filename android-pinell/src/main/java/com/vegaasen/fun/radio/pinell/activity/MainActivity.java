@@ -128,7 +128,7 @@ public class MainActivity extends AbstractActivity {
 
     private boolean renderSelectPinellHost() {
         renderDefaultSplashScreen();
-        if (!isWifiEnabledAndConnected()) {
+        if (!isWifiEnabledAndConnected() && !isConnectedToSomeDevice()) {
             final EnableWifiDialogFragment enableWifiDialogFragment = new EnableWifiDialogFragment();
             enableWifiDialogFragment.show(getFragmentManager(), TAG);
             return false;
