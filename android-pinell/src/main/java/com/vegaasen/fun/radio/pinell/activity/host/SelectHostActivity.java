@@ -135,7 +135,7 @@ public class SelectHostActivity extends AbstractActivity {
                 deviceOverview.setAdapter(adapter);
                 deviceOverview.setItemsCanFocus(false);
                 deviceOverview.setOnItemClickListener(new DeviceListListener(new WeakReference<>(activity), getPinellService()));
-//                deviceOverview.setEmptyView();
+                deviceOverview.setEmptyView(findViewById(R.id.txtListClickRefresh));
             } else {
                 Log.d(TAG, "Updating existing adapter");
                 adapter.clear();
