@@ -9,6 +9,7 @@
     <dimen name="listElementSpacing">2dp</dimen>
     <dimen name="listGenericTextSpacing">30dp</dimen>
     <dimen name="textDefaultHeight">20sp</dimen>
+    <dimen name="textBigDefaultHeight">30sp</dimen>
     <dimen name="textSmallDefaultHeight">12sp</dimen>
     <dimen name="sidebarBoxOuterMarginStartAndEnd">20sp</dimen>
     <dimen name="sidebarBoxOuterMarginTop">15sp</dimen>

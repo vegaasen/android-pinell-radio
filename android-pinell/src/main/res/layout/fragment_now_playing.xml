@@ -17,36 +17,21 @@
         @author vegaasen
         @since 27.5.2015
     -->
-
-    <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_gravity="center"
-            android:layout_marginBottom="30dp"
-            >
-        <TextView
-                android:id="@+id/playingRadioChannelTxt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/genericUndocumented"
-                />
-    </LinearLayout>
     <LinearLayout
             android:orientation="vertical"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:background="#000"
-            android:padding="10dp" android:measureWithLargestChild="false">
+            android:measureWithLargestChild="false">
         <ImageView
-                android:layout_width="250dp"
-                android:layout_height="250dp"
+                android:layout_width="fill_parent"
+                android:layout_height="300dp"
                 android:id="@+id/playingRadioChannelImg"
-                android:adjustViewBounds="false"
-                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+                android:scaleType="matrix"
                 android:layout_gravity="center"
-                android:background="@color/defaultBackgroundColor"
+                android:background="@drawable/placeholder"
                 android:contentDescription="@string/genericUndocumented"/>
     </LinearLayout>
     <LinearLayout
@@ -54,7 +39,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:layout_gravity="center"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="-4dp"
             android:background="@color/sidebarBoxHoverColor"
             >
         <RelativeLayout
@@ -64,10 +49,20 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="30dp">
             <TextView
+                    android:id="@+id/playingRadioChannelTxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:textSize="@dimen/textBigDefaultHeight"
+                    android:text="@string/genericUndocumented"
+                    />
+            <TextView
                     android:id="@+id/playingArtistTitleTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
+                    android:layout_below="@id/playingRadioChannelTxt"
+                    android:textSize="@dimen/textSmallDefaultHeight"
                     android:text="@string/genericUndocumented"
                     />
             <SeekBar
