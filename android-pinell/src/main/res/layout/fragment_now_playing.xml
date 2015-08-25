@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:weightSum="1"
-              android:background="@color/defaultBackgroundColor">
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="1"
+        android:background="@color/defaultBackgroundColor">
     <!--
         This is the "Now Playing" view for the application.
         It mainly provides the following details:
@@ -65,34 +66,41 @@
                     android:textSize="@dimen/textSmallDefaultHeight"
                     android:text="@string/genericUndocumented"
                     />
-            <SeekBar
-                    android:id="@+id/playingVolumeControlSeek"
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/playingArtistTitleTxt"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="10dp"
-                    android:max="@integer/volumeControlMax"
-                    />
-            <TextView
-                    android:id="@+id/playingArtistControlMin"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_below="@id/playingArtistTitleTxt"
-                    android:layout_toStartOf="@id/playingVolumeControlSeek"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/layoutPlayingControlMin"
-                    />
-            <TextView
-                    android:id="@+id/playingArtistControlMax"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/playingArtistTitleTxt"
-                    android:layout_toEndOf="@id/playingVolumeControlSeek"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/layoutPlayingControlMax"
-                    />
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="30dp"
+                    android:layout_below="@id/playingArtistTitleTxt">
+                <SeekBar
+                        android:id="@+id/playingVolumeControlSeek"
+                        android:layout_width="240dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:max="@integer/volumeControlMax"
+                        />
+                <TextView
+                        android:id="@+id/playingArtistControlMin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_toStartOf="@id/playingVolumeControlSeek"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:text="@string/layoutPlayingControlMin"
+                        android:textSize="@dimen/textMediumDefaultHeight"
+                        />
+                <TextView
+                        android:id="@+id/playingArtistControlMax"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/playingVolumeControlSeek"
+                        android:layout_marginTop="5dp"
+                        android:text="@string/layoutPlayingControlMax"
+                        android:textSize="@dimen/textMediumDefaultHeight"
+                        />
+            </RelativeLayout>
         </RelativeLayout>
     </LinearLayout>
 </LinearLayout>
