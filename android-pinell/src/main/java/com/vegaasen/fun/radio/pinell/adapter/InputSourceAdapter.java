@@ -53,15 +53,15 @@ public class InputSourceAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (layoutInflater != null) {
-            final RadioMode candidateEqualizer = getItem(position);
+            final RadioMode candidateRadio = getItem(position);
             convertView = layoutInflater.inflate(R.layout.listview_selectables, parent, false);
             TextView equalizerCaption = (TextView) convertView.findViewById(R.id.selectableItemTxt);
-            equalizerCaption.setText(candidateEqualizer.getName());
-            if (candidateEqualizer.equals(currentRadioMode)) {
+            equalizerCaption.setText(candidateRadio.getName());
+            if (candidateRadio.equals(currentRadioMode)) {
                 RelativeLayout equalizerContainer = (RelativeLayout) convertView.findViewById(R.id.selectableItem);
                 equalizerContainer.setBackgroundColor(context.getResources().getColor(R.color.defaultElementSelectedColor));
             }
-            if (!candidateEqualizer.isSelectable()) {
+            if (!candidateRadio.isSelectable()) {
                 convertView.setEnabled(false);
             }
             return convertView;

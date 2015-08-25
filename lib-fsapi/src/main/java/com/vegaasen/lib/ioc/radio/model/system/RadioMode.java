@@ -57,6 +57,15 @@ public class RadioMode {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (obj != null && obj instanceof RadioMode) {
+            RadioMode radioMode = (RadioMode) obj;
+            return getKey() == radioMode.getKey();
+        }
+        return false;
+    }
+
+    @Override
     public String toString() {
         return "RadioMode{" +
                 "key=" + key +
