@@ -31,13 +31,4 @@
                 >
         </ListView>
     </LinearLayout>
-    <Button
-            android:id="@+id/browseButtonLoadMore"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginStart="@dimen/selectableMargin"
-            android:layout_marginEnd="@dimen/selectableMargin"
-            android:layout_marginTop="@dimen/selectableMargin"
-            android:text="@string/btnLoadMore"
-            />
 </LinearLayout>

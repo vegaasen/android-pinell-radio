@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractFragment;
@@ -85,30 +84,29 @@ public class BrowseFragment extends AbstractFragment {
                 listRadioStationsAvailable();
             }
         });
-        final Button loadMoreItemsButton = (Button) browseFragment.findViewById(R.id.browseButtonLoadMore);
-        loadMoreItemsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (loadedRadioStations != null) {
-                    loadedRadioStations.addAll(assembleRadioStations(loadedRadioStations.size() - 1));
-                    listRadioStationsAvailable();
-                }
-            }
-        });
+//        final Button loadMoreItemsButton = (Button) browseFragment.findViewById(R.id.browseButtonLoadMore);
+//        loadMoreItemsButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (loadedRadioStations != null) {
+//                    loadedRadioStations.addAll(assembleRadioStations(loadedRadioStations.size() - 1));
+//                    listRadioStationsAvailable();
+//                }
+//            }
+//        });
     }
 
     private BrowseStationsActivity getRadioStationsActivity(ListView overview) {
         BrowseStationsActivity adapter;
-        final List<RadioStation> radioStations = CollectionUtils.isEmpty(loadedRadioStations) ? assembleRadioStations() : loadedRadioStations;
+        loadedRadioStations = CollectionUtils.isEmpty(loadedRadioStations) ? assembleRadioStations() : loadedRadioStations;
         if (overview.getAdapter() == null) {
-            adapter = new BrowseStationsActivity(browseFragment.getContext(), radioStations);
+            adapter = new BrowseStationsActivity(browseFragment.getContext(), loadedRadioStations);
             overview.setAdapter(adapter);
         } else {
             adapter = (BrowseStationsActivity) overview.getAdapter();
-            adapter.updateRadioStations(radioStations);
+            adapter.updateRadioStations(CollectionUtils.copy(loadedRadioStations));
             adapter.notifyDataSetChanged();
         }
-        loadedRadioStations = radioStations;
         return adapter;
     }
 

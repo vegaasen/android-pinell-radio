@@ -1,5 +1,7 @@
 package com.vegaasen.fun.radio.pinell.util;
 
+import com.google.common.collect.Lists;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -29,6 +31,13 @@ public final class CollectionUtils {
         if (what > 0) {
             candidate.remove(what);
         }
+    }
+
+    public static <T> List<T> copy(List<T> candidate) {
+        if (isEmpty(candidate)) {
+            return candidate;
+        }
+        return Lists.newArrayList(candidate);
     }
 
     public static <T> boolean isEmpty(Collection<T> candidate) {
