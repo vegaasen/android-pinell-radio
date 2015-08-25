@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.google.common.base.Strings;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractFragment;
 import com.vegaasen.fun.radio.pinell.util.ImageUtils;
@@ -116,7 +117,9 @@ public class NowPlayingFragment extends AbstractFragment {
         }
         radioTitle.setText(deviceCurrentlyPlaying.getName());
         artistTitle.setText(deviceCurrentlyPlaying.getTune());
-        radioImage.setBackground(ImageUtils.convert(deviceCurrentlyPlaying.getGraphicsUri()));
+        if (!Strings.isNullOrEmpty(deviceCurrentlyPlaying.getGraphicsUri())) {
+            radioImage.setBackground(ImageUtils.convert(deviceCurrentlyPlaying.getGraphicsUri()));
+        }
         final DeviceAudio audioLevels = getPinellService().getAudioLevels();
         if (audioLevels == null) {
             Log.w(TAG, "For some reason, the AudioLevel could not be obtained - disabling the volumeControl");

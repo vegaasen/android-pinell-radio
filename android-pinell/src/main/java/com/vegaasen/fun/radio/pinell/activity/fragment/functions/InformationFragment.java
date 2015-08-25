@@ -111,11 +111,16 @@ public class InformationFragment extends AbstractFragment {
         if (powerSwitch != null) {
             //FIXME: some kind of bug here
             final boolean poweredOn = getPinellService().isPoweredOn();
-            powerSwitch.setChecked(poweredOn);
+            powerSwitch.post(new Runnable() {
+                @Override
+                public void run() {
+                    powerSwitch.setChecked(poweredOn);
+                }
+            });
             powerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked || poweredOn) {
+                    if (isChecked) {
                         getPinellService().setPowerState(PowerState.ON);
                     } else {
                         getPinellService().setPowerState(PowerState.OFF);

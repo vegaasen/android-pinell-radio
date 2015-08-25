@@ -12,8 +12,8 @@
             android:background="@color/defaultBackgroundColor">
         <ImageView
                 android:id="@+id/listDeviceRadioIcon"
-                android:layout_width="@dimen/iconSizeWidth"
-                android:layout_height="@dimen/iconSizeHeight"
+                android:layout_width="@dimen/iconBarSizeWidth"
+                android:layout_height="@dimen/iconBarSizeHeight"
                 android:layout_marginEnd="15dp"
                 android:layout_marginStart="10dp"
                 android:layout_centerVertical="true"
@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@id/listDeviceRadioIcon"
                 android:layout_centerVertical="true"
-                android:text="@string/dialogSearchingForDevices"
+                android:text="@string/genericUndocumented"
                 />
     </RelativeLayout>
 </LinearLayout>
