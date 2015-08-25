@@ -10,6 +10,7 @@ import android.widget.ListView;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractFragment;
 import com.vegaasen.fun.radio.pinell.adapter.EqualizerAdapter;
+import com.vegaasen.fun.radio.pinell.context.ApplicationContext;
 import com.vegaasen.fun.radio.pinell.util.CollectionUtils;
 import com.vegaasen.fun.radio.pinell.util.Comparators;
 import com.vegaasen.lib.ioc.radio.model.system.Equalizer;
@@ -84,6 +85,7 @@ public class EqualizerFragment extends AbstractFragment {
         EqualizerAdapter equalizerAdapter;
         final Equalizer currentEqualizer = getCurrentEqualizer();
         final List<Equalizer> equalizers = getEqualizers();
+        ApplicationContext.INSTANCE.setActiveEqualizer(currentEqualizer);
         if (equalizerOverview.getAdapter() == null) {
             equalizerAdapter = new EqualizerAdapter(equalizerView.getContext(), equalizers, currentEqualizer);
             equalizerOverview.setAdapter(equalizerAdapter);

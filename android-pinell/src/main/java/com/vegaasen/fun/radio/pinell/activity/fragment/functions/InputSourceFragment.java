@@ -10,6 +10,7 @@ import android.widget.ListView;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractFragment;
 import com.vegaasen.fun.radio.pinell.adapter.InputSourceAdapter;
+import com.vegaasen.fun.radio.pinell.context.ApplicationContext;
 import com.vegaasen.fun.radio.pinell.util.CollectionUtils;
 import com.vegaasen.fun.radio.pinell.util.Comparators;
 import com.vegaasen.lib.ioc.radio.model.system.RadioMode;
@@ -76,13 +77,15 @@ public class InputSourceFragment extends AbstractFragment {
 
     private InputSourceAdapter getInputSourceAdapter(ListView inputSourceOverview) {
         InputSourceAdapter inputSourceAdapter;
+        final RadioMode currentInputSource = getCurrentInputSource();
+        ApplicationContext.INSTANCE.setActiveRadioMode(currentInputSource);
         if (inputSourceOverview.getAdapter() == null) {
-            inputSourceAdapter = new InputSourceAdapter(inputSourceView.getContext(), getInputSources(), getCurrentInputSource());
+            inputSourceAdapter = new InputSourceAdapter(inputSourceView.getContext(), getInputSources(), currentInputSource);
             inputSourceOverview.setAdapter(inputSourceAdapter);
         } else {
             inputSourceAdapter = (InputSourceAdapter) inputSourceOverview.getAdapter();
             inputSourceAdapter.updateRadioModes(getInputSources());
-            inputSourceAdapter.updateCurrentRadioMode(getCurrentInputSource());
+            inputSourceAdapter.updateCurrentRadioMode(currentInputSource);
             inputSourceAdapter.notifyDataSetChanged();
         }
         return inputSourceAdapter;

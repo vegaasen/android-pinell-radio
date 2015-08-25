@@ -30,10 +30,10 @@ import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_IP_START;
 
 /**
  * This represents the selectable host activity. Its main objective is just to let the user select which host that he/she would like to connect to.
- * Todo: This activity must fetch its hosts from a AsyncActivity instead of using the TelnetUtils :-/ Too bad!
+ * Todo: Add some functionality to (in the background) fetch active: RadioStation, RadioMode and Equalizer
  *
  * @author <a href="mailto:vegaasen@gmail.com">vegaasen</a>
- * @version 0.1
+ * @version 0.2
  * @see DeviceListListener
  * @since 29.03.2015
  */
