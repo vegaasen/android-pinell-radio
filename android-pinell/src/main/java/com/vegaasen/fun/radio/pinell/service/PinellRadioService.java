@@ -112,4 +112,14 @@ interface PinellRadioService {
      */
     DeviceCurrentlyPlaying setRadioStation(RadioStation radioStation);
 
+    /**
+     * Trigger a new search for FM stations forward
+     */
+    void searchFMBandForward();
+
+    /**
+     * Trigger a new search for FM stations in rewind
+     */
+    void searchFMBandRewind();
+
 }

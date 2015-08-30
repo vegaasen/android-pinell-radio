@@ -255,6 +255,16 @@ public class PinellServiceImpl implements PinellService {
         return getRadioService().selectStation(getSelectedHost(), radioStation);
     }
 
+    @Override
+    public void searchFMBandForward() {
+        getRadioService().fmForwardSearch(getSelectedHost());
+    }
+
+    @Override
+    public void searchFMBandRewind() {
+        getRadioService().fmRewindSearch(getSelectedHost());
+    }
+
     private RadioFsApiConnectionService getRadioConnectionService() {
         return radioFsApiConnectionService;
     }

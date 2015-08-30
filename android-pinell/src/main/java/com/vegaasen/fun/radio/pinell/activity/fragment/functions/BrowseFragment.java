@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,6 +18,7 @@ import com.vegaasen.fun.radio.pinell.context.ApplicationContext;
 import com.vegaasen.fun.radio.pinell.util.CollectionUtils;
 import com.vegaasen.fun.radio.pinell.util.Comparators;
 import com.vegaasen.lib.ioc.radio.model.dab.RadioStation;
+import com.vegaasen.lib.ioc.radio.model.device.DeviceCurrentlyPlaying;
 
 import java.util.Collections;
 import java.util.List;
@@ -87,11 +89,12 @@ public class BrowseFragment extends AbstractFragment {
     private void configureViewDAB(LayoutInflater inflater, ViewGroup container) {
         browseFragment = inflater.inflate(R.layout.fragment_browse_dab, container, false);
         CollectionUtils.clear(loadedRadioStations);
-        listRadioStationsAvailable();
+        listRadioStationsAvailableForDAB();
     }
 
     private void configureViewFM(LayoutInflater inflater, ViewGroup container) {
         browseFragment = inflater.inflate(R.layout.fragment_browse_fm, container, false);
+        configureFMComponents();
     }
 
     private void configureViewInternetRadio(LayoutInflater inflater, ViewGroup container) {
@@ -99,7 +102,31 @@ public class BrowseFragment extends AbstractFragment {
         CollectionUtils.clear(loadedRadioStations);
     }
 
-    private void listRadioStationsAvailable() {
+    private void configureFMComponents() {
+        DeviceCurrentlyPlaying currentlyPlaying = getPinellService().getCurrentlyPlaying();
+        if (currentlyPlaying != null) {
+            TextView playing = (TextView) browseFragment.findViewById(R.id.txtFmRadioFrequency);
+            TextView tune = (TextView) browseFragment.findViewById(R.id.txtFmRadioCaption);
+            playing.setText(currentlyPlaying.getName());
+            tune.setText(currentlyPlaying.getTune());
+        }
+        ImageButton fmRadioChannelSearchForward = (ImageButton) browseFragment.findViewById(R.id.btnFmRadioForward);
+        ImageButton fmRadioChannelSearchRewind = (ImageButton) browseFragment.findViewById(R.id.btnFmRadioRewind);
+        fmRadioChannelSearchForward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getPinellService().searchFMBandForward();
+            }
+        });
+        fmRadioChannelSearchRewind.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getPinellService().searchFMBandRewind();
+            }
+        });
+    }
+
+    private void listRadioStationsAvailableForDAB() {
         if (browseFragment == null) {
             Log.w(TAG, "Unable to list radioStations, as the browseFragment is not available");
             return;
@@ -136,7 +163,7 @@ public class BrowseFragment extends AbstractFragment {
                     Log.d(TAG, String.format("RadioStation {%s} selected. Switching to this station", radioStation.toString()));
                     getPinellService().setRadioStation(radioStation);
                 }
-                listRadioStationsAvailable();
+                listRadioStationsAvailableForDAB();
             }
         });
     }

@@ -12,7 +12,7 @@
          @since 30.8.2015
      -->
     <ImageView
-            android:id="@+id/imgInputSourceNADefault"
+            android:id="@+id/imgFmRadioLogo"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_centerInParent="true"
@@ -23,7 +23,7 @@
             android:id="@+id/txtInputSourceNAConnected"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/imgInputSourceNADefault"
+            android:layout_below="@id/imgFmRadioLogo"
             android:layout_centerHorizontal="true"
             android:text="@string/inputSourceNotAvailableTitle"
             />
