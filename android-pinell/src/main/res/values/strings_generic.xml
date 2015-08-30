@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="unavailable">Unavailable</string>
-    <string name="pinellNotAvailMain">Pinell not found :-)</string>
+    <string name="pinellNotAvailTitle">Pinell not found :-)</string>
     <string name="pinellNotAvailReason">try to select a device from the list</string>
+    <string name="inputSourceNotAvailableTitle">Nothing to browse</string>
+    <string name="inputSourceNotAvailableReason">%s does not contain anything to browse</string>
+    <string name="inputSourceNotAvailableUnknownReason">The current input-source is unknown. Report it? :-)</string>
 </resources>

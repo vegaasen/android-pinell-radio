@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:scrollbars="vertical"
+        android:scrollbarAlwaysDrawVerticalTrack="true">
+    <!--
+        This is the view related to browsing. Here you will be able to browse through a list
+        of current detected radiostations, or similar.
+
+        When clicking something else than a folder, you should be taken to the "Now Playing" section.
+                    ^- perhaps, I'm not sure about that yet.
+
+        @author vegaasen
+        @since 30.8.2015
+    -->
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+    </LinearLayout>
+</LinearLayout>

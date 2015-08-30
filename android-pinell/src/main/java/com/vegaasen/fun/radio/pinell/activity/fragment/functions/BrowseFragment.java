@@ -8,10 +8,12 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractFragment;
 import com.vegaasen.fun.radio.pinell.adapter.BrowseStationsActivity;
+import com.vegaasen.fun.radio.pinell.context.ApplicationContext;
 import com.vegaasen.fun.radio.pinell.util.CollectionUtils;
 import com.vegaasen.fun.radio.pinell.util.Comparators;
 import com.vegaasen.lib.ioc.radio.model.dab.RadioStation;
@@ -29,7 +31,7 @@ import java.util.List;
  * - FM presets
  *
  * @author <a href="mailto:vegaasen@gmail.com">vegaasen</a>
- * @version 26.7.2015
+ * @version 30.8.2015
  * @since 27.5.2015
  */
 public class BrowseFragment extends AbstractFragment {
@@ -44,21 +46,57 @@ public class BrowseFragment extends AbstractFragment {
         if (!getPinellService().isPinellDevice()) {
             browseFragment = inflater.inflate(R.layout.fragment_pinell_na, container, false);
         } else {
-            browseFragment = inflater.inflate(R.layout.fragment_browse, container, false);
-            if (browseFragment == null) {
-                Log.e(TAG, "For some reason, the view were unable to be found. Dying");
-                throw new RuntimeException("Missing required view in the initialization of the application");
+            switch (ApplicationContext.INSTANCE.getActiveRadioMode()) {
+                case DAB:
+                    configureViewDAB(inflater, container);
+                    break;
+                case FM_AM:
+                    configureViewFM(inflater, container);
+                    break;
+                case INTERNET_RADIO:
+                    configureViewInternetRadio(inflater, container);
+                    break;
+                case MUSIC_PLAYER:
+                case AUX:
+                    configureViewUnsupported(inflater, container);
+                    break;
+                case UNKNOWN:
+                default:
+                    configureViewUnknown(inflater, container);
             }
-            CollectionUtils.clear(loadedRadioStations);
-            changeActiveContent(container);
-            listRadioStationsAvailable();
         }
+        changeActiveContent(container);
         return browseFragment;
     }
 
     @Override
     protected void changeActiveContent(ViewGroup container) {
         changeCurrentActiveApplicationContextContent(container, R.drawable.ic_queue_music_black, R.string.sidebarBrowse);
+    }
+
+    private void configureViewUnknown(LayoutInflater inflater, ViewGroup container) {
+        browseFragment = inflater.inflate(R.layout.fragment_browse_unknown, container, false);
+    }
+
+    private void configureViewUnsupported(LayoutInflater inflater, ViewGroup container) {
+        browseFragment = inflater.inflate(R.layout.fragment_browse_unsupported, container, false);
+        TextView txtReason = (TextView) browseFragment.findViewById(R.id.txtInputSourceNAConnectedReason);
+        txtReason.setText(String.format(getString(R.string.inputSourceNotAvailableReason), ApplicationContext.INSTANCE.getActiveRadioMode().getName()));
+    }
+
+    private void configureViewDAB(LayoutInflater inflater, ViewGroup container) {
+        browseFragment = inflater.inflate(R.layout.fragment_browse_dab, container, false);
+        CollectionUtils.clear(loadedRadioStations);
+        listRadioStationsAvailable();
+    }
+
+    private void configureViewFM(LayoutInflater inflater, ViewGroup container) {
+        browseFragment = inflater.inflate(R.layout.fragment_browse_fm, container, false);
+    }
+
+    private void configureViewInternetRadio(LayoutInflater inflater, ViewGroup container) {
+        browseFragment = inflater.inflate(R.layout.fragment_browse_internet, container, false);
+        CollectionUtils.clear(loadedRadioStations);
     }
 
     private void listRadioStationsAvailable() {

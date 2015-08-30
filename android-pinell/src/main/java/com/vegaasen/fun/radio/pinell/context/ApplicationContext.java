@@ -3,6 +3,7 @@ package com.vegaasen.fun.radio.pinell.context;
 import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.util.Log;
+import com.vegaasen.fun.radio.pinell.model.PinellRadioMode;
 import com.vegaasen.fun.radio.pinell.service.PinellService;
 import com.vegaasen.fun.radio.pinell.service.impl.PinellServiceImpl;
 import com.vegaasen.fun.radio.pinell.util.NetworkUtils;
@@ -23,7 +24,7 @@ public enum ApplicationContext {
     private PinellService pinellService;
     private RadioStation activeRadioStation;
     private Equalizer activeEqualizer;
-    private RadioMode activeRadioMode;
+    private PinellRadioMode activeRadioMode;
 
     public PinellService getPinellService() {
         if (pinellService == null) {
@@ -64,11 +65,15 @@ public enum ApplicationContext {
         this.activeEqualizer = activeEqualizer;
     }
 
-    public RadioMode getActiveRadioMode() {
+    public PinellRadioMode getActiveRadioMode() {
         return activeRadioMode;
     }
 
     public void setActiveRadioMode(RadioMode activeRadioMode) {
-        this.activeRadioMode = activeRadioMode;
+        if (activeRadioMode == null) {
+            return;
+        }
+        Log.d(TAG, String.format("RadioMode {%s} selected", activeRadioMode.toString()));
+        this.activeRadioMode = PinellRadioMode.fromName(activeRadioMode.getName());
     }
 }

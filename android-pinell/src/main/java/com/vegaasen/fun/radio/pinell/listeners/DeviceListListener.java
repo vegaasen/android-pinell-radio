@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Toast;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractActivity;
+import com.vegaasen.fun.radio.pinell.context.ApplicationContext;
 import com.vegaasen.fun.radio.pinell.discovery.model.HostBean;
 import com.vegaasen.fun.radio.pinell.service.PinellService;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
@@ -61,6 +62,7 @@ public class DeviceListListener implements AdapterView.OnItemClickListener {
             Log.w(TAG, "Unable to automatically close the activity due to the dialog being nilled");
             return;
         }
+        configureCurrentInputSource();
         getActivity().cancel();
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
@@ -68,6 +70,17 @@ public class DeviceListListener implements AdapterView.OnItemClickListener {
 
     private AbstractActivity getActivity() {
         return activity.get();
+    }
+
+    private void configureCurrentInputSource() {
+        Runnable configureCurrentInputSource = new Runnable() {
+            @Override
+            public void run() {
+                ApplicationContext.INSTANCE.setActiveRadioMode(pinellService.getCurrentInputSource());
+            }
+        };
+        final Thread thread = new Thread(configureCurrentInputSource);
+        thread.run();
     }
 
 }
