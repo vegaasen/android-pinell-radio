@@ -3,8 +3,8 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:scrollbars="vertical"
-        android:scrollbarAlwaysDrawVerticalTrack="true">
+              android:scrollbars="none"
+              android:scrollbarAlwaysDrawVerticalTrack="false">
     <!--
         This is the view related to browsing. Here you will be able to browse through a list
         of current detected radiostations, or similar.
@@ -17,7 +17,7 @@
     -->
     <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="300dp">
 
     </LinearLayout>
 </LinearLayout>

@@ -147,7 +147,7 @@ public abstract class AbstractActivity extends FragmentActivity {
      * @return _
      */
     protected boolean isConnectedToSomeDevice() {
-        return getPinellService().getSelectedHost() != null;
+        return getPinellService() != null && getPinellService().getSelectedHost() != null;
     }
 
     public void makeToast(int messageReferenceId) {
