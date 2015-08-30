@@ -59,6 +59,19 @@
                 android:layout_marginTop="@dimen/textDefaultHeight"
                 android:layout_marginBottom="@dimen/textDefaultHeight"
                 />
+        <TextView
+                android:id="@+id/txtListClickRefreshInProgress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/dialogChooserPressRefresh"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:textSize="@dimen/textSmallDefaultHeight"
+                android:textColor="@color/textSmall"
+                android:layout_marginTop="@dimen/textDefaultHeight"
+                android:layout_marginBottom="@dimen/textDefaultHeight"
+                android:visibility="gone"
+                />
         <ListView
                 android:id="@+id/listDevices"
                 android:layout_width="match_parent"

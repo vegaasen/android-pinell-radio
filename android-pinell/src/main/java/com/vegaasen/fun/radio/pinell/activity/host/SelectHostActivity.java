@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractActivity;
@@ -112,6 +113,7 @@ public class SelectHostActivity extends AbstractActivity {
             hostDiscovery.cancel(true);
             hostDiscovery.hardCancel();
             hostDiscovery = null;
+            setProgressBarIndeterminateVisibility(false);
         }
     }
 
@@ -121,7 +123,7 @@ public class SelectHostActivity extends AbstractActivity {
         refreshDevices.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, R.string.devices_refreshing, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), R.string.devices_refreshing, Toast.LENGTH_SHORT).show();
                 refreshHostsToList(currentActivity);
             }
         });
@@ -135,9 +137,8 @@ public class SelectHostActivity extends AbstractActivity {
                 deviceOverview.setAdapter(adapter);
                 deviceOverview.setItemsCanFocus(false);
                 deviceOverview.setOnItemClickListener(new DeviceListListener(new WeakReference<>(activity), getPinellService()));
-                deviceOverview.setEmptyView(findViewById(R.id.txtListClickRefresh));
+                deviceOverview.setEmptyView(configureTextViews());
             } else {
-                Log.d(TAG, "Updating existing adapter");
                 adapter.clear();
                 clearHosts();
                 cancel();
@@ -148,6 +149,14 @@ public class SelectHostActivity extends AbstractActivity {
         hostDiscovery.execute();
         setProgressBarVisibility(true);
         setProgressBarIndeterminateVisibility(true);
+    }
+
+    private TextView configureTextViews() {
+        TextView refreshHelpText = (TextView) findViewById(R.id.txtListClickRefresh);
+        refreshHelpText.setVisibility(View.GONE);
+        TextView refreshInProgress = (TextView) findViewById(R.id.txtListClickRefreshInProgress);
+        refreshInProgress.setVisibility(View.VISIBLE);
+        return refreshInProgress;
     }
 
 }
