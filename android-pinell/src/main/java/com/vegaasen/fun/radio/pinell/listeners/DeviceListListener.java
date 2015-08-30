@@ -77,6 +77,7 @@ public class DeviceListListener implements AdapterView.OnItemClickListener {
             @Override
             public void run() {
                 ApplicationContext.INSTANCE.setActiveRadioMode(pinellService.getCurrentInputSource());
+                ApplicationContext.INSTANCE.setRadioConnected(true);
             }
         };
         final Thread thread = new Thread(configureCurrentInputSource);

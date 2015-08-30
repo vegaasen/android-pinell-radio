@@ -47,17 +47,17 @@ public class InformationFragment extends AbstractFragment {
         return informationView;
     }
 
+    @Override
+    protected void changeActiveContent(ViewGroup container) {
+        changeCurrentActiveApplicationContextContent(container, R.drawable.ic_radio_black, R.string.sidebarInformation);
+    }
+
     public void refreshDeviceInformation() {
         if (informationView == null) {
             Log.w(TAG, "Unable to refresh device information. It seems like the view is nilled for some reason.");
             return;
         }
         postActivities();
-    }
-
-    @Override
-    protected void changeActiveContent(ViewGroup container) {
-        changeCurrentActiveApplicationContextContent(container, R.drawable.ic_radio_black, R.string.sidebarInformation);
     }
 
     private void configureElements() {

@@ -25,6 +25,7 @@ public enum ApplicationContext {
     private RadioStation activeRadioStation;
     private Equalizer activeEqualizer;
     private PinellRadioMode activeRadioMode;
+    private boolean radioConnected = false;
 
     public PinellService getPinellService() {
         if (pinellService == null) {
@@ -75,5 +76,13 @@ public enum ApplicationContext {
         }
         Log.d(TAG, String.format("RadioMode {%s} selected", activeRadioMode.toString()));
         this.activeRadioMode = PinellRadioMode.fromName(activeRadioMode.getName());
+    }
+
+    public boolean isRadioConnected() {
+        return radioConnected;
+    }
+
+    public void setRadioConnected(boolean radioConnected) {
+        this.radioConnected = radioConnected;
     }
 }

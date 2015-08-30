@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -18,6 +19,8 @@ import com.vegaasen.fun.radio.pinell.activity.fragment.functions.InformationFrag
 import com.vegaasen.fun.radio.pinell.activity.fragment.functions.InputSourceFragment;
 import com.vegaasen.fun.radio.pinell.activity.fragment.functions.NowPlayingFragment;
 import com.vegaasen.fun.radio.pinell.activity.host.SelectHostActivity;
+import com.vegaasen.fun.radio.pinell.context.ApplicationContext;
+import com.vegaasen.lib.ioc.radio.model.device.DeviceAudio;
 
 /**
  * This is the main activity which controls all the various fragments within the application itself.
@@ -48,6 +51,7 @@ public class MainActivity extends AbstractActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        configureCoreElements();
         configureUiElements();
         configureButtonActionListeners();
         if (renderSelectPinellHost()) {
@@ -65,6 +69,29 @@ public class MainActivity extends AbstractActivity {
             informationFragment.refreshDeviceInformation();
             setActiveFragmentLayout(currentActiveFragmentView);
         }
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (ApplicationContext.INSTANCE.isRadioConnected() && keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+            final DeviceAudio audioLevels = getPinellService().getAudioLevels();
+            final int candidateLevel = audioLevels.getLevel();
+            getPinellService().setAudioLevel(candidateLevel <= 38 ? candidateLevel + 1 : candidateLevel);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (ApplicationContext.INSTANCE.isRadioConnected() && keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            final DeviceAudio audioLevels = getPinellService().getAudioLevels();
+            final int candidateLevel = audioLevels.getLevel();
+            getPinellService().setAudioLevel(candidateLevel > 0 ? candidateLevel - 1 : candidateLevel);
+        }
+        return true;
+    }
+
+    private void configureCoreElements() {
     }
 
     private void configureUiElements() {
