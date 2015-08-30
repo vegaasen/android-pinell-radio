@@ -157,4 +157,28 @@ public interface RadioFsApiService {
      */
     DeviceCurrentlyPlaying selectStation(Host host, RadioStation radioStation);
 
+    /**
+     * Find next FM channel from the current location
+     *
+     * @param host _
+     * @return _
+     */
+    String fmForwardSearch(Host host);
+
+    /**
+     * Find next FM channel from the current location - rewind
+     *
+     * @param host _
+     * @return _
+     */
+    String fmRewindSearch(Host host);
+
+    /**
+     * Get the current Band for FM
+     *
+     * @param host _
+     * @return string - e.g 91.50Mhz
+     */
+    String getCurrentFMBand(Host host);
+
 }

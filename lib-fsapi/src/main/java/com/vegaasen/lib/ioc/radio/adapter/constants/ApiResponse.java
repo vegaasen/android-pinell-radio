@@ -10,7 +10,9 @@ public final class ApiResponse {
     public static final String VALUE_ARRAY_C_8 = "c8_array";
     public static final String FIELD = "field";
     public static final String LABEL = "label";
+    public static final String NODE = "node";
     public static final String ITEM = "item";
+    public static final String ITEM_NOTIFY = "notify";
     public static final String ITEM_KEY = "key";
 
     public static final class Device {
@@ -23,6 +25,8 @@ public final class ApiResponse {
 
     public static final class RadioStation {
         public static final String NAME = "name", TYPE = "type", SUBTYPE = "subtype";
+        public static final String MEGAHERTZ = "megahertz";
+        public static final String PROPERTY_NAME = "netremote.play.info.name";
     }
 
     public static final class SubType {

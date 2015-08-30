@@ -41,7 +41,7 @@ public class RadioFsApiServiceImplIntTest {
 
     @After
     public void tearDown() {
-        turnDeviceOff();
+//        turnDeviceOff();
     }
 
     @Test
@@ -212,6 +212,26 @@ public class RadioFsApiServiceImplIntTest {
         Thread.sleep(1500);
         DeviceCurrentlyPlaying playing = service.selectStation(host, radioStations.get(1));
         System.out.println(playing.toString());
+    }
+
+    @Test
+    public void fmRewindSearch_normalProcedure() throws InterruptedException {
+        turnDeviceOn();
+        service.fmRewindSearch(host);
+    }
+
+    @Test
+    public void fmForwardSearch_normalProcedure() throws InterruptedException {
+        turnDeviceOn();
+        service.fmForwardSearch(host);
+    }
+
+    @Test
+    public void getCurrentFMBand_normalProcedure() throws InterruptedException {
+        turnDeviceOn();
+        service.fmForwardSearch(host);
+        final String currentFMBand = service.getCurrentFMBand(host);
+        assertNotNull(currentFMBand);
     }
 
     private void turnDeviceOff() {

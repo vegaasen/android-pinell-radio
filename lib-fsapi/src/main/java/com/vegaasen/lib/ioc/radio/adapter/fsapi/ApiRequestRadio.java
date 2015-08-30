@@ -1,5 +1,6 @@
 package com.vegaasen.lib.ioc.radio.adapter.fsapi;
 
+import com.vegaasen.lib.ioc.radio.adapter.constants.ApiResponse;
 import com.vegaasen.lib.ioc.radio.adapter.constants.Parameter;
 import com.vegaasen.lib.ioc.radio.adapter.constants.UriContext;
 import com.vegaasen.lib.ioc.radio.model.dab.RadioStation;
@@ -21,6 +22,35 @@ public enum ApiRequestRadio {
     INSTANCE;
 
     private static final String PREVIOUS_LEVEL = "0xffffffff";
+    private static final String FM_SEARCH_FORWARD = "3";
+    private static final String FM_SEARCH_REWIND = "4";
+    public static final String EMPTY = "";
+
+    public void searchFMForward(Host host) {
+        final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
+        params.put(Parameter.QueryParameter.VALUE, FM_SEARCH_FORWARD);
+        ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.FM.SEEK_FORWARD, params));
+    }
+
+    public void searchFMRewind(Host host) {
+        final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
+        params.put(Parameter.QueryParameter.VALUE, FM_SEARCH_REWIND);
+        ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.FM.SEEK_REWIND, params));
+    }
+
+    public String getCurrentFMBand(Host host) {
+        final Document currentBand = ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NOTIFIES));
+        if (currentBand != null) {
+            final Set<Item> items = XmlUtils.INSTANCE.getNotifyItems(currentBand.getDocumentElement(), ApiResponse.RadioStation.MEGAHERTZ, ApiResponse.RadioStation.PROPERTY_NAME);
+            if (items != null) {
+                final Item item = items.iterator().next();
+                if (item.getFields() != null && !item.getFields().isEmpty()) {
+                    return item.getFields().get(ApiResponse.RadioStation.MEGAHERTZ);
+                }
+            }
+        }
+        return EMPTY;
+    }
 
     /**
      * Returns to the previous container. The property "PREVIOUS" is Pinell's own method of returning one level up

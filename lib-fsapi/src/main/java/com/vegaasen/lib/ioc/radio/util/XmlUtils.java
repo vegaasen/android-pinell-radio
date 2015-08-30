@@ -133,6 +133,38 @@ public enum XmlUtils {
         return items;
     }
 
+    public Set<Item> getNotifyItems(final Element ele, final String key, final String attribute) {
+        final Set<Item> items = new HashSet<>();
+        final NodeList candidates = ele.getElementsByTagName(ApiResponse.ITEM_NOTIFY);
+        if (candidates == null) {
+            return items;
+        }
+        int i = INIT;
+        while (i++ != candidates.getLength()) {
+            final Map<String, String> fieldValues = new HashMap<>();
+            final Element item = (Element) candidates.item(i);
+            if (item != null && item.getAttribute(ApiResponse.NODE).equals(attribute)) {
+                int found = 0;
+                final NodeList values = item.getElementsByTagName(ApiResponse.VALUE);
+                if (values != null) {
+                    while (found++ != values.getLength()) {
+                        final NodeList arrays = item.getElementsByTagName(ApiResponse.VALUE_ARRAY_C_8);
+                        if (arrays != null) {
+                            final Element arrayElement = (Element) arrays.item(0);
+                            if (arrayElement != null) {
+                                fieldValues.put(key, arrayElement.getTextContent());
+                            }
+                        }
+                    }
+                }
+            }
+            if (!fieldValues.isEmpty()) {
+                items.add(Item.create(fieldValues));
+            }
+        }
+        return items;
+    }
+
     public String asString(Document candidate) {
         if (candidate == null) {
             return EMPTY;

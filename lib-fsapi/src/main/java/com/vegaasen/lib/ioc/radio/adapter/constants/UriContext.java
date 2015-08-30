@@ -50,6 +50,13 @@ public final class UriContext {
         public static final String PRE_SET_NAV_STATE = SLASH + "SET/netRemote.nav.state";
         public static final String PRE_GET_NAV_STATUS = SLASH + "GET/netRemote.nav.status";
         public static final String PRE_GET_NOTIFIES = SLASH + "GET_NOTIFIES";
+
+        public static final class FM {
+            public static final String CURRENT_FREQUENCY = SLASH + "GET/netRemote.play.frequency";
+            public static final String SEEK_FORWARD = SLASH + "SET/netRemote.play.control";
+            public static final String SEEK_REWIND = SLASH + "SET/netRemote.play.control";
+        }
+
     }
 
     private UriContext() {

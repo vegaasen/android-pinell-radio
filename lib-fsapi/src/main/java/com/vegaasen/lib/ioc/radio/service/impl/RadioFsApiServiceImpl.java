@@ -198,4 +198,36 @@ public class RadioFsApiServiceImpl implements RadioFsApiService {
         ApiRequestRadio.INSTANCE.selectRadioStation(host, radioStation);
         return ApiRequestSystem.INSTANCE.getCurrentlyPlaying(host);
     }
+
+    @Override
+    public String fmForwardSearch(Host host) {
+        if (host == null) {
+            LOG.warning("Unable to fmForwardSearch due to host nilled");
+            return null;
+        }
+        LOG.fine(String.format("FM ForwardSearch for {%s}", host.toString()));
+        ApiRequestRadio.INSTANCE.searchFMForward(host);
+        return null;
+    }
+
+    @Override
+    public String fmRewindSearch(Host host) {
+        if (host == null) {
+            LOG.warning("Unable to fmForwardSearch due to host nilled");
+            return null;
+        }
+        LOG.fine(String.format("FM RewindSearch for {%s}", host.toString()));
+        ApiRequestRadio.INSTANCE.searchFMRewind(host);
+        return null;
+    }
+
+    @Override
+    public String getCurrentFMBand(Host host) {
+        if (host == null) {
+            LOG.warning("Unable to getCurrentFMBand due to host nilled");
+            return null;
+        }
+        LOG.fine(String.format("FM getCurrentBand for {%s}", host.toString()));
+        return ApiRequestRadio.INSTANCE.getCurrentFMBand(host);
+    }
 }
