@@ -17,6 +17,6 @@
             android:layout_height="50dp"
             android:layout_centerInParent="true"
             android:background="@drawable/logo"
-            android:contentDescription="@string/genericUndocumented"
+            android:contentDescription="@string/genericUnknown"
             />
 </RelativeLayout>

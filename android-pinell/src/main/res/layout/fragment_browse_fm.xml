@@ -21,7 +21,7 @@
             android:layout_height="100dp"
             android:layout_centerInParent="true"
             android:background="@drawable/ic_radio_black"
-            android:contentDescription="@string/genericUndocumented"
+            android:contentDescription="@string/genericUnknown"
             />
     <TextView
             android:id="@+id/txtFmRadioFrequency"
@@ -39,7 +39,7 @@
             android:layout_below="@id/txtFmRadioFrequency"
             android:layout_centerHorizontal="true"
             android:textSize="@dimen/textSmallDefaultHeight"
-            android:text="@string/genericUndocumented"
+            android:text="@string/genericUnknown"
             />
     <RelativeLayout
             android:layout_width="160dp"

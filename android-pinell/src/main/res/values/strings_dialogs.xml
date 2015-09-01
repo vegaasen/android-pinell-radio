@@ -6,7 +6,7 @@
     <string name="dialogChooserPressRefresh">Click refresh to find devices</string>
     <string name="dialogChooserPressRefreshInProgress">Finding devices</string>
     <string name="dialogIconDescription">RadioSymbol</string>
-    <string name="genericUndocumented">Unknown</string>
+    <string name="genericUnknown">Unknown</string>
     <string name="dialogWifiContent">In order to control Pinell devices, you need to be connected to a Wifi network</string>
     <string name="dialogWifiEnable">Connect to Wifi</string>
     <string name="dialogWifiCancel">Exit</string>

@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.google.common.base.Strings;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.context.ApplicationContext;
 import com.vegaasen.fun.radio.pinell.service.PinellService;
@@ -17,7 +18,7 @@ import com.vegaasen.fun.radio.pinell.service.PinellService;
 public abstract class AbstractFragment extends Fragment {
 
     private static final String TAG = AbstractFragment.class.getSimpleName();
-    private static final int MAX_SAFE_CHARS = 17;
+    private static final int MAX_SAFE_CHARS = 22;
     private static final String ADDITION = "...";
 
     protected PinellService getPinellService() {
@@ -33,7 +34,7 @@ public abstract class AbstractFragment extends Fragment {
     }
 
     protected String getUnavailableString() {
-        return getString(R.string.unavailable);
+        return getString(R.string.genericUnknown);
     }
 
     protected abstract void changeActiveContent(ViewGroup container);
@@ -54,6 +55,16 @@ public abstract class AbstractFragment extends Fragment {
             return;
         }
         currentApplicationContextActiveLabel.setText(candidateText);
+    }
+
+    protected String getApplicationVersion() {
+        try {
+            final String versionName = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName;
+            return Strings.isNullOrEmpty(versionName) ? getUnavailableString() : versionName;
+        } catch (Exception e) {
+            //*gulp*
+        }
+        return getUnavailableString();
     }
 
 }

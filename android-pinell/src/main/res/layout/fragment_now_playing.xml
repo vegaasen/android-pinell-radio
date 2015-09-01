@@ -33,7 +33,7 @@
                 android:scaleType="matrix"
                 android:layout_centerInParent="true"
                 android:background="@drawable/placeholder"
-                android:contentDescription="@string/genericUndocumented"/>
+                android:contentDescription="@string/genericUnknown"/>
     </RelativeLayout>
     <LinearLayout
             android:layout_width="match_parent"
@@ -54,7 +54,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:textSize="@dimen/textBigDefaultHeight"
-                    android:text="@string/genericUndocumented"
+                    android:text="@string/genericUnknown"
                     />
             <TextView
                     android:id="@+id/playingArtistTitleTxt"
@@ -63,7 +63,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_below="@id/playingRadioChannelTxt"
                     android:textSize="@dimen/textSmallDefaultHeight"
-                    android:text="@string/genericUndocumented"
+                    android:text="@string/genericUnknown"
                     />
             <RelativeLayout
                     android:layout_width="match_parent"

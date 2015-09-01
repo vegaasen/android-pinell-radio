@@ -38,7 +38,7 @@
                         android:id="@+id/nowPlayingImg"
                         android:layout_width="@dimen/iconSizeWidth"
                         android:layout_height="@dimen/iconSizeHeight"
-                        android:contentDescription="@string/genericUndocumented"
+                        android:contentDescription="@string/genericUnknown"
                         android:layout_gravity="center"
                         android:src="@drawable/ic_volume_up_white"
                         />
@@ -72,7 +72,7 @@
                         android:layout_width="@dimen/iconSizeWidth"
                         android:layout_height="@dimen/iconSizeHeight"
                         android:layout_gravity="center"
-                        android:contentDescription="@string/genericUndocumented"
+                        android:contentDescription="@string/genericUnknown"
                         android:src="@drawable/ic_queue_music_white"
                         />
                 <TextView
@@ -105,7 +105,7 @@
                         android:layout_width="@dimen/iconSizeWidth"
                         android:layout_height="@dimen/iconSizeHeight"
                         android:layout_gravity="center"
-                        android:contentDescription="@string/genericUndocumented"
+                        android:contentDescription="@string/genericUnknown"
                         android:src="@drawable/ic_settings_input_composite_white"
                         />
                 <TextView
@@ -138,7 +138,7 @@
                         android:layout_width="@dimen/iconSizeWidth"
                         android:layout_height="@dimen/iconSizeHeight"
                         android:layout_gravity="center"
-                        android:contentDescription="@string/genericUndocumented"
+                        android:contentDescription="@string/genericUnknown"
                         android:src="@drawable/ic_equalizer_white"
                         />
                 <TextView
@@ -172,7 +172,7 @@
                         android:layout_width="@dimen/iconSizeWidth"
                         android:layout_height="@dimen/iconSizeHeight"
                         android:layout_gravity="center"
-                        android:contentDescription="@string/genericUndocumented"
+                        android:contentDescription="@string/genericUnknown"
                         android:src="@drawable/ic_radio_white"
                         />
                 <TextView

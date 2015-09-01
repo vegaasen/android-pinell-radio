@@ -41,7 +41,7 @@
                 android:layout_toEndOf="@id/selectableAdvancedItemContainer"
                 android:layout_marginStart="@dimen/selectableMargin"
                 android:layout_centerInParent="true"
-                android:text="@string/genericUndocumented"
+                android:text="@string/genericUnknown"
                 />
     </RelativeLayout>
 

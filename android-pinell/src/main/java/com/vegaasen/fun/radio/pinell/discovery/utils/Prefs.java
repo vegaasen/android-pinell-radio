@@ -236,7 +236,7 @@ public class Prefs extends PreferenceActivity implements OnSharedPreferenceChang
         if (!matcher1.matches() || !matcher2.matches()) {
             ipStartEdit.setText(before_ip_start);
             ipEndEdit.setText(before_ip_end);
-            Toast.makeText(context, R.string.genericUndocumented, Toast.LENGTH_LONG).show();
+            Toast.makeText(context, R.string.genericUnknown, Toast.LENGTH_LONG).show();
             return;
         }
         // Check if ip start is bigger or equal than ip end
@@ -246,7 +246,7 @@ public class Prefs extends PreferenceActivity implements OnSharedPreferenceChang
             if (ipStart > ipEnd) {
                 ipStartEdit.setText(before_ip_start);
                 ipEndEdit.setText(before_ip_end);
-                Toast.makeText(context, R.string.genericUndocumented, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, R.string.genericUnknown, Toast.LENGTH_LONG).show();
             }
         } catch (NumberFormatException e) {
             ipStartEdit.setText(before_ip_start);
@@ -265,7 +265,7 @@ public class Prefs extends PreferenceActivity implements OnSharedPreferenceChang
             if (portStart >= portEnd) {
                 portStartEdit.setText(before_port_start);
                 portEndEdit.setText(before_port_end);
-                Toast.makeText(context, R.string.genericUndocumented, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, R.string.genericUnknown, Toast.LENGTH_LONG).show();
             }
         } catch (NumberFormatException e) {
             portStartEdit.setText(before_port_start);

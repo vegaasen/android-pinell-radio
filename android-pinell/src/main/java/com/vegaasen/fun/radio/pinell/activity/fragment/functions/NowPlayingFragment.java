@@ -115,8 +115,8 @@ public class NowPlayingFragment extends AbstractFragment {
             Log.w(TAG, "Unable to fetch currently playing. Device not turned on or not a Pinell device?");
             return;
         }
-        radioTitle.setText(Strings.isNullOrEmpty(deviceCurrentlyPlaying.getName()) ? getResources().getString(R.string.genericUndocumented) : deviceCurrentlyPlaying.getName());
-        artistTitle.setText(Strings.isNullOrEmpty(deviceCurrentlyPlaying.getTune()) ? getResources().getString(R.string.genericUndocumented) : deviceCurrentlyPlaying.getTune());
+        radioTitle.setText(Strings.isNullOrEmpty(deviceCurrentlyPlaying.getName()) ? getResources().getString(R.string.genericUnknown) : deviceCurrentlyPlaying.getName());
+        artistTitle.setText(Strings.isNullOrEmpty(deviceCurrentlyPlaying.getTune()) ? getResources().getString(R.string.genericUnknown) : deviceCurrentlyPlaying.getTune());
         if (!Strings.isNullOrEmpty(deviceCurrentlyPlaying.getGraphicsUri())) {
             radioImage.setBackground(ImageUtils.convert(deviceCurrentlyPlaying.getGraphicsUri()));
         }

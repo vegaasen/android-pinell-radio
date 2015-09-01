@@ -167,32 +167,32 @@ public abstract class AbstractActivity extends FragmentActivity {
                     //Log.d(TAG, "WifiState=" + WifiState);
                     switch (WifiState) {
                         case WifiManager.WIFI_STATE_ENABLING:
-                            info_in_str = getString(R.string.genericUndocumented);
+                            info_in_str = getString(R.string.genericUnknown);
                             break;
                         case WifiManager.WIFI_STATE_ENABLED:
-                            info_in_str = getString(R.string.genericUndocumented);
+                            info_in_str = getString(R.string.genericUnknown);
                             break;
                         case WifiManager.WIFI_STATE_DISABLING:
-                            info_in_str = getString(R.string.genericUndocumented);
+                            info_in_str = getString(R.string.genericUnknown);
                             break;
                         case WifiManager.WIFI_STATE_DISABLED:
-                            info_in_str = getString(R.string.genericUndocumented);
+                            info_in_str = getString(R.string.genericUnknown);
                             break;
                         default:
-                            info_in_str = getString(R.string.genericUndocumented);
+                            info_in_str = getString(R.string.genericUnknown);
                     }
                 }
 
                 if (action.equals(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION) && net.getWifiInfo()) {
                     SupplicantState sstate = net.getSupplicantState();
                     if (sstate == SupplicantState.SCANNING) {
-                        info_in_str = getString(R.string.genericUndocumented);
+                        info_in_str = getString(R.string.genericUnknown);
                     } else if (sstate == SupplicantState.ASSOCIATING) {
-                        info_in_str = getString(R.string.genericUndocumented,
+                        info_in_str = getString(R.string.genericUnknown,
                                 (net.ssid != null ? net.ssid : (net.bssid != null ? net.bssid
                                         : net.macAddress)));
                     } else if (sstate == SupplicantState.COMPLETED) {
-                        info_in_str = getString(R.string.genericUndocumented, net.ssid);
+                        info_in_str = getString(R.string.genericUnknown, net.ssid);
                     }
                 }
             }
@@ -209,10 +209,10 @@ public abstract class AbstractActivity extends FragmentActivity {
                         net.getWifiInfo();
                         if (net.ssid != null) {
                             net.getIp();
-                            info_ip_str = getString(R.string.genericUndocumented, net.ip, net.cidr, net.intf);
-                            info_in_str = getString(R.string.genericUndocumented, net.ssid);
-                            info_mo_str = getString(R.string.genericUndocumented, getString(
-                                    R.string.genericUndocumented, net.speed, WifiInfo.LINK_SPEED_UNITS));
+                            info_ip_str = getString(R.string.genericUnknown, net.ip, net.cidr, net.intf);
+                            info_in_str = getString(R.string.genericUnknown, net.ssid);
+                            info_mo_str = getString(R.string.genericUnknown, getString(
+                                    R.string.genericUnknown, net.speed, WifiInfo.LINK_SPEED_UNITS));
                         }
                     } else if (type == ConnectivityManager.TYPE_MOBILE) { // 3G
                         if (prefs.getBoolean(KEY_MOBILE, DEFAULT_MOBILE)
@@ -220,22 +220,22 @@ public abstract class AbstractActivity extends FragmentActivity {
                             net.getMobileInfo();
                             if (net.carrier != null) {
                                 net.getIp();
-                                info_ip_str = getString(R.string.genericUndocumented, net.ip, net.cidr, net.intf);
-                                info_in_str = getString(R.string.genericUndocumented, net.carrier);
-                                info_mo_str = getString(R.string.genericUndocumented,
-                                        getString(R.string.genericUndocumented));
+                                info_ip_str = getString(R.string.genericUnknown, net.ip, net.cidr, net.intf);
+                                info_in_str = getString(R.string.genericUnknown, net.carrier);
+                                info_mo_str = getString(R.string.genericUnknown,
+                                        getString(R.string.genericUnknown));
                             }
                         }
                     } else if (type == 3 || type == 9) { // ETH
                         net.getIp();
-                        info_ip_str = getString(R.string.genericUndocumented, net.ip, net.cidr, net.intf);
+                        info_ip_str = getString(R.string.genericUnknown, net.ip, net.cidr, net.intf);
                         info_in_str = EMPTY;
-                        info_mo_str = getString(R.string.genericUndocumented) + getString(R.string.genericUndocumented);
+                        info_mo_str = getString(R.string.genericUnknown) + getString(R.string.genericUnknown);
                         Log.i(TAG, "Ethernet connectivity detected!");
                     } else {
                         Log.i(TAG, "Connectivity unknown!");
-                        info_mo_str = getString(R.string.genericUndocumented)
-                                + getString(R.string.genericUndocumented);
+                        info_mo_str = getString(R.string.genericUnknown)
+                                + getString(R.string.genericUnknown);
                     }
                 }
             }

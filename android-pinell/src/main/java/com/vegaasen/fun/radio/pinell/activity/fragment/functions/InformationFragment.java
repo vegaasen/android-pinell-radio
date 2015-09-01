@@ -1,18 +1,22 @@
 package com.vegaasen.fun.radio.pinell.activity.fragment.functions;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import com.google.common.base.Strings;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractFragment;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceAudio;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceInformation;
 import com.vegaasen.lib.ioc.radio.model.system.PowerState;
+import com.vegaasen.lib.ioc.radio.model.system.RadioMode;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
 
 /**
@@ -26,11 +30,12 @@ public class InformationFragment extends AbstractFragment {
     private static final String TAG = InformationFragment.class.getSimpleName();
 
     private View informationView;
-    private TextView listDeviceInformationSoundLevelText;
-    private TextView listDeviceInformationPinellInformationText;
-    private TextView listDeviceInformationPinellHostNameText;
-    private TextView listDeviceInformationPinellHostVersionText;
     private Switch powerSwitch;
+    private TextView currentSoundLevel;
+    private TextView currentPinellHost;
+    private TextView currentPinellInputSource;
+    private TextView currentApplicationVersion;
+    private RelativeLayout hostInformation;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -62,10 +67,11 @@ public class InformationFragment extends AbstractFragment {
 
     private void configureElements() {
         powerSwitch = (Switch) informationView.findViewById(R.id.listDeviceInformationPowerSwitcher);
-        listDeviceInformationSoundLevelText = (TextView) informationView.findViewById(R.id.listDeviceInformationSoundLevelText);
-        listDeviceInformationPinellInformationText = (TextView) informationView.findViewById(R.id.listDeviceInformationPinellInformationText);
-        listDeviceInformationPinellHostNameText = (TextView) informationView.findViewById(R.id.listDeviceInformationPinellHostNameText);
-        listDeviceInformationPinellHostVersionText = (TextView) informationView.findViewById(R.id.listDeviceInformationPinellHostVersionText);
+        currentSoundLevel = (TextView) informationView.findViewById(R.id.informationVolumeLevelTxt);
+        currentPinellHost = (TextView) informationView.findViewById(R.id.informationHostTxt);
+        currentPinellInputSource = (TextView) informationView.findViewById(R.id.informationCurrentInputSourceTxt);
+        currentApplicationVersion = (TextView) informationView.findViewById(R.id.informationApplicationVersionTxt);
+        hostInformation = (RelativeLayout) informationView.findViewById(R.id.informationHost);
     }
 
     private void configureBehaviors() {
@@ -73,6 +79,15 @@ public class InformationFragment extends AbstractFragment {
         if (informationView != null) {
             configurePowerSwitch();
         }
+        hostInformation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(getActivity())
+                        .setTitle(R.string.messageHostDetailsTitle)
+                        .setMessage(assembleHostText())
+                        .show();
+            }
+        });
     }
 
     private void configureElementValues() {
@@ -83,33 +98,30 @@ public class InformationFragment extends AbstractFragment {
             return;
         }
         final DeviceInformation deviceInformation = host.getDeviceInformation();
-        listDeviceInformationSoundLevelText.setText(audioLevels == null ?
-                getUnavailableString() :
-                String.format("%s/%s", Integer.toString(audioLevels.getLevel()), getString(R.integer.volumeControlMax)));
-        listDeviceInformationPinellInformationText.setText(host.getHost());
+        currentSoundLevel.setText(audioLevels == null ? getUnavailableString() : String.format("%s of %s", Integer.toString(audioLevels.getLevel()), getString(R.integer.volumeControlMax)));
+        final RadioMode currentInputSource = getPinellService().getCurrentInputSource();
+        if (currentInputSource != null && !Strings.isNullOrEmpty(currentInputSource.getName())) {
+            currentPinellInputSource.setText(currentInputSource.getName());
+        }
         if (deviceInformation != null) {
-            listDeviceInformationPinellHostNameText.setText(getSafeString(deviceInformation.getName()));
-            listDeviceInformationPinellHostVersionText.setText(getSafeString(deviceInformation.getVersion()));
+            currentPinellHost.setText(getSafeString(deviceInformation.getName()));
         } else {
             pinellUnavailable();
         }
+        currentApplicationVersion.setText(getApplicationVersion());
     }
 
     private void allUnavailable() {
         pinellUnavailable();
-        listDeviceInformationPinellInformationText.setText(getUnavailableString());
-        listDeviceInformationSoundLevelText.setText(getUnavailableString());
+        currentSoundLevel.setText(getUnavailableString());
     }
 
     private void pinellUnavailable() {
-        listDeviceInformationPinellHostNameText.setText(getUnavailableString());
-        listDeviceInformationPinellHostVersionText.setText(getUnavailableString());
+        currentPinellHost.setText(getUnavailableString());
     }
 
     private void configurePowerSwitch() {
-        Log.d(TAG, "Configuring the powerSwitch");
         if (powerSwitch != null) {
-            //FIXME: some kind of bug here
             final boolean poweredOn = getPinellService().isPoweredOn();
             powerSwitch.post(new Runnable() {
                 @Override
@@ -139,6 +151,11 @@ public class InformationFragment extends AbstractFragment {
         }
         Log.d(TAG, "The current host is not an actual Pinell host. Disabling the powerSwitch selector");
         powerSwitch.setClickable(false);
+    }
+
+    private String assembleHostText() {
+        final Host selectedHost = getPinellService().getSelectedHost();
+        return String.format("{'ip':'%s','session':'%s'}\n:-)", selectedHost.getHost(), selectedHost.getRadioSession().getId());
     }
 
 }

@@ -17,7 +17,7 @@
             android:layout_height="100dp"
             android:layout_centerInParent="true"
             android:background="@drawable/ic_cake_black"
-            android:contentDescription="@string/genericUndocumented"
+            android:contentDescription="@string/genericUnknown"
             />
     <TextView
             android:id="@+id/txtFmRadioFrequency"

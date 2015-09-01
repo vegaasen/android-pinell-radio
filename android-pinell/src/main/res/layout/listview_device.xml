@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@id/listDeviceRadioIcon"
                 android:layout_centerVertical="true"
-                android:text="@string/genericUndocumented"
+                android:text="@string/genericUnknown"
                 />
     </RelativeLayout>
 </LinearLayout>

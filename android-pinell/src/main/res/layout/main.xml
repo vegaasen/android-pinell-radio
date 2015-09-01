@@ -40,7 +40,7 @@
                         android:layout_width="@dimen/hamburgerWidth"
                         android:layout_height="@dimen/hamburgerHeight"
                         android:background="@color/newHamburgerColor"
-                        android:contentDescription="@string/genericUndocumented"
+                        android:contentDescription="@string/genericUnknown"
                         />
                 <ImageView
                         android:id="@+id/currentHamburgerMid"
@@ -49,7 +49,7 @@
                         android:layout_marginTop="3dp"
                         android:layout_below="@id/currentHamburgerTop"
                         android:background="@color/newHamburgerColor"
-                        android:contentDescription="@string/genericUndocumented"
+                        android:contentDescription="@string/genericUnknown"
                         />
                 <ImageView
                         android:id="@+id/currentHamburgerLow"
@@ -58,7 +58,7 @@
                         android:layout_marginTop="3dp"
                         android:layout_below="@id/currentHamburgerMid"
                         android:background="@color/newHamburgerColor"
-                        android:contentDescription="@string/genericUndocumented"
+                        android:contentDescription="@string/genericUnknown"
                         />
             </RelativeLayout>
             <ImageView
@@ -69,7 +69,7 @@
                     android:layout_centerVertical="true"
                     android:layout_toEndOf="@id/lstCurrentApplicationDrawerContainer"
                     android:src="@drawable/ic_radio_white"
-                    android:contentDescription="@string/genericUndocumented"
+                    android:contentDescription="@string/genericUnknown"
                     />
             <TextView
                     android:layout_width="wrap_content"
