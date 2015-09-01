@@ -4,6 +4,8 @@
 gen/
 gradle
 build
+*.apk
+*manifest-merger*
 
 # IDE
 *.eclipse
