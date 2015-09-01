@@ -3,7 +3,7 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@color/defaultElementColor">
+              android:background="@color/newBackgroundColor">
     <!--
         Point of this is to show the following elements:
             - Radio stations
@@ -20,18 +20,20 @@
             android:layout_marginBottom="@dimen/selectableMarginTopBottom"
             android:background="@color/defaultBackgroundColor"
             >
-        <LinearLayout
+        <RelativeLayout
                 android:id="@+id/selectableAdvancedItemContainer"
                 android:layout_width="@dimen/selectableImageWidth"
                 android:layout_height="match_parent"
-                android:background="@color/listBoxSelectedColor"
+                android:background="@color/newTitleColor"
                 >
             <ImageView
                     android:id="@+id/selectableAdvancedItemImg"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="25dp"
+                    android:layout_width="25dp"
+                    android:layout_centerInParent="true"
+                    android:alpha="0.5"
                     />
-        </LinearLayout>
+        </RelativeLayout>
         <TextView
                 android:id="@+id/selectableAdvancedItemTxt"
                 android:layout_width="match_parent"

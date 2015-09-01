@@ -1,11 +1,13 @@
 package com.vegaasen.fun.radio.pinell.adapter;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.vegaasen.fun.radio.pinell.R;
@@ -25,7 +27,7 @@ public class EqualizerAdapter extends BaseAdapter {
 
     private final Context context;
     private final List<Equalizer> equalizers;
-    
+
     private Equalizer currentEqualizer;
 
     public EqualizerAdapter(Context context, List<Equalizer> equalizers, Equalizer currentEqualizer) {
@@ -54,12 +56,17 @@ public class EqualizerAdapter extends BaseAdapter {
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (layoutInflater != null) {
             final Equalizer candidateEqualizer = getItem(position);
-            convertView = layoutInflater.inflate(R.layout.listview_selectables, parent, false);
-            TextView equalizerCaption = (TextView) convertView.findViewById(R.id.selectableItemTxt);
+            convertView = layoutInflater.inflate(R.layout.listview_selectables_advanced, parent, false);
+            TextView equalizerCaption = (TextView) convertView.findViewById(R.id.selectableAdvancedItemTxt);
+            ImageView image = (ImageView) convertView.findViewById(R.id.selectableAdvancedItemImg);
+            image.setImageResource(R.drawable.ic_equalizer_white);
             equalizerCaption.setText(candidateEqualizer.getName());
             if (candidateEqualizer.equals(currentEqualizer)) {
-                RelativeLayout equalizerContainer = (RelativeLayout) convertView.findViewById(R.id.selectableItem);
-                equalizerContainer.setBackgroundColor(context.getResources().getColor(R.color.defaultElementSelectedColor));
+                final Resources resources = context.getResources();
+                RelativeLayout equalizerContainer = (RelativeLayout) convertView.findViewById(R.id.selectableAdvancedItem);
+                equalizerContainer.setBackgroundColor(resources.getColor(R.color.newSidebarBackgroundColor));
+                equalizerCaption.setTextColor(resources.getColor(R.color.newTitleTextColor));
+                image.setAlpha(1.0f);
             }
             return convertView;
         }

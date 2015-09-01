@@ -3,7 +3,7 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@color/defaultElementColor">
+              android:background="@color/newBackgroundColor">
     <!--
         Point of this is to show the following elements:
             - Equalizer
@@ -24,7 +24,7 @@
                 android:id="@+id/selectableItemImg"
                 android:layout_width="@dimen/selectableImageWidth"
                 android:layout_height="match_parent"
-                android:background="@color/listBoxSelectedColor"
+                android:background="@color/newTitleColor"
                 />
         <TextView
                 android:id="@+id/selectableItemTxt"
