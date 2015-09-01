@@ -5,7 +5,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:weightSum="1"
-        android:background="@color/defaultBackgroundColor">
+        android:background="@color/newBackgroundColor">
     <!--
         This is the "Now Playing" view for the application.
         It mainly provides the following details:
@@ -18,12 +18,12 @@
         @author vegaasen
         @since 27.5.2015
     -->
-    <LinearLayout
+    <RelativeLayout
             android:orientation="vertical"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="350dp"
             android:layout_gravity="center"
-            android:background="#000"
+            android:background="#818181"
             android:measureWithLargestChild="false">
         <ImageView
                 android:layout_width="fill_parent"
@@ -31,17 +31,16 @@
                 android:id="@+id/playingRadioChannelImg"
                 android:adjustViewBounds="true"
                 android:scaleType="matrix"
-                android:layout_gravity="center"
+                android:layout_centerInParent="true"
                 android:background="@drawable/placeholder"
                 android:contentDescription="@string/genericUndocumented"/>
-    </LinearLayout>
+    </RelativeLayout>
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:layout_gravity="center"
             android:layout_marginTop="-4dp"
-            android:background="@color/sidebarBoxHoverColor"
             >
         <RelativeLayout
                 android:layout_width="match_parent"
