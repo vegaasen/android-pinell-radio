@@ -3,6 +3,7 @@ package com.vegaasen.fun.radio.pinell.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SlidingPaneLayout;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -44,6 +45,8 @@ public class MainActivity extends AbstractActivity {
     private EqualizerFragment equalizerFragment;
     private InformationFragment informationFragment;
     private RelativeLayout sectionPlaying, sectionBrowse, sectionSource, sectionEqualizer, sectionInformation;
+    private RelativeLayout drawerContainer;
+    private SlidingPaneLayout componentSlidingSidebar;
     private View currentActiveFragmentView;
     private ImageButton buttonChangePinellHost;
 
@@ -107,6 +110,8 @@ public class MainActivity extends AbstractActivity {
         sectionEqualizer = (RelativeLayout) findViewById(R.id.sectionEqualizer);
         sectionInformation = (RelativeLayout) findViewById(R.id.sectionInformation);
         buttonChangePinellHost = (ImageButton) findViewById(R.id.btnCurrentApplicationSelectDevice);
+        drawerContainer = (RelativeLayout) findViewById(R.id.lstCurrentApplicationDrawerContainer);
+        componentSlidingSidebar = (SlidingPaneLayout) findViewById(R.id.componentSlidingSidebar);
     }
 
     private void configureButtonActionListeners() {
@@ -115,6 +120,16 @@ public class MainActivity extends AbstractActivity {
             public void onClick(View v) {
                 if (renderSelectPinellHost()) {
                     configureSidebarActionListeners();
+                }
+            }
+        });
+        drawerContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (componentSlidingSidebar.isOpen()) {
+                    componentSlidingSidebar.closePane();
+                } else {
+                    componentSlidingSidebar.openPane();
                 }
             }
         });

@@ -31,6 +31,10 @@ import java.util.List;
  * - DAB
  * - Internet Radio
  * - FM presets
+ * <p/>
+ * TODO: Implement searching possibilities which updates async on searching (based on Mhz etc)
+ * TODO: See how Internet Radio works
+ * FIXME: Not able to see more than n-number of radio stations..what is going on :-)?
  *
  * @author <a href="mailto:vegaasen@gmail.com">vegaasen</a>
  * @version 30.8.2015

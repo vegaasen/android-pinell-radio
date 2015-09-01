@@ -5,9 +5,10 @@
                                              android:minWidth="300dp"
                                              android:background="#80000000"
                                              android:orientation="vertical"
+                                             android:id="@+id/componentSlidingSidebar"
         >
     <LinearLayout
-            android:id="@+id/layoutSidemenu"
+            android:id="@+id/layoutSidebar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -27,21 +28,48 @@
                 android:background="@color/defaultBackgroundColor"
                 android:paddingBottom="@dimen/elementSpacing"
                 >
-            <ImageView
-                    android:id="@+id/imgCurrentApplicationDrawer"
-                    android:layout_width="@dimen/iconBarSizeWidth"
-                    android:layout_height="@dimen/iconBarSizeHeight"
+            <RelativeLayout
+                    android:id="@+id/lstCurrentApplicationDrawerContainer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_alignParentStart="true"
-                    android:src="@drawable/ic_drawer"
-                    android:contentDescription="@string/genericUndocumented"/>
+                    android:paddingStart="0dp"
+                    android:paddingEnd="10dp"
+                    >
+                <ImageView
+                        android:id="@+id/currentHamburgerTop"
+                        android:layout_width="@dimen/hamburgerWidth"
+                        android:layout_height="@dimen/hamburgerHeight"
+                        android:background="@color/sidebarBoxColor"
+                        android:contentDescription="@string/genericUndocumented"
+                        />
+                <ImageView
+                        android:id="@+id/currentHamburgerMid"
+                        android:layout_width="@dimen/hamburgerWidth"
+                        android:layout_height="@dimen/hamburgerHeight"
+                        android:layout_marginTop="3dp"
+                        android:layout_below="@id/currentHamburgerTop"
+                        android:background="@color/sidebarBoxColor"
+                        android:contentDescription="@string/genericUndocumented"
+                        />
+                <ImageView
+                        android:id="@+id/currentHamburgerLow"
+                        android:layout_width="@dimen/hamburgerWidth"
+                        android:layout_height="@dimen/hamburgerHeight"
+                        android:layout_marginTop="3dp"
+                        android:layout_below="@id/currentHamburgerMid"
+                        android:background="@color/sidebarBoxColor"
+                        android:contentDescription="@string/genericUndocumented"
+                        />
+            </RelativeLayout>
             <ImageView
                     android:id="@+id/imgCurrentApplicationContext"
                     android:layout_width="@dimen/iconBarSizeWidth"
                     android:layout_height="@dimen/iconBarSizeHeight"
                     android:layout_marginEnd="15dp"
                     android:layout_centerVertical="true"
-                    android:layout_toEndOf="@id/imgCurrentApplicationDrawer"
+                    android:layout_toEndOf="@id/lstCurrentApplicationDrawerContainer"
                     android:src="@drawable/ic_radio_black"
                     android:contentDescription="@string/genericUndocumented"
                     />

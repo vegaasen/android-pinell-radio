@@ -23,4 +23,6 @@
     <dimen name="selectableMarginTopBottom">10dp</dimen>
     <dimen name="selectableImageWidth">60dp</dimen>
     <dimen name="informationMargin">10dp</dimen>
+    <dimen name="hamburgerWidth">5dp</dimen>
+    <dimen name="hamburgerHeight">3dp</dimen>
 </resources>
