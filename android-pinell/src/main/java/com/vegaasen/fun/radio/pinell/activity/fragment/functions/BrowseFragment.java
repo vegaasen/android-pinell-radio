@@ -141,6 +141,7 @@ public class BrowseFragment extends AbstractFragment {
             return;
         }
         final BrowseStationsActivity adapter = getRadioStationsActivity(radioStationsOverview);
+        adapter.updateCurrentRadioStation(getPinellService().getCurrentlyPlaying());
         radioStationsOverview.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {

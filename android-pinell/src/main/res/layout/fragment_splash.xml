@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:background="@color/newBackgroundColor">
     <!--
         This can be perceived as a "splash" screen for the user.
         It does not contain any special features, and it cannot be rendered after the user have changed
@@ -13,10 +14,10 @@
     -->
     <ImageView
             android:id="@+id/listDeviceInformationAppInformationVersionText"
-            android:layout_width="170dp"
-            android:layout_height="50dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:layout_centerInParent="true"
-            android:background="@drawable/logo"
+            android:background="@drawable/ic_radio_white"
             android:contentDescription="@string/genericUnknown"
             />
 </RelativeLayout>

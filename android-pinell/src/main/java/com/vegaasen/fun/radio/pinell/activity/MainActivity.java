@@ -45,6 +45,7 @@ public class MainActivity extends AbstractActivity {
     private InputSourceFragment inputSourceFragment;
     private EqualizerFragment equalizerFragment;
     private InformationFragment informationFragment;
+    private AbstractFragment activeFragment;
     private RelativeLayout sectionPlaying, sectionBrowse, sectionSource, sectionEqualizer, sectionInformation;
     private RelativeLayout drawerContainer;
     private SlidingPaneLayout componentSlidingSidebar;
@@ -81,6 +82,7 @@ public class MainActivity extends AbstractActivity {
             final DeviceAudio audioLevels = getPinellService().getAudioLevels();
             final int candidateLevel = audioLevels.getLevel();
             getPinellService().setAudioLevel(candidateLevel <= 38 ? candidateLevel + 1 : candidateLevel);
+            conditionallyUpdateFragment();
         }
         return true;
     }
@@ -91,8 +93,15 @@ public class MainActivity extends AbstractActivity {
             final DeviceAudio audioLevels = getPinellService().getAudioLevels();
             final int candidateLevel = audioLevels.getLevel();
             getPinellService().setAudioLevel(candidateLevel > 0 ? candidateLevel - 1 : candidateLevel);
+            conditionallyUpdateFragment();
         }
         return true;
+    }
+
+    private void conditionallyUpdateFragment() {
+        if (activeFragment instanceof InformationFragment) {
+            ((InformationFragment) activeFragment).updateSoundLevel();
+        }
     }
 
     private void configureCoreElements() {
@@ -149,6 +158,7 @@ public class MainActivity extends AbstractActivity {
             @Override
             public void onClick(View v) {
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragmentReplacer, fragment).commit();
+                setActiveFragment(fragment);
                 setActiveFragmentLayout(v);
             }
         });
@@ -167,6 +177,10 @@ public class MainActivity extends AbstractActivity {
             currentActiveFragmentView = candidate;
             currentActiveFragmentView.setBackgroundColor(getResources().getColor(R.color.sidebarBoxSelectedColor));
         }
+    }
+
+    private void setActiveFragment(AbstractFragment fragment) {
+        activeFragment = fragment;
     }
 
     private boolean renderSelectPinellHost() {

@@ -52,6 +52,11 @@ public class InformationFragment extends AbstractFragment {
         return informationView;
     }
 
+    public void updateSoundLevel() {
+        final DeviceAudio audioLevels = getPinellService().getAudioLevels();
+        currentSoundLevel.setText(audioLevels == null ? getUnavailableString() : String.format("%s of %s", Integer.toString(audioLevels.getLevel()), getString(R.integer.volumeControlMax)));
+    }
+
     @Override
     protected void changeActiveContent(ViewGroup container) {
         changeCurrentActiveApplicationContextContent(container, R.drawable.ic_radio_white, R.string.sidebarInformation);
@@ -91,24 +96,23 @@ public class InformationFragment extends AbstractFragment {
     }
 
     private void configureElementValues() {
-        final DeviceAudio audioLevels = getPinellService().getAudioLevels();
         final Host host = getPinellService().getSelectedHost();
         if (host == null) {
             allUnavailable();
             return;
         }
-        final DeviceInformation deviceInformation = host.getDeviceInformation();
-        currentSoundLevel.setText(audioLevels == null ? getUnavailableString() : String.format("%s of %s", Integer.toString(audioLevels.getLevel()), getString(R.integer.volumeControlMax)));
         final RadioMode currentInputSource = getPinellService().getCurrentInputSource();
         if (currentInputSource != null && !Strings.isNullOrEmpty(currentInputSource.getName())) {
             currentPinellInputSource.setText(currentInputSource.getName());
         }
+        final DeviceInformation deviceInformation = host.getDeviceInformation();
         if (deviceInformation != null) {
             currentPinellHost.setText(getSafeString(deviceInformation.getName()));
         } else {
             pinellUnavailable();
         }
         currentApplicationVersion.setText(getApplicationVersion());
+        updateSoundLevel();
     }
 
     private void allUnavailable() {

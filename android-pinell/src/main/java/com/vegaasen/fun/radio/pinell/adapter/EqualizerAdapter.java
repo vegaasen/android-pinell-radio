@@ -57,15 +57,15 @@ public class EqualizerAdapter extends BaseAdapter {
         if (layoutInflater != null) {
             final Equalizer candidateEqualizer = getItem(position);
             convertView = layoutInflater.inflate(R.layout.listview_selectables_advanced, parent, false);
-            TextView equalizerCaption = (TextView) convertView.findViewById(R.id.selectableAdvancedItemTxt);
+            TextView caption = (TextView) convertView.findViewById(R.id.selectableAdvancedItemTxt);
             ImageView image = (ImageView) convertView.findViewById(R.id.selectableAdvancedItemImg);
             image.setImageResource(R.drawable.ic_equalizer_white);
-            equalizerCaption.setText(candidateEqualizer.getName());
+            caption.setText(candidateEqualizer.getName());
             if (candidateEqualizer.equals(currentEqualizer)) {
                 final Resources resources = context.getResources();
                 RelativeLayout equalizerContainer = (RelativeLayout) convertView.findViewById(R.id.selectableAdvancedItem);
                 equalizerContainer.setBackgroundColor(resources.getColor(R.color.newSidebarBackgroundColor));
-                equalizerCaption.setTextColor(resources.getColor(R.color.newTitleTextColor));
+                caption.setTextColor(resources.getColor(R.color.newTitleTextColor));
                 image.setAlpha(1.0f);
             }
             return convertView;

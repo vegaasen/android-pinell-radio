@@ -1,15 +1,18 @@
 package com.vegaasen.fun.radio.pinell.adapter;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.lib.ioc.radio.model.dab.RadioStation;
+import com.vegaasen.lib.ioc.radio.model.device.DeviceCurrentlyPlaying;
 
 import java.util.List;
 
@@ -26,18 +29,11 @@ public class BrowseStationsActivity extends BaseAdapter {
     private final Context context;
     private final List<RadioStation> radioStations;
 
-    private RadioStation currentRadioStation;
+    private DeviceCurrentlyPlaying currentRadioStation;
 
     public BrowseStationsActivity(Context context, List<RadioStation> radioStations) {
         this.context = context;
         this.radioStations = radioStations;
-    }
-
-    @SuppressWarnings("unused")
-    public BrowseStationsActivity(Context context, List<RadioStation> radioStations, RadioStation currentRadioStation) {
-        this.context = context;
-        this.radioStations = radioStations;
-        this.currentRadioStation = currentRadioStation;
     }
 
     @Override
@@ -61,9 +57,17 @@ public class BrowseStationsActivity extends BaseAdapter {
         if (layoutInflater != null) {
             final RadioStation candidate = getItem(position);
             convertView = layoutInflater.inflate(R.layout.listview_selectables_advanced, parent, false);
-            TextView radioStationCaption = (TextView) convertView.findViewById(R.id.selectableAdvancedItemTxt);
-            radioStationCaption.setText(candidate.getName());
-            configureCurrentRadioStation(convertView, candidate);
+            TextView caption = (TextView) convertView.findViewById(R.id.selectableAdvancedItemTxt);
+            ImageView image = (ImageView) convertView.findViewById(R.id.selectableAdvancedItemImg);
+            image.setImageResource(R.drawable.ic_audiotrack_white);
+            caption.setText(candidate.getName());
+            if (currentRadioStation != null && candidate.getName().contains(currentRadioStation.getName())) {
+                final Resources resources = context.getResources();
+                RelativeLayout equalizerContainer = (RelativeLayout) convertView.findViewById(R.id.selectableAdvancedItem);
+                equalizerContainer.setBackgroundColor(resources.getColor(R.color.newSidebarBackgroundColor));
+                caption.setTextColor(resources.getColor(R.color.newTitleTextColor));
+                image.setAlpha(1.0f);
+            }
             return convertView;
         }
         Log.e(TAG, "How did we get here?");
@@ -71,7 +75,7 @@ public class BrowseStationsActivity extends BaseAdapter {
     }
 
     @SuppressWarnings("unused")
-    public void updateCurrentRadioStation(RadioStation selected) {
+    public void updateCurrentRadioStation(DeviceCurrentlyPlaying selected) {
         this.currentRadioStation = selected;
     }
 
@@ -79,13 +83,6 @@ public class BrowseStationsActivity extends BaseAdapter {
         synchronized (radioStations) {
             radioStations.clear();
             radioStations.addAll(updatedRadioStations);
-        }
-    }
-
-    private void configureCurrentRadioStation(View convertView, RadioStation candidate) {
-        if (currentRadioStation != null && candidate.equals(currentRadioStation)) {
-            RelativeLayout container = (RelativeLayout) convertView.findViewById(R.id.selectableAdvancedItem);
-            container.setBackgroundColor(context.getResources().getColor(R.color.defaultElementSelectedColor));
         }
     }
 
