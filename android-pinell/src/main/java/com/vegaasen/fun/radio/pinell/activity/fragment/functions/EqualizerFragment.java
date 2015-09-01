@@ -39,6 +39,7 @@ public class EqualizerFragment extends AbstractFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        changeActiveContent(container);
         if (!getPinellService().isPinellDevice()) {
             equalizerView = inflater.inflate(R.layout.fragment_pinell_na, container, false);
         } else {
@@ -47,7 +48,6 @@ public class EqualizerFragment extends AbstractFragment {
                 Log.e(TAG, "For some reason, the view were unable to be found. Dying");
                 throw new RuntimeException("Missing required view in the initialization of the application");
             }
-            changeActiveContent(container);
             listEqualizersAvailable();
         }
         return equalizerView;
@@ -55,7 +55,7 @@ public class EqualizerFragment extends AbstractFragment {
 
     @Override
     protected void changeActiveContent(ViewGroup container) {
-        changeCurrentActiveApplicationContextContent(container, R.drawable.ic_equalizer_black, R.string.sidebarEqualizer);
+        changeCurrentActiveApplicationContextContent(container, R.drawable.ic_equalizer_white, R.string.sidebarEqualizer);
     }
 
     private void listEqualizersAvailable() {

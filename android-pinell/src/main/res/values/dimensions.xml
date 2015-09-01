@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="iconBarSizeHeight">23dp</dimen>
-    <dimen name="iconBarSizeWidth">25dp</dimen>
+    <dimen name="iconBarSizeHeight">20dp</dimen>
+    <dimen name="iconBarSizeWidth">23dp</dimen>
     <dimen name="iconSizeHeight">40dp</dimen>
     <dimen name="iconSizeWidth">40dp</dimen>
     <dimen name="elementSpacing">5dp</dimen>

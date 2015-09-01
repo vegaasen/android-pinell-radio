@@ -12,5 +12,6 @@
     <style name="PinellTextViewStyle" parent="android:Widget.TextView">
         <item name="android:textSize">@dimen/textDefaultHeight</item>
         <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:color">@color/newBackgroundTextColor</item>
     </style>
 </resources>

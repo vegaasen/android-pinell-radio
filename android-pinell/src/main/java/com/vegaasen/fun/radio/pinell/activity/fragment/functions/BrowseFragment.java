@@ -49,6 +49,7 @@ public class BrowseFragment extends AbstractFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        changeActiveContent(container);
         if (!getPinellService().isPinellDevice()) {
             browseFragment = inflater.inflate(R.layout.fragment_pinell_na, container, false);
         } else {
@@ -71,13 +72,12 @@ public class BrowseFragment extends AbstractFragment {
                     configureViewUnknown(inflater, container);
             }
         }
-        changeActiveContent(container);
         return browseFragment;
     }
 
     @Override
     protected void changeActiveContent(ViewGroup container) {
-        changeCurrentActiveApplicationContextContent(container, R.drawable.ic_queue_music_black, R.string.sidebarBrowse);
+        changeCurrentActiveApplicationContextContent(container, R.drawable.ic_queue_music_white, R.string.sidebarBrowse);
     }
 
     private void configureViewUnknown(LayoutInflater inflater, ViewGroup container) {

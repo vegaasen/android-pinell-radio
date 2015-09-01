@@ -2,6 +2,7 @@ package com.vegaasen.fun.radio.pinell.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.util.Log;
@@ -67,7 +68,7 @@ public class MainActivity extends AbstractActivity {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG, String.format("Response from request {%s} was {%s}", requestCode, resultCode));
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
-            buttonChangePinellHost.setBackgroundResource(R.drawable.ic_cast_connected_black);
+            buttonChangePinellHost.setBackgroundResource(R.drawable.ic_cast_connected_white);
             getSupportFragmentManager().beginTransaction().replace(R.id.fragmentReplacer, informationFragment).commit();
             informationFragment.refreshDeviceInformation();
             setActiveFragmentLayout(currentActiveFragmentView);
@@ -75,7 +76,7 @@ public class MainActivity extends AbstractActivity {
     }
 
     @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
+    public boolean onKeyUp(int keyCode, @NonNull KeyEvent event) {
         if (ApplicationContext.INSTANCE.isRadioConnected() && keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
             final DeviceAudio audioLevels = getPinellService().getAudioLevels();
             final int candidateLevel = audioLevels.getLevel();
@@ -161,7 +162,7 @@ public class MainActivity extends AbstractActivity {
             }
             if (currentActiveFragmentView != null) {
                 Log.d(TAG, String.format("The currentActiveFragmentView {%s} is not undefined and will be set back to the original defined color", currentActiveFragmentView.getId()));
-                currentActiveFragmentView.setBackgroundColor(getResources().getColor(R.color.sidebarBoxColor));
+                currentActiveFragmentView.setBackgroundColor(getResources().getColor(R.color.newSidebarBoxBackgroundColor));
             }
             currentActiveFragmentView = candidate;
             currentActiveFragmentView.setBackgroundColor(getResources().getColor(R.color.sidebarBoxSelectedColor));

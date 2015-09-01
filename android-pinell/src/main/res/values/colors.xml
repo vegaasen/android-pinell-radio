@@ -16,4 +16,13 @@
     <color name="sidebarBoxTextColor">#ffffff</color>
     <color name="textNormal">#111111</color>
     <color name="textSmall">#BABABA</color>
+    <!-- new color sets -->
+    <color name="newTitleColor">#607D8B</color>
+    <color name="newTitleTextColor">#FFFFFF</color>
+    <color name="newBackgroundColor">#ECEFF1</color>
+    <color name="newBackgroundTextColor">#2D2D2D</color>
+    <color name="newHamburgerColor">#FFFFFF</color>
+    <color name="newSidebarBackgroundColor">#B0BEC5</color>
+    <color name="newSidebarBoxBackgroundColor">#546E7A</color>
+
 </resources>

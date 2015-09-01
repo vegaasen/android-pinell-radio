@@ -11,18 +11,18 @@
             android:layout_gravity="center_vertical"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@color/defaultElementBackgroundColor"
+            android:background="@color/newTitleColor"
             android:paddingBottom="@dimen/elementSpacing"
             >
         <ImageView
                 android:id="@+id/imgDialogChooser"
-                android:layout_width="@dimen/iconBarSizeWidth"
-                android:layout_height="@dimen/iconBarSizeHeight"
+                android:layout_width="23dp"
+                android:layout_height="23dp"
                 android:layout_marginEnd="15dp"
                 android:layout_marginStart="10dp"
                 android:layout_centerVertical="true"
                 android:layout_alignParentStart="true"
-                android:background="@drawable/ic_cast_black"
+                android:background="@drawable/ic_cast_white"
                 />
         <TextView
                 android:layout_width="wrap_content"
@@ -30,13 +30,14 @@
                 android:layout_toEndOf="@id/imgDialogChooser"
                 android:layout_centerVertical="true"
                 android:text="@string/dialogChooserTitle"
+                android:textColor="@color/newTitleTextColor"
                 />
         <ImageButton
                 android:id="@+id/btnDialogRefreshDevices"
-                android:layout_width="@dimen/iconBarSizeWidth"
-                android:layout_height="@dimen/iconBarSizeHeight"
+                android:layout_width="23dp"
+                android:layout_height="23dp"
                 android:layout_marginEnd="10dp"
-                android:background="@drawable/ic_cached_black"
+                android:background="@drawable/ic_rotate_left_white"
                 android:layout_centerVertical="true"
                 android:layout_alignParentEnd="true"
                 android:clickable="true"

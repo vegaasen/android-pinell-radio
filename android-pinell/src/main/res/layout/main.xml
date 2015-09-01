@@ -3,7 +3,6 @@
                                              android:layout_width="match_parent"
                                              android:layout_height="match_parent"
                                              android:minWidth="300dp"
-                                             android:background="#80000000"
                                              android:orientation="vertical"
                                              android:id="@+id/componentSlidingSidebar"
         >
@@ -19,13 +18,12 @@
             android:layout_height="fill_parent"
             android:clickable="true"
             android:minWidth="300dp"
-            android:background="#80000000"
             android:orientation="vertical">
         <RelativeLayout
                 android:layout_gravity="center_vertical"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:background="@color/defaultBackgroundColor"
+                android:background="@color/newTitleColor"
                 android:paddingBottom="@dimen/elementSpacing"
                 >
             <RelativeLayout
@@ -41,7 +39,7 @@
                         android:id="@+id/currentHamburgerTop"
                         android:layout_width="@dimen/hamburgerWidth"
                         android:layout_height="@dimen/hamburgerHeight"
-                        android:background="@color/sidebarBoxColor"
+                        android:background="@color/newHamburgerColor"
                         android:contentDescription="@string/genericUndocumented"
                         />
                 <ImageView
@@ -50,7 +48,7 @@
                         android:layout_height="@dimen/hamburgerHeight"
                         android:layout_marginTop="3dp"
                         android:layout_below="@id/currentHamburgerTop"
-                        android:background="@color/sidebarBoxColor"
+                        android:background="@color/newHamburgerColor"
                         android:contentDescription="@string/genericUndocumented"
                         />
                 <ImageView
@@ -59,7 +57,7 @@
                         android:layout_height="@dimen/hamburgerHeight"
                         android:layout_marginTop="3dp"
                         android:layout_below="@id/currentHamburgerMid"
-                        android:background="@color/sidebarBoxColor"
+                        android:background="@color/newHamburgerColor"
                         android:contentDescription="@string/genericUndocumented"
                         />
             </RelativeLayout>
@@ -67,10 +65,10 @@
                     android:id="@+id/imgCurrentApplicationContext"
                     android:layout_width="@dimen/iconBarSizeWidth"
                     android:layout_height="@dimen/iconBarSizeHeight"
-                    android:layout_marginEnd="15dp"
+                    android:layout_marginEnd="10dp"
                     android:layout_centerVertical="true"
                     android:layout_toEndOf="@id/lstCurrentApplicationDrawerContainer"
-                    android:src="@drawable/ic_radio_black"
+                    android:src="@drawable/ic_radio_white"
                     android:contentDescription="@string/genericUndocumented"
                     />
             <TextView
@@ -78,16 +76,17 @@
                     android:layout_height="wrap_content"
                     android:layout_toEndOf="@id/imgCurrentApplicationContext"
                     android:layout_centerVertical="true"
-                    android:paddingTop="3dp"
+                    android:paddingTop="1dp"
                     android:text="@string/defaultTitlebarCaption"
                     android:id="@+id/txtCurrentApplicationContext"
+                    android:textColor="@color/newTitleTextColor"
                     />
             <ImageButton
                     android:id="@+id/btnCurrentApplicationSelectDevice"
                     android:layout_width="@dimen/iconBarSizeWidth"
                     android:layout_height="@dimen/iconBarSizeHeight"
                     android:layout_marginEnd="10dp"
-                    android:background="@drawable/ic_cast_black"
+                    android:background="@drawable/ic_cast_white"
                     android:layout_centerVertical="true"
                     android:layout_alignParentEnd="true"
                     android:clickable="true"
@@ -97,7 +96,7 @@
         <LinearLayout android:layout_width="match_parent"
                       android:layout_height="fill_parent"
                       android:baselineAligned="false"
-                      android:background="@color/defaultElementBackgroundColor"
+                      android:background="@color/newBackgroundColor"
                 >
             <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                             android:orientation="vertical"

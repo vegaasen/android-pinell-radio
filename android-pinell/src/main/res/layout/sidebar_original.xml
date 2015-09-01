@@ -3,7 +3,7 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/sidebarBackgroundColor"
+            android:background="@color/newSidebarBackgroundColor"
             android:scrollbars="none"
             android:overScrollMode="never"
         >
@@ -27,7 +27,7 @@
                 android:layout_marginTop="@dimen/sidebarBoxOuterMarginTop"
                 android:layout_marginStart="@dimen/sidebarBoxOuterMarginStartAndEnd"
                 android:layout_marginEnd="@dimen/sidebarBoxOuterMarginStartAndEnd"
-                android:background="@color/sidebarBoxColor">
+                android:background="@color/newSidebarBoxBackgroundColor">
             <LinearLayout
                     android:layout_width="@dimen/sidebarBoxInnerWidth"
                     android:layout_height="wrap_content"
@@ -60,7 +60,7 @@
                 android:layout_marginTop="@dimen/sidebarBoxOuterMarginTop"
                 android:layout_marginStart="@dimen/sidebarBoxOuterMarginStartAndEnd"
                 android:layout_marginEnd="@dimen/sidebarBoxOuterMarginStartAndEnd"
-                android:background="@color/sidebarBoxColor">
+                android:background="@color/newSidebarBoxBackgroundColor">
             <LinearLayout
                     android:layout_width="@dimen/sidebarBoxInnerWidth"
                     android:layout_height="wrap_content"
@@ -93,7 +93,7 @@
                 android:layout_marginTop="@dimen/sidebarBoxOuterMarginTop"
                 android:layout_marginStart="@dimen/sidebarBoxOuterMarginStartAndEnd"
                 android:layout_marginEnd="@dimen/sidebarBoxOuterMarginStartAndEnd"
-                android:background="@color/sidebarBoxColor">
+                android:background="@color/newSidebarBoxBackgroundColor">
             <LinearLayout
                     android:layout_width="@dimen/sidebarBoxInnerWidth"
                     android:layout_height="wrap_content"
@@ -126,7 +126,7 @@
                 android:layout_marginTop="@dimen/sidebarBoxOuterMarginTop"
                 android:layout_marginStart="@dimen/sidebarBoxOuterMarginStartAndEnd"
                 android:layout_marginEnd="@dimen/sidebarBoxOuterMarginStartAndEnd"
-                android:background="@color/sidebarBoxColor">
+                android:background="@color/newSidebarBoxBackgroundColor">
             <LinearLayout
                     android:layout_width="@dimen/sidebarBoxInnerWidth"
                     android:layout_height="wrap_content"
@@ -160,7 +160,7 @@
                 android:layout_marginStart="@dimen/sidebarBoxOuterMarginStartAndEnd"
                 android:layout_marginEnd="@dimen/sidebarBoxOuterMarginStartAndEnd"
                 android:layout_marginBottom="@dimen/sidebarBoxOuterMarginTop"
-                android:background="@color/sidebarBoxColor">
+                android:background="@color/newSidebarBoxBackgroundColor">
             <LinearLayout
                     android:layout_width="@dimen/sidebarBoxInnerWidth"
                     android:layout_height="wrap_content"
