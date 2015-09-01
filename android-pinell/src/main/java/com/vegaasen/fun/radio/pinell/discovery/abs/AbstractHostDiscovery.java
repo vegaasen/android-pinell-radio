@@ -96,7 +96,7 @@ public abstract class AbstractHostDiscovery extends AsyncTask<Void, HostBean, Vo
     protected void onCancelled() {
         final AbstractActivity discover = activity.get();
         if (discover != null) {
-            discover.makeToast(R.string.discoveryCancel);
+            Log.i(TAG, "Scanning cancelled");
         }
         super.onCancelled();
     }

@@ -36,8 +36,8 @@ public final class XANHostDiscovery extends AbstractHostDiscovery {
 
     private static final String TAG = XANHostDiscovery.class.getSimpleName();
     private static final int[] OPTIONS_PORTS = {139, 445, 22, 80};
-    private static final int TIMEOUT_SCAN = 3600, TIMEOUT_SHUTDOWN = 10;
-    private static final int NUM_THREADS = 10; //FIXME: Test, plz set in options again ?
+    private static final int TIMEOUT_SCAN = 1500, TIMEOUT_SHUTDOWN = 10;
+    private static final int NUM_THREADS = 5; //FIXME: Test, plz set in options again ?
     private static final int RATE_ALIVE_HOSTS = 5; // Number of alive hosts between Rate
 
     private final ExecutorService mPool = Executors.newFixedThreadPool(NUM_THREADS);
