@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.Set;
 
 /**
- * Implementation of the pinellService
+ * Implementation of the pinellService as the default main interface for all android application specific tasks
  * <p/>
  * TODO: split this into several abstract classes or several classes in general?
  *
@@ -76,7 +76,7 @@ public class PinellServiceImpl implements PinellService {
         }
         return getRadioConnectionService().createHost(
                 candidate.getIpAddress(),
-                CollectionUtils.isEmpty(candidate.getPortsOpen()) ? ApiConnection.DEFAULT_FS_PORT : candidate.getPortsOpen().iterator().next());
+                assembleCandidatePort(candidate.getPortsOpen()));
     }
 
     @Override
@@ -294,5 +294,24 @@ public class PinellServiceImpl implements PinellService {
         } catch (Exception e) {
             Log.e(TAG, String.format("Unable to update the current host {%s} with device information", getSelectedHost().getHost()));
         }
+    }
+
+    /**
+     * Detects the default candidate port. This should be rewritten. Not proud if this.
+     *
+     * @param candidates _
+     * @return _
+     */
+    private static int assembleCandidatePort(Set<Integer> candidates) {
+        if (CollectionUtils.isEmpty(candidates)) {
+            Log.d(TAG, "No ports were detected using the default detector. Considering alternatives");
+            return ApiConnection.DEFAULT_FS_PORT;
+        }
+        Log.i(TAG, String.format("Assembling candidate port by {%s}", candidates.toArray()));
+        if (candidates.contains(ApiConnection.DEFAULT_FS_PORT)) {
+            Log.d(TAG, "Default port detected, returning this");
+            return ApiConnection.DEFAULT_FS_PORT;
+        }
+        return ApiConnection.ALTERNATIVE_FS_PORT;
     }
 }

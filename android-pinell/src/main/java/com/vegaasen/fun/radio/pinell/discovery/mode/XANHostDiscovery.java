@@ -52,7 +52,7 @@ public final class XANHostDiscovery extends AbstractHostDiscovery {
     }
 
     @Override
-    protected void onPreExecute() {
+    public void onPreExecute() {
         super.onPreExecute();
         final AbstractActivity discover = activity.get();
         if (discover != null) {
@@ -61,7 +61,7 @@ public final class XANHostDiscovery extends AbstractHostDiscovery {
     }
 
     @Override
-    protected Void doInBackground(Void... params) {
+    public Void doInBackground(Void... params) {
         final AbstractActivity discover = activity.get();
         if (discover != null) {
             Log.d(TAG, "start=" + NetInfo.getIpFromLongUnsigned(start) + " (" + start
@@ -115,7 +115,7 @@ public final class XANHostDiscovery extends AbstractHostDiscovery {
     }
 
     @Override
-    protected void onCancelled() {
+    public void onCancelled() {
         if (mPool != null) {
             synchronized (mPool) {
                 mPool.shutdownNow();
@@ -127,7 +127,7 @@ public final class XANHostDiscovery extends AbstractHostDiscovery {
 
     private void launch(long i) {
         if (!mPool.isShutdown()) {
-            mPool.execute(new CheckRunnable(NetInfo.getIpFromLongUnsigned(i)));
+            mPool.execute(new CheckHost(NetInfo.getIpFromLongUnsigned(i)));
         }
     }
 
@@ -143,10 +143,48 @@ public final class XANHostDiscovery extends AbstractHostDiscovery {
         return 1;
     }
 
-    private class CheckRunnable implements Runnable {
+    private void publish(final HostBean host) {
+        hosts_done++;
+        if (host == null) {
+            publishProgress((HostBean) null);
+            return;
+        }
+        final AbstractActivity discover = activity.get();
+        if (discover != null) {
+            // Mac Addr not already detected
+            if (NetInfo.NOMAC.equals(host.getHardwareAddress())) {
+                host.setHardwareAddress(HardwareAddress.getHardwareAddress(host.getIpAddress()));
+            }
+
+            // Is gateway ?
+            if (discover.net.gatewayIp.equals(host.getIpAddress())) {
+                host.setDeviceType(HostBean.TYPE_GATEWAY);
+            }
+
+            // FQDN
+            // Static
+            // DNS
+            if (discover.prefs.getBoolean(KEY_RESOLVE_NAME, DEFAULT_RESOLVE_NAME)) {
+                try {
+                    host.setHostname((InetAddress.getByName(host.getIpAddress())).getCanonicalHostName());
+                } catch (UnknownHostException e) {
+                    Log.e(TAG, e.getMessage());
+                }
+            }
+            // TODO: NETBIOS
+            //try {
+            //    host.hostname = NbtAddress.getByName(addr).getHostName();
+            //} catch (UnknownHostException e) {
+            //    Log.i(TAG, e.getMessage());
+            //}
+        }
+        publishProgress(host);
+    }
+
+    private class CheckHost implements Runnable {
         private String addr;
 
-        CheckRunnable(String addr) {
+        CheckHost(String addr) {
             this.addr = addr;
         }
 
@@ -230,44 +268,6 @@ public final class XANHostDiscovery extends AbstractHostDiscovery {
                 Log.e(TAG, e.getMessage());
             }
         }
-    }
-
-    private void publish(final HostBean host) {
-        hosts_done++;
-        if (host == null) {
-            publishProgress((HostBean) null);
-            return;
-        }
-        final AbstractActivity discover = activity.get();
-        if (discover != null) {
-            // Mac Addr not already detected
-            if (NetInfo.NOMAC.equals(host.getHardwareAddress())) {
-                host.setHardwareAddress(HardwareAddress.getHardwareAddress(host.getIpAddress()));
-            }
-
-            // Is gateway ?
-            if (discover.net.gatewayIp.equals(host.getIpAddress())) {
-                host.setDeviceType(HostBean.TYPE_GATEWAY);
-            }
-
-            // FQDN
-            // Static
-            // DNS
-            if (discover.prefs.getBoolean(KEY_RESOLVE_NAME, DEFAULT_RESOLVE_NAME)) {
-                try {
-                    host.setHostname((InetAddress.getByName(host.getIpAddress())).getCanonicalHostName());
-                } catch (UnknownHostException e) {
-                    Log.e(TAG, e.getMessage());
-                }
-            }
-            // TODO: NETBIOS
-            //try {
-            //    host.hostname = NbtAddress.getByName(addr).getHostName();
-            //} catch (UnknownHostException e) {
-            //    Log.i(TAG, e.getMessage());
-            //}
-        }
-        publishProgress(host);
     }
 
 }

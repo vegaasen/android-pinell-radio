@@ -71,7 +71,6 @@ public class InformationFragment extends AbstractFragment {
     }
 
     private void configureElements() {
-        powerSwitch = (Switch) informationView.findViewById(R.id.listDeviceInformationPowerSwitcher);
         currentSoundLevel = (TextView) informationView.findViewById(R.id.informationVolumeLevelTxt);
         currentPinellHost = (TextView) informationView.findViewById(R.id.informationHostTxt);
         currentPinellInputSource = (TextView) informationView.findViewById(R.id.informationCurrentInputSourceTxt);
@@ -125,15 +124,15 @@ public class InformationFragment extends AbstractFragment {
     }
 
     private void configurePowerSwitch() {
-        if (powerSwitch != null) {
+        if (getPowerSwitch() != null) {
             final boolean poweredOn = getPinellService().isPoweredOn();
-            powerSwitch.post(new Runnable() {
+            getPowerSwitch().post(new Runnable() {
                 @Override
                 public void run() {
-                    powerSwitch.setChecked(poweredOn);
+                    getPowerSwitch().setChecked(poweredOn);
                 }
             });
-            powerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            getPowerSwitch().setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (isChecked) {
@@ -148,13 +147,21 @@ public class InformationFragment extends AbstractFragment {
 
     private void postActivities() {
         Log.d(TAG, "Activating postActivities - e.g disabling functions and so on");
-        powerSwitch = (Switch) informationView.findViewById(R.id.listDeviceInformationPowerSwitcher);
-        final boolean enabled = getPinellService().isPinellDevice();
-        if (enabled) {
-            return;
+        if (getPowerSwitch() != null) {
+            final boolean enabled = getPinellService().isPinellDevice();
+            if (enabled) {
+                return;
+            }
+            Log.d(TAG, "The current host is not an actual Pinell host. Disabling the powerSwitch selector");
+            getPowerSwitch().setClickable(false);
         }
-        Log.d(TAG, "The current host is not an actual Pinell host. Disabling the powerSwitch selector");
-        powerSwitch.setClickable(false);
+    }
+
+    public Switch getPowerSwitch() {
+        if (powerSwitch == null) {
+            powerSwitch = (Switch) informationView.findViewById(R.id.listDeviceInformationPowerSwitcher);
+        }
+        return powerSwitch;
     }
 
     private String assembleHostText() {

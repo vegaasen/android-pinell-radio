@@ -13,7 +13,7 @@ public class TelnetUtilTest {
 
     @Test
     public void isAlive_range_ok() {
-        assertFalse(TelnetUtil.isAlive("vg.no", new int[]{70, 80}).isEmpty());
+        assertFalse(TelnetUtil.isAlive("vg.no", 70, 80).isEmpty());
     }
 
     @Test

@@ -10,7 +10,6 @@ import android.net.NetworkInfo;
 import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -49,112 +48,7 @@ public abstract class AbstractActivity extends FragmentActivity {
 
     private List<HostBean> hosts = new ArrayList<>();
     private ConnectivityManager connMgr;
-
-    public SharedPreferences prefs = null;
-    public NetInfo net = null;
-
-    protected final Context context = this;
-
-    protected ArrayAdapter<?> adapter;
-    protected String info_ip_str = EMPTY;
-    protected String info_in_str = EMPTY;
-    protected String info_mo_str = EMPTY;
-
-    public AbstractActivity() {
-        super();
-        Log.d(TAG, "AbstractActivity is setting the appropriate context");
-        ApplicationContext.INSTANCE.setContext(context);
-    }
-
-    /**
-     * These settings may be overridden by the implementing classes
-     */
-    public void cancel() {
-    }
-
-    public void addHost(HostBean host) {
-        host.setPosition(hosts.size());
-        hosts.add(host);
-        adapter.add(null);
-    }
-
-    public List<HostBean> getHosts() {
-        return hosts;
-    }
-
-    protected void clearHosts() {
-        hosts.clear();
-    }
-
-    protected void enableTaskbarSpinner() {
-        requestWindowFeature(Window.FEATURE_PROGRESS);
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-    }
-
-    /**
-     * These settings may be overridden by the implementing classes
-     */
-    protected void configureNetworkInformation() {
-    }
-
-    protected void discoveryOnCreate(Bundle savedInstanceState) {
-//        context = getApplicationContext();
-        prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        net = new NetInfo(context);
-    }
-
-    protected void discoveryOnResume() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
-        filter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
-        registerReceiver(receiver, filter);
-    }
-
-    protected void deregisterReceiver() {
-        if (receiver != null) {
-            unregisterReceiver(receiver);
-        }
-    }
-
-    protected PinellService getPinellService() {
-        return ApplicationContext.INSTANCE.getPinellService();
-    }
-
-    /**
-     * Is the WiFi-services turned on, or are they still being set as disabled?
-     *
-     * @return state of WiFi
-     */
-    protected boolean isWifiEnabledAndConnected() {
-        if (!ApplicationContext.INSTANCE.getWifiManager().isWifiEnabled()) {
-            Log.d(TAG, "Wifi is not enabled");
-            return false;
-        }
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivityManager == null) {
-            Log.d(TAG, "The connectionManager is nilled");
-            return false;
-        }
-        NetworkInfo wifiInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        return wifiInfo != null && wifiInfo.isConnected();
-    }
-
-    /**
-     * Is the current device connected to something? Does not imply that the device is a Pinell
-     *
-     * @return _
-     */
-    protected boolean isConnectedToSomeDevice() {
-        return getPinellService() != null && getPinellService().getSelectedHost() != null;
-    }
-
-    public void makeToast(int messageReferenceId) {
-        Toast.makeText(getApplicationContext(), messageReferenceId, Toast.LENGTH_SHORT).show();
-    }
-
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
+    private BroadcastReceiver networkBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context ctxt, Intent intent) {
             info_ip_str = EMPTY;
@@ -242,5 +136,108 @@ public abstract class AbstractActivity extends FragmentActivity {
             configureNetworkInformation();
         }
     };
+
+    public SharedPreferences prefs = null;
+    public NetInfo net = null;
+
+    protected final Context context = this;
+
+    protected ArrayAdapter<?> adapter;
+    protected String info_ip_str = EMPTY;
+    protected String info_in_str = EMPTY;
+    protected String info_mo_str = EMPTY;
+
+    public AbstractActivity() {
+        super();
+        Log.d(TAG, "AbstractActivity is setting the appropriate context");
+        ApplicationContext.INSTANCE.setContext(context);
+    }
+
+    /**
+     * These settings may be overridden by the implementing classes
+     */
+    public void cancel() {
+    }
+
+    public void addHost(HostBean host) {
+        host.setPosition(hosts.size());
+        hosts.add(host);
+        adapter.add(null);
+    }
+
+    public List<HostBean> getHosts() {
+        return hosts;
+    }
+
+    public void makeToast(int messageReferenceId) {
+        Toast.makeText(getApplicationContext(), messageReferenceId, Toast.LENGTH_SHORT).show();
+    }
+
+    protected void clearHosts() {
+        hosts.clear();
+    }
+
+    protected void enableTaskbarSpinner() {
+        requestWindowFeature(Window.FEATURE_PROGRESS);
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+    }
+
+    /**
+     * These settings may be overridden by the implementing classes
+     */
+    protected void configureNetworkInformation() {
+    }
+
+    protected void discoveryOnCreate() {
+        prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        net = new NetInfo(context);
+    }
+
+    protected void discoveryOnResume() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        filter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
+        registerReceiver(networkBroadcastReceiver, filter);
+    }
+
+    protected void deregisterReceiver() {
+        if (networkBroadcastReceiver != null) {
+            unregisterReceiver(networkBroadcastReceiver);
+        }
+    }
+
+    protected PinellService getPinellService() {
+        return ApplicationContext.INSTANCE.getPinellService();
+    }
+
+    /**
+     * Is the WiFi-services turned on, or are they still being set as disabled?
+     *
+     * @return state of WiFi
+     */
+    protected boolean isWifiEnabledAndConnected() {
+        if (!ApplicationContext.INSTANCE.getWifiManager().isWifiEnabled()) {
+            Log.d(TAG, "Wifi is not enabled");
+            return false;
+        }
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager == null) {
+            Log.d(TAG, "The connectionManager is nilled");
+            return false;
+        }
+        NetworkInfo wifiInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        return wifiInfo != null && wifiInfo.isConnected();
+    }
+
+    /**
+     * Is the current device connected to something? Does not imply that the device is a Pinell
+     *
+     * @return _
+     */
+    protected boolean isConnectedToSomeDevice() {
+        return getPinellService() != null && getPinellService().getSelectedHost() != null;
+    }
 
 }

@@ -2,9 +2,12 @@ package com.vegaasen.fun.radio.pinell.discovery.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 public class HostBean implements Parcelable {
 
@@ -22,7 +25,7 @@ public class HostBean implements Parcelable {
     private String os = "Unknown";
     private HashMap<Integer, String> services = null;
     private HashMap<Integer, String> banners = null;
-    private List<Integer> portsOpen = null;
+    private Set<Integer> portsOpen = null;
     private List<Integer> portsClosed = null;
 
     public HostBean() {
@@ -131,11 +134,11 @@ public class HostBean implements Parcelable {
         this.banners = banners;
     }
 
-    public List<Integer> getPortsOpen() {
+    public Set<Integer> getPortsOpen() {
         return portsOpen;
     }
 
-    public void setPortsOpen(List<Integer> portsOpen) {
+    public void setPortsOpen(Set<Integer> portsOpen) {
         this.portsOpen = portsOpen;
     }
 
@@ -165,7 +168,7 @@ public class HostBean implements Parcelable {
         dest.writeInt(position);
         dest.writeMap(services);
         dest.writeMap(banners);
-        dest.writeList(portsOpen);
+        dest.writeList(Lists.newArrayList(portsOpen));
         dest.writeList(portsClosed);
     }
 
@@ -201,7 +204,7 @@ public class HostBean implements Parcelable {
         position = in.readInt();
         services = in.readHashMap(null);
         banners = in.readHashMap(null);
-        portsOpen = in.readArrayList(Integer.class.getClassLoader());
+        portsOpen = Sets.newHashSet(in.readArrayList(Integer.class.getClassLoader()));
         portsClosed = in.readArrayList(Integer.class.getClassLoader());
     }
 }

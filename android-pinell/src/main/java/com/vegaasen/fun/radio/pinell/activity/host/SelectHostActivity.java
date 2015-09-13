@@ -49,25 +49,36 @@ public class SelectHostActivity extends AbstractActivity {
     private AbstractHostDiscovery hostDiscovery = null;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         enableTaskbarSpinner();
-        discoveryOnCreate(savedInstanceState);
+        discoveryOnCreate();
         setContentView(R.layout.dialog_device_chooser);
         configureActions();
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onResumeFragments() {
+        super.onResumeFragments();
         discoveryOnResume();
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
         deregisterReceiver();
         cancel();
+    }
+
+    @Override
+    public void cancel() {
+        Log.i(TAG, "Stopping the discovery of items");
+        if (hostDiscovery != null) {
+            hostDiscovery.cancel(true);
+            hostDiscovery.hardCancel();
+            hostDiscovery = null;
+            setProgressBarIndeterminateVisibility(false);
+        }
     }
 
     @Override
@@ -103,17 +114,6 @@ public class SelectHostActivity extends AbstractActivity {
             edit.putString(KEY_IP_START, NetInfo.getIpFromLongUnsigned(networkStart));
             edit.putString(KEY_IP_END, NetInfo.getIpFromLongUnsigned(networkEnd));
             edit.apply();
-        }
-    }
-
-    @Override
-    public void cancel() {
-        Log.i(TAG, "Stopping the discovery of items");
-        if (hostDiscovery != null) {
-            hostDiscovery.cancel(true);
-            hostDiscovery.hardCancel();
-            hostDiscovery = null;
-            setProgressBarIndeterminateVisibility(false);
         }
     }
 

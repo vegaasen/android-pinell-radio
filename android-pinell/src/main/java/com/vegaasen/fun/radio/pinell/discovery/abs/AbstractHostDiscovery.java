@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Vibrator;
 import android.util.Log;
+import com.google.common.collect.Lists;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractActivity;
 import com.vegaasen.fun.radio.pinell.discovery.model.HostBean;
@@ -11,6 +12,8 @@ import com.vegaasen.lib.ioc.radio.adapter.fsapi.ApiConnection;
 import com.vegaasen.lib.utils.TelnetUtil;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
+import java.util.Set;
 
 import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_VIBRATE_FINISH;
 import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_VIBRATE_FINISH;
@@ -26,6 +29,7 @@ import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_VIBRATE_FINISH;
 public abstract class AbstractHostDiscovery extends AsyncTask<Void, HostBean, Void> {
 
     private static final String TAG = AbstractHostDiscovery.class.getSimpleName();
+    private static final List<Integer> PORTS = Lists.newArrayList(ApiConnection.DEFAULT_FS_PORT, ApiConnection.ALTERNATIVE_FS_PORT);
 
     protected final WeakReference<AbstractActivity> activity;
 
@@ -69,7 +73,9 @@ public abstract class AbstractHostDiscovery extends AsyncTask<Void, HostBean, Vo
                 final HostBean candidate = host[0];
                 if (candidate != null) {
                     Log.i(TAG, String.format("Verifying candidate for aliveness {%s}", candidate.getIpAddress()));
-                    if (TelnetUtil.isAlive(candidate.getIpAddress(), ApiConnection.DEFAULT_FS_PORT)) {
+                    final Set<Integer> candidates = TelnetUtil.isAlive(candidate.getIpAddress(), PORTS);
+                    if (!candidates.isEmpty()) {
+                        candidate.setPortsOpen(candidates);
                         discover.addHost(candidate);
                     }
                 }

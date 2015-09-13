@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -109,7 +110,7 @@ public final class TelnetUtil {
                 LOG.fine(String.format("Found {%s} selectionKeys", selectionKeys.size()));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.info(String.format("Unable to located localSubnet based on {%s, %s}", subnet, portToVerify));
         }
         return hosts;
     }
@@ -122,21 +123,41 @@ public final class TelnetUtil {
      * @param portRange array of portrange. Should be two digits long. E.g {0, 10}
      * @return Map containing the port and the aliveness of that port.
      */
-    public static Map<Integer, Boolean> isAlive(final String hostName, final int[] portRange) {
+    public static Map<Integer, Boolean> isAlive(final String hostName, final int... portRange) {
         LOG.info(String.format("Checking host {%s} and portRange {%s}", hostName, Arrays.toString(portRange)));
         if (portRange.length != 2) {
-            throw new RuntimeException("Ops. too many port in the portRange. Expected 2, found " + portRange.length);
+            return Collections.emptyMap();
         }
-        final Map<Integer, Boolean> alives = new HashMap<>();
+        final Map<Integer, Boolean> candidates = new HashMap<>();
         long lastWait = 0L;
         for (int i = portRange[0]; i <= portRange[1]; i++) {
-            alives.put(i, isAlive(hostName, i));
+            candidates.put(i, isAlive(hostName, i));
             if (lastWait == 0 || System.currentTimeMillis() > lastWait + WAIT) {
                 printStatus(i, portRange[1]);
                 lastWait = System.currentTimeMillis();
             }
         }
-        return alives;
+        return candidates;
+    }
+
+    /**
+     * Is the provided ports opened? this will not check for range, only port-candidates
+     *
+     * @param hostName _
+     * @param ports    _
+     * @return _
+     */
+    public static Set<Integer> isAlive(final String hostName, List<Integer> ports) {
+        if (hostName == null || hostName.isEmpty() || ports == null || ports.isEmpty()) {
+            return Collections.emptySet();
+        }
+        Set<Integer> candidates = new HashSet<>();
+        for (int candidate : ports) {
+            if (isAlive(hostName, candidate)) {
+                candidates.add(candidate);
+            }
+        }
+        return candidates;
     }
 
     /**
@@ -153,7 +174,7 @@ public final class TelnetUtil {
             task.getCountDownLatch().await(TIMEOUT_IS_ALIVE, TimeUnit.SECONDS);
             return future.get();
         } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+            LOG.fine(String.format("Unable to verify if the {%s} is opened on {%s}", hostName, port));
         }
         return false;
     }
