@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:background="@color/newBackgroundColor">
     <!--
          This will be referred whenever the selected Pinell device is either:
          - not a Pinell device
@@ -33,6 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/txtInputSourceNAConnected"
             android:layout_centerHorizontal="true"
+            android:textStyle="italic"
             android:textSize="@dimen/textSmallDefaultHeight"
             />
 </RelativeLayout>

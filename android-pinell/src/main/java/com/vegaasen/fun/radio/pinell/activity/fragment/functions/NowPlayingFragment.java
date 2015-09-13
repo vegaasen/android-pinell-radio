@@ -8,14 +8,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.google.common.base.Strings;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractFragment;
+import com.vegaasen.fun.radio.pinell.async.NowPlayingAsync;
 import com.vegaasen.fun.radio.pinell.util.ImageUtils;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceAudio;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceCurrentlyPlaying;
-import com.vegaasen.lib.ioc.radio.model.system.PowerState;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * The NowPlayingFragment is a fragment which basically just displays all the details about the currently
@@ -27,6 +29,9 @@ import com.vegaasen.lib.ioc.radio.model.system.PowerState;
 public class NowPlayingFragment extends AbstractFragment {
 
     private static final String TAG = NowPlayingFragment.class.getSimpleName();
+    private static final ScheduledExecutorService EXECUTOR_SERVICE = Executors.newScheduledThreadPool(1);
+
+    private static boolean active, scheduled;
 
     private View nowPlayingView;
     private TextView radioTitle;
@@ -39,12 +44,10 @@ public class NowPlayingFragment extends AbstractFragment {
         changeActiveContent(container);
         if (!getPinellService().isPinellDevice()) {
             nowPlayingView = inflater.inflate(R.layout.fragment_pinell_na, container, false);
+        } else if (!isDeviceOn()) {
+            nowPlayingView = inflater.inflate(R.layout.fragment_now_playing_device_off, container, false);
         } else {
             nowPlayingView = inflater.inflate(R.layout.fragment_now_playing, container, false);
-            if (nowPlayingView == null) {
-                Log.e(TAG, "For some reason, the view were unable to be found. Dying");
-                throw new RuntimeException("Missing required view in the initialization of the application");
-            }
             configureViewComponents();
             configureVolumeController();
             refreshCurrentlyPlaying();
@@ -53,8 +56,40 @@ public class NowPlayingFragment extends AbstractFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (getPinellService().isPinellDevice()) {
+            configureScheduledTasks(true);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        configureScheduledTasks(false);
+    }
+
+    @Override
     protected void changeActiveContent(ViewGroup container) {
         changeCurrentActiveApplicationContextContent(container, R.drawable.ic_volume_up_white, R.string.sidebarNowPlaying);
+    }
+
+    private void configureScheduledTasks(boolean start) {
+        Log.d(TAG, String.format("Running the tasks? {%s}", start));
+        active = start;
+//        if (!scheduled) {
+//            if (start) {
+//                EXECUTOR_SERVICE.scheduleAtFixedRate(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if (active) {
+//                            populateComponentInformation();
+//                        }
+//                    }
+//                }, 0, DEFAULT_REFRESH_PERIOD, TimeUnit.SECONDS);
+//            }
+//            scheduled = true;
+//        }
     }
 
     private void configureViewComponents() {
@@ -100,16 +135,18 @@ public class NowPlayingFragment extends AbstractFragment {
         }).run();
     }
 
-    //todo: this might be better to put into a separate Thread.
     private void refreshCurrentlyPlaying() {
         if (!getPinellService().isPinellDevice()) {
             return;
         }
-        assertTurnedOn();
-        populateComponentInformation();
+        NowPlayingAsync nowPlayingAsync = new NowPlayingAsync(nowPlayingView, getPinellService(), getResources().getString(R.string.genericUnknown));
+        nowPlayingAsync.execute();
     }
 
     private void populateComponentInformation() {
+        if (!componentsAvailable()) {
+            return;
+        }
         DeviceCurrentlyPlaying deviceCurrentlyPlaying = getPinellService().getCurrentlyPlaying();
         if (deviceCurrentlyPlaying == null) {
             Log.w(TAG, "Unable to fetch currently playing. Device not turned on or not a Pinell device?");
@@ -129,16 +166,12 @@ public class NowPlayingFragment extends AbstractFragment {
         volumeControl.setProgress(audioLevels.getLevel());
     }
 
-    private void assertTurnedOn() {
-        if (!getPinellService().isPoweredOn()) {
-            Toast.makeText(nowPlayingView.getContext(), R.string.messagePinellDeviceNotOn, Toast.LENGTH_SHORT).show();
-            getPinellService().setPowerState(PowerState.ON);
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+    private boolean componentsAvailable() {
+        return radioTitle != null;
+    }
+
+    private boolean isDeviceOn() {
+        return getPinellService().isPoweredOn();
     }
 
 }

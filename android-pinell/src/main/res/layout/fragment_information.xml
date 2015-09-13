@@ -13,6 +13,7 @@
             android:layout_height="wrap_content"
             android:paddingBottom="20dp"
             android:paddingTop="50dp"
+            android:layout_below="@id/informationProgressBar"
             >
         <ImageView
                 android:id="@+id/imgInformationLogo"

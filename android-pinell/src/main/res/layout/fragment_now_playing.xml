@@ -18,6 +18,13 @@
         @author vegaasen
         @since 27.5.2015
     -->
+    <ProgressBar
+            style="?android:attr/progressBarStyleLargeInverse"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/informationProgressBar"
+            android:layout_gravity="center"
+            android:progressDrawable="@drawable/progress_bar_circular"/>
     <RelativeLayout
             android:orientation="vertical"
             android:layout_width="fill_parent"

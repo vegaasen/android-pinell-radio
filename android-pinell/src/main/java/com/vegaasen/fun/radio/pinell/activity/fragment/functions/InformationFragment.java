@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -19,6 +20,9 @@ import com.vegaasen.lib.ioc.radio.model.system.PowerState;
 import com.vegaasen.lib.ioc.radio.model.system.RadioMode;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
 /**
  * Representation of the information regarding the selected device is represented through this fragment
  *
@@ -28,8 +32,12 @@ import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
 public class InformationFragment extends AbstractFragment {
 
     private static final String TAG = InformationFragment.class.getSimpleName();
+    private static final ScheduledExecutorService EXECUTOR_SERVICE = Executors.newScheduledThreadPool(5);
+
+    private static boolean active, scheduled;
 
     private View informationView;
+    private ProgressBar informationProgressBar;
     private Switch powerSwitch;
     private TextView currentSoundLevel;
     private TextView currentPinellHost;
@@ -52,14 +60,26 @@ public class InformationFragment extends AbstractFragment {
         return informationView;
     }
 
-    public void updateSoundLevel() {
-        final DeviceAudio audioLevels = getPinellService().getAudioLevels();
-        currentSoundLevel.setText(audioLevels == null ? getUnavailableString() : String.format("%s of %s", Integer.toString(audioLevels.getLevel()), getString(R.integer.volumeControlMax)));
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getPinellService().isPinellDevice()) {
+            configureScheduledTasks(true);
+        }
     }
 
     @Override
-    protected void changeActiveContent(ViewGroup container) {
-        changeCurrentActiveApplicationContextContent(container, R.drawable.ic_radio_white, R.string.sidebarInformation);
+    public void onPause() {
+        super.onPause();
+        configureScheduledTasks(false);
+    }
+
+    public void updateSoundLevel() {
+        updateSoundLevel(getPinellService().getAudioLevels());
+    }
+
+    public void updateSoundLevel(DeviceAudio audioLevels) {
+        currentSoundLevel.setText(audioLevels == null ? getUnavailableString() : String.format("%s of %s", Integer.toString(audioLevels.getLevel()), getString(R.integer.volumeControlMax)));
     }
 
     public void refreshDeviceInformation() {
@@ -70,12 +90,36 @@ public class InformationFragment extends AbstractFragment {
         postActivities();
     }
 
+    @Override
+    protected void changeActiveContent(ViewGroup container) {
+        changeCurrentActiveApplicationContextContent(container, R.drawable.ic_radio_white, R.string.sidebarInformation);
+    }
+
+    private void configureScheduledTasks(boolean used) {
+        Log.d(TAG, String.format("Running the tasks? {%s}", used));
+        active = used;
+//        if (!scheduled) {
+//            EXECUTOR_SERVICE.scheduleAtFixedRate(new Runnable() {
+//                @Override
+//                public void run() {
+//                    if (active) {
+//                        Log.d(TAG, "Updating");
+//                        configureElementValues();
+//                    }
+//                }
+//            }, 0, DEFAULT_REFRESH_PERIOD, TimeUnit.SECONDS);
+//            scheduled = true;
+//        }
+    }
+
     private void configureElements() {
+        powerSwitch = (Switch) informationView.findViewById(R.id.listDeviceInformationPowerSwitcher);
         currentSoundLevel = (TextView) informationView.findViewById(R.id.informationVolumeLevelTxt);
         currentPinellHost = (TextView) informationView.findViewById(R.id.informationHostTxt);
         currentPinellInputSource = (TextView) informationView.findViewById(R.id.informationCurrentInputSourceTxt);
         currentApplicationVersion = (TextView) informationView.findViewById(R.id.informationApplicationVersionTxt);
         hostInformation = (RelativeLayout) informationView.findViewById(R.id.informationHost);
+        informationProgressBar = (ProgressBar) informationView.findViewById(R.id.informationProgressBar);
     }
 
     private void configureBehaviors() {
@@ -124,49 +168,39 @@ public class InformationFragment extends AbstractFragment {
     }
 
     private void configurePowerSwitch() {
-        if (getPowerSwitch() != null) {
-            final boolean poweredOn = getPinellService().isPoweredOn();
-            getPowerSwitch().post(new Runnable() {
-                @Override
-                public void run() {
-                    getPowerSwitch().setChecked(poweredOn);
+        final boolean poweredOn = getPinellService().isPoweredOn();
+        powerSwitch.post(new Runnable() {
+            @Override
+            public void run() {
+                powerSwitch.setChecked(poweredOn);
+            }
+        });
+        powerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    getPinellService().setPowerState(PowerState.ON);
+                } else {
+                    getPinellService().setPowerState(PowerState.OFF);
                 }
-            });
-            getPowerSwitch().setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked) {
-                        getPinellService().setPowerState(PowerState.ON);
-                    } else {
-                        getPinellService().setPowerState(PowerState.OFF);
-                    }
-                }
-            });
-        }
+            }
+        });
     }
 
     private void postActivities() {
         Log.d(TAG, "Activating postActivities - e.g disabling functions and so on");
-        if (getPowerSwitch() != null) {
+        informationProgressBar.setVisibility(View.GONE);
+        if (powerSwitch != null) {
             final boolean enabled = getPinellService().isPinellDevice();
             if (enabled) {
                 return;
             }
             Log.d(TAG, "The current host is not an actual Pinell host. Disabling the powerSwitch selector");
-            getPowerSwitch().setClickable(false);
         }
-    }
-
-    public Switch getPowerSwitch() {
-        if (powerSwitch == null) {
-            powerSwitch = (Switch) informationView.findViewById(R.id.listDeviceInformationPowerSwitcher);
-        }
-        return powerSwitch;
     }
 
     private String assembleHostText() {
         final Host selectedHost = getPinellService().getSelectedHost();
         return String.format("{'ip':'%s','session':'%s'}\n:-)", selectedHost.getHost(), selectedHost.getRadioSession().getId());
     }
-
 }

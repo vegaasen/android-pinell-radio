@@ -21,12 +21,24 @@ public abstract class AbstractFragment extends Fragment {
     private static final int MAX_SAFE_CHARS = 22;
     private static final String ADDITION = "...";
 
-    protected PinellService getPinellService() {
-        return ApplicationContext.INSTANCE.getPinellService();
+    protected static final int DEFAULT_REFRESH_PERIOD = 30;
+
+    public String getApplicationVersion() {
+        try {
+            final String versionName = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName;
+            return Strings.isNullOrEmpty(versionName) ? getUnavailableString() : versionName;
+        } catch (Exception e) {
+            //*gulp*
+        }
+        return getUnavailableString();
     }
 
-    protected static String getSafeString(final String candidate) {
+    public static String getSafeString(final String candidate) {
         return getSafeString(candidate, MAX_SAFE_CHARS);
+    }
+
+    protected PinellService getPinellService() {
+        return ApplicationContext.INSTANCE.getPinellService();
     }
 
     protected static String getSafeString(final String candidate, int length) {
@@ -55,16 +67,6 @@ public abstract class AbstractFragment extends Fragment {
             return;
         }
         currentApplicationContextActiveLabel.setText(candidateText);
-    }
-
-    protected String getApplicationVersion() {
-        try {
-            final String versionName = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName;
-            return Strings.isNullOrEmpty(versionName) ? getUnavailableString() : versionName;
-        } catch (Exception e) {
-            //*gulp*
-        }
-        return getUnavailableString();
     }
 
 }
