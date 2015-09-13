@@ -14,8 +14,8 @@
      -->
     <ImageView
             android:id="@+id/imgFmRadioLogo"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="@dimen/defaultBigIconSize"
+            android:layout_height="@dimen/defaultBigIconSize"
             android:layout_centerInParent="true"
             android:background="@drawable/ic_cake_black"
             android:contentDescription="@string/genericUnknown"

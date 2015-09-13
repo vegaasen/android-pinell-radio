@@ -18,27 +18,31 @@
     -->
     <ImageView
             android:id="@+id/imgFmRadioLogo"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="@dimen/defaultBigIconSize"
+            android:layout_height="@dimen/defaultBigIconSize"
             android:layout_centerInParent="true"
             android:background="@drawable/ic_radio_black"
             android:contentDescription="@string/genericUnknown"
             />
     <TextView
             android:id="@+id/txtFmRadioFrequency"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/imgFmRadioLogo"
-            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
+            android:gravity="center"
             android:text="@string/genericUnknown"
             android:textSize="@dimen/textBigDefaultHeight"
             />
     <TextView
             android:id="@+id/txtFmRadioCaption"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/txtFmRadioFrequency"
-            android:layout_centerHorizontal="true"
+            android:layout_marginStart="@dimen/selectableMargin"
+            android:layout_marginEnd="@dimen/selectableMargin"
+            android:layout_centerInParent="true"
+            android:gravity="center"
             android:textSize="@dimen/textSmallDefaultHeight"
             android:text="@string/genericUnknown"
             />

@@ -22,6 +22,7 @@ import com.vegaasen.lib.ioc.radio.model.device.DeviceCurrentlyPlaying;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Represents the browsing features of the Pinell device. This is only related to the various radio stations available.
@@ -46,6 +47,9 @@ public class BrowseFragment extends AbstractFragment {
 
     private View browseFragment;
     private List<RadioStation> loadedRadioStations;
+    private DeviceCurrentlyPlaying currentlyPlaying;
+
+    private TextView fmPlaying, fmTune;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -109,10 +113,10 @@ public class BrowseFragment extends AbstractFragment {
     private void configureFMComponents() {
         DeviceCurrentlyPlaying currentlyPlaying = getPinellService().getCurrentlyPlaying();
         if (currentlyPlaying != null) {
-            TextView playing = (TextView) browseFragment.findViewById(R.id.txtFmRadioFrequency);
-            TextView tune = (TextView) browseFragment.findViewById(R.id.txtFmRadioCaption);
-            playing.setText(currentlyPlaying.getName());
-            tune.setText(currentlyPlaying.getTune());
+            fmPlaying = (TextView) browseFragment.findViewById(R.id.txtFmRadioFrequency);
+            fmTune = (TextView) browseFragment.findViewById(R.id.txtFmRadioCaption);
+            fmPlaying.setText(currentlyPlaying.getName());
+            fmTune.setText(currentlyPlaying.getTune());
         }
         ImageButton fmRadioChannelSearchForward = (ImageButton) browseFragment.findViewById(R.id.btnFmRadioForward);
         ImageButton fmRadioChannelSearchRewind = (ImageButton) browseFragment.findViewById(R.id.btnFmRadioRewind);
@@ -120,6 +124,7 @@ public class BrowseFragment extends AbstractFragment {
             @Override
             public void onClick(View v) {
                 getPinellService().searchFMBandForward();
+                triggerFmFrequencyUpdate();
             }
         });
         fmRadioChannelSearchRewind.setOnClickListener(new View.OnClickListener() {
@@ -128,6 +133,23 @@ public class BrowseFragment extends AbstractFragment {
                 getPinellService().searchFMBandRewind();
             }
         });
+    }
+
+    private void triggerFmFrequencyUpdate() {
+        long stop = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(8), lastRun = 0;
+        while (System.currentTimeMillis() < stop) {
+            if (lastRun + TimeUnit.SECONDS.toMillis(2) > System.currentTimeMillis()) {
+                updateFrequency();
+                lastRun = System.currentTimeMillis();
+            }
+        }
+        updateFrequency();
+    }
+
+    private void updateFrequency() {
+        currentlyPlaying = getPinellService().getCurrentlyPlaying();
+        fmPlaying.setText(currentlyPlaying.getName());
+        fmTune.setText(currentlyPlaying.getTune());
     }
 
     private void listRadioStationsAvailableForDAB() {

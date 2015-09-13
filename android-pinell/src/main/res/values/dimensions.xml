@@ -17,6 +17,7 @@
     <dimen name="sidebarBoxInnerWidth">55sp</dimen>
     <dimen name="sidebarBoxInnerMargin">25sp</dimen>
     <dimen name="sidebarBoxText">12sp</dimen>
+    <dimen name="defaultBigIconSize">100dp</dimen>
     <!-- Represents the maximum audio level of the Pinell device -->
     <integer name="volumeControlMax">32</integer>
     <dimen name="selectableMargin">20dp</dimen>
