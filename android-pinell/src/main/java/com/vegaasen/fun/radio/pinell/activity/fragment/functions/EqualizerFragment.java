@@ -40,7 +40,9 @@ public class EqualizerFragment extends AbstractFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         changeActiveContent(container);
-        if (!getPinellService().isPinellDevice()) {
+        if (!isWifiEnabledAndConnected()) {
+            equalizerView = inflater.inflate(R.layout.fragment_pinell_network_offline, container, false);
+        } else if (!getPinellService().isPinellDevice()) {
             equalizerView = inflater.inflate(R.layout.fragment_pinell_na, container, false);
         } else {
             equalizerView = inflater.inflate(R.layout.fragment_equalizer, container, false);

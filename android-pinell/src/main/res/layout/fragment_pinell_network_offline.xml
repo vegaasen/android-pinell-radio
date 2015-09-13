@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/newBackgroundColor">
+    <!--
+         This will be referred whenever a connection has been dropped.
+
+         @author vegaasen
+         @since 13.09.2015
+     -->
+    <ImageView
+            android:id="@+id/imgNetworkOfflineLogo"
+            android:layout_width="@dimen/defaultBigIconSize"
+            android:layout_height="@dimen/defaultBigIconSize"
+            android:layout_centerInParent="true"
+            android:background="@drawable/ic_signal_wifi_off_black"
+            android:contentDescription="@string/genericUnknown"
+            />
+    <TextView
+            android:id="@+id/txtNetworkOfflineFrequency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/imgNetworkOfflineLogo"
+            android:layout_centerHorizontal="true"
+            android:text="@string/networkUnavailableTitle"
+            />
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtNetworkOfflineFrequency"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="@dimen/selectableMargin"
+            android:layout_marginEnd="@dimen/selectableMargin"
+            android:textSize="@dimen/textSmallDefaultHeight"
+            android:textStyle="italic"
+            android:text="@string/networkUnavailableCaption"
+            />
+</RelativeLayout>

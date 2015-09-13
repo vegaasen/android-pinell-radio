@@ -42,7 +42,9 @@ public class NowPlayingFragment extends AbstractFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         changeActiveContent(container);
-        if (!getPinellService().isPinellDevice()) {
+        if (!isWifiEnabledAndConnected()) {
+            nowPlayingView = inflater.inflate(R.layout.fragment_pinell_network_offline, container, false);
+        } else if (!getPinellService().isPinellDevice()) {
             nowPlayingView = inflater.inflate(R.layout.fragment_pinell_na, container, false);
         } else if (!isDeviceOn()) {
             nowPlayingView = inflater.inflate(R.layout.fragment_now_playing_device_off, container, false);

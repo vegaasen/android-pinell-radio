@@ -19,9 +19,6 @@ import com.vegaasen.lib.ioc.radio.model.system.PowerState;
 import com.vegaasen.lib.ioc.radio.model.system.RadioMode;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-
 /**
  * Representation of the information regarding the selected device is represented through this fragment
  *
@@ -31,9 +28,6 @@ import java.util.concurrent.ScheduledExecutorService;
 public class InformationFragment extends AbstractFragment {
 
     private static final String TAG = InformationFragment.class.getSimpleName();
-    private static final ScheduledExecutorService EXECUTOR_SERVICE = Executors.newScheduledThreadPool(5);
-
-    private static boolean active, scheduled;
 
     private View informationView;
     private Switch powerSwitch;
@@ -42,18 +36,24 @@ public class InformationFragment extends AbstractFragment {
     private TextView currentPinellInputSource;
     private TextView currentApplicationVersion;
     private RelativeLayout hostInformation;
+    private boolean pinellDevice;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         changeActiveContent(container);
-        if (!getPinellService().isPinellDevice()) {
+        if (!isWifiEnabledAndConnected()) {
+            informationView = inflater.inflate(R.layout.fragment_pinell_network_offline, container, false);
+            pinellDevice = false;
+        } else if (!getPinellService().isPinellDevice()) {
             informationView = inflater.inflate(R.layout.fragment_pinell_na, container, false);
+            pinellDevice = false;
         } else {
             informationView = inflater.inflate(R.layout.fragment_information, container, false);
             configureElements();
             configureElementValues();
             configureBehaviors();
             refreshDeviceInformation();
+            pinellDevice = true;
         }
         return informationView;
     }
@@ -61,7 +61,7 @@ public class InformationFragment extends AbstractFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (getPinellService().isPinellDevice()) {
+        if (pinellDevice) {
             configureScheduledTasks(true);
         }
     }
@@ -95,7 +95,6 @@ public class InformationFragment extends AbstractFragment {
 
     private void configureScheduledTasks(boolean used) {
         Log.d(TAG, String.format("Running the tasks? {%s}", used));
-        active = used;
 //        if (!scheduled) {
 //            EXECUTOR_SERVICE.scheduleAtFixedRate(new Runnable() {
 //                @Override

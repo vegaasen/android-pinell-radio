@@ -8,4 +8,6 @@
     <string name="inputSourceNotAvailableUnknownReason">Achievement unlocked: Unknown input source found! Report it?</string>
     <string name="notPoweredOnTitle">Radio seems to be off</string>
     <string name="notPoweredOnCaption">Ctp. Obvious says: Turn on the radio</string>
+    <string name="networkUnavailableTitle">WIFI turned off?</string>
+    <string name="networkUnavailableCaption">It seems like the WIFI connection has dropped. Reconnect?</string>
 </resources>

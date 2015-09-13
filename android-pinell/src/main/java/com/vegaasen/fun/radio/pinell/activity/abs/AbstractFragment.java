@@ -1,5 +1,8 @@
 package com.vegaasen.fun.radio.pinell.activity.abs;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.ViewGroup;
@@ -20,8 +23,6 @@ public abstract class AbstractFragment extends Fragment {
     private static final String TAG = AbstractFragment.class.getSimpleName();
     private static final int MAX_SAFE_CHARS = 22;
     private static final String ADDITION = "...";
-
-    protected static final int DEFAULT_REFRESH_PERIOD = 30;
 
     public String getApplicationVersion() {
         try {
@@ -67,6 +68,20 @@ public abstract class AbstractFragment extends Fragment {
             return;
         }
         currentApplicationContextActiveLabel.setText(candidateText);
+    }
+
+    protected boolean isWifiEnabledAndConnected() {
+        if (!ApplicationContext.INSTANCE.getWifiManager().isWifiEnabled()) {
+            Log.d(TAG, "Wifi is not enabled");
+            return false;
+        }
+        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager == null) {
+            Log.d(TAG, "The connectionManager is nilled");
+            return false;
+        }
+        NetworkInfo wifiInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        return wifiInfo != null && wifiInfo.isConnected();
     }
 
 }
