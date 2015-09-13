@@ -240,4 +240,11 @@ public abstract class AbstractActivity extends FragmentActivity {
         return getPinellService() != null && getPinellService().getSelectedHost() != null;
     }
 
+    /**
+     * Allows any other using operations trigger a postLoading actions.
+     * May be overridden
+     */
+    public void postLoadingActions() {
+    }
+
 }

@@ -95,6 +95,9 @@ public abstract class AbstractHostDiscovery extends AsyncTask<Void, HostBean, Vo
                 v.vibrate(AbstractActivity.VIBRATE);
             }
             discover.makeToast(R.string.discoveryComplete);
+            if (discover.getHosts().isEmpty()) {
+                discover.postLoadingActions();
+            }
         }
     }
 

@@ -32,17 +32,6 @@
                 android:text="@string/dialogChooserTitle"
                 android:textColor="@color/newTitleTextColor"
                 />
-        <ImageButton
-                android:id="@+id/btnDialogRefreshDevices"
-                android:layout_width="23dp"
-                android:layout_height="23dp"
-                android:layout_marginEnd="10dp"
-                android:background="@drawable/ic_rotate_left_white"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
-                android:clickable="true"
-                android:hapticFeedbackEnabled="true"
-                />
     </RelativeLayout>
     <LinearLayout android:layout_width="match_parent"
                   android:layout_height="wrap_content"
@@ -51,7 +40,7 @@
         <TextView
                 android:id="@+id/txtListClickRefresh"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:text="@string/dialogChooserPressRefresh"
                 android:textAlignment="center"
                 android:gravity="center"
@@ -64,7 +53,7 @@
                 android:id="@+id/txtListClickRefreshInProgress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/dialogChooserPressRefresh"
+                android:text="@string/dialogSearchingForDevices"
                 android:textAlignment="center"
                 android:gravity="center"
                 android:textSize="@dimen/textSmallDefaultHeight"

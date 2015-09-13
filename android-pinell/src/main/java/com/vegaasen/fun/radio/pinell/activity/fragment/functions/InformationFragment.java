@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -37,7 +36,6 @@ public class InformationFragment extends AbstractFragment {
     private static boolean active, scheduled;
 
     private View informationView;
-    private ProgressBar informationProgressBar;
     private Switch powerSwitch;
     private TextView currentSoundLevel;
     private TextView currentPinellHost;
@@ -119,7 +117,6 @@ public class InformationFragment extends AbstractFragment {
         currentPinellInputSource = (TextView) informationView.findViewById(R.id.informationCurrentInputSourceTxt);
         currentApplicationVersion = (TextView) informationView.findViewById(R.id.informationApplicationVersionTxt);
         hostInformation = (RelativeLayout) informationView.findViewById(R.id.informationHost);
-        informationProgressBar = (ProgressBar) informationView.findViewById(R.id.informationProgressBar);
     }
 
     private void configureBehaviors() {
@@ -189,7 +186,6 @@ public class InformationFragment extends AbstractFragment {
 
     private void postActivities() {
         Log.d(TAG, "Activating postActivities - e.g disabling functions and so on");
-        informationProgressBar.setVisibility(View.GONE);
         if (powerSwitch != null) {
             final boolean enabled = getPinellService().isPinellDevice();
             if (enabled) {

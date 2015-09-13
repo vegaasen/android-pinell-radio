@@ -4,10 +4,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractActivity;
 import com.vegaasen.fun.radio.pinell.adapter.HostArrayAdapter;
@@ -47,6 +45,7 @@ public class SelectHostActivity extends AbstractActivity {
     private long networkStart = 0;
     private long networkEnd = 0;
     private AbstractHostDiscovery hostDiscovery = null;
+    private TextView refreshHelpText, refreshInProgress;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,6 +53,7 @@ public class SelectHostActivity extends AbstractActivity {
         enableTaskbarSpinner();
         discoveryOnCreate();
         setContentView(R.layout.dialog_device_chooser);
+        configureElements();
         configureActions();
     }
 
@@ -117,13 +117,16 @@ public class SelectHostActivity extends AbstractActivity {
         }
     }
 
+    private void configureElements() {
+        refreshHelpText = (TextView) findViewById(R.id.txtListClickRefresh);
+        refreshInProgress = (TextView) findViewById(R.id.txtListClickRefreshInProgress);
+    }
+
     private void configureActions() {
-        final ImageButton refreshDevices = (ImageButton) findViewById(R.id.btnDialogRefreshDevices);
         final AbstractActivity currentActivity = this;
-        refreshDevices.setOnClickListener(new View.OnClickListener() {
+        refreshHelpText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getBaseContext(), R.string.devices_refreshing, Toast.LENGTH_SHORT).show();
                 refreshHostsToList(currentActivity);
             }
         });
@@ -137,12 +140,12 @@ public class SelectHostActivity extends AbstractActivity {
                 deviceOverview.setAdapter(adapter);
                 deviceOverview.setItemsCanFocus(false);
                 deviceOverview.setOnItemClickListener(new DeviceListListener(new WeakReference<>(activity), getPinellService()));
-                deviceOverview.setEmptyView(configureTextViews());
             } else {
                 adapter.clear();
                 clearHosts();
                 cancel();
             }
+            deviceOverview.setEmptyView(configureTextViews());
         }
         hostDiscovery = new XANHostDiscovery(activity);
         hostDiscovery.setNetwork(networkIp, networkStart, networkEnd);
@@ -152,11 +155,15 @@ public class SelectHostActivity extends AbstractActivity {
     }
 
     private TextView configureTextViews() {
-        TextView refreshHelpText = (TextView) findViewById(R.id.txtListClickRefresh);
         refreshHelpText.setVisibility(View.GONE);
-        TextView refreshInProgress = (TextView) findViewById(R.id.txtListClickRefreshInProgress);
         refreshInProgress.setVisibility(View.VISIBLE);
         return refreshInProgress;
+    }
+
+    @Override
+    public void postLoadingActions() {
+        refreshHelpText.setVisibility(View.VISIBLE);
+        refreshInProgress.setVisibility(View.GONE);
     }
 
 }

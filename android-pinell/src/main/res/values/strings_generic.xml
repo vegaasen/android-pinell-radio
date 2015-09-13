@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="unavailable">Unavailable</string>
-    <string name="pinellNotAvailTitle">Pinell not found :-)</string>
-    <string name="pinellNotAvailReason">try to select a device from the list</string>
+    <string name="pinellNotAvailTitle">Oops. Not connected :-/</string>
+    <string name="pinellNotAvailReason">Seems like the selected device is not supported</string>
     <string name="inputSourceNotAvailableTitle">Nothing to browse</string>
     <string name="inputSourceNotAvailableReason">%s does not contain anything to browse</string>
     <string name="inputSourceNotAvailableUnknownReason">Achievement unlocked: Unknown input source found! Report it?</string>

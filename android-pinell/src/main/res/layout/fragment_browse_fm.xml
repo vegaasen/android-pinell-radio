@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/imgFmRadioLogo"
             android:layout_centerHorizontal="true"
-            android:text="@string/pinellNotAvailTitle"
+            android:text="@string/genericUnknown"
             android:textSize="@dimen/textBigDefaultHeight"
             />
     <TextView
