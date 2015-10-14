@@ -17,7 +17,7 @@
             android:layout_width="@dimen/defaultBigIconSize"
             android:layout_height="@dimen/defaultBigIconSize"
             android:layout_centerInParent="true"
-            android:background="@drawable/ic_cake_black"
+            android:background="@drawable/ic_info_outline_black"
             android:contentDescription="@string/genericUnknown"
             />
     <TextView

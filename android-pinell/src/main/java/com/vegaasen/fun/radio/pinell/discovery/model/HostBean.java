@@ -11,15 +11,16 @@ import java.util.Set;
 
 public class HostBean implements Parcelable {
 
-    public static final int TYPE_GATEWAY = 0;
-    public static final int TYPE_COMPUTER = 1;
+    public static final int TYPE_GATEWAY = 0, TYPE_COMPUTER = 1;
+
+    private static final String EMPTY = "";
 
     private int deviceType = TYPE_COMPUTER;
     private int isAlive = 1;
     private int position = 0;
     private int responseTime = 0; // ms
-    private String ipAddress = null;
-    private String hostname = null;
+    private String ipAddress = EMPTY;
+    private String hostname = EMPTY;
     private String hardwareAddress = NetInfo.NOMAC;
     private String nicVendor = "Unknown";
     private String os = "Unknown";

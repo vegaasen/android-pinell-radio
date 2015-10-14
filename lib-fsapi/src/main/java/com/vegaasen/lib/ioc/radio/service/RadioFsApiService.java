@@ -155,7 +155,7 @@ public interface RadioFsApiService {
      * @param radioStation _
      * @return _
      */
-    DeviceCurrentlyPlaying selectStation(Host host, RadioStation radioStation);
+    void selectStation(Host host, RadioStation radioStation);
 
     /**
      * Find next FM channel from the current location

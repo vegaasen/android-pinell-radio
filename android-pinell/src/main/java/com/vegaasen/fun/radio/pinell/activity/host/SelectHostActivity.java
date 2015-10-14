@@ -11,10 +11,12 @@ import com.vegaasen.fun.radio.pinell.activity.abs.AbstractActivity;
 import com.vegaasen.fun.radio.pinell.adapter.HostArrayAdapter;
 import com.vegaasen.fun.radio.pinell.discovery.abs.AbstractHostDiscovery;
 import com.vegaasen.fun.radio.pinell.discovery.mode.XANHostDiscovery;
+import com.vegaasen.fun.radio.pinell.discovery.model.HostBean;
 import com.vegaasen.fun.radio.pinell.discovery.model.NetInfo;
 import com.vegaasen.fun.radio.pinell.listeners.DeviceListListener;
 
 import java.lang.ref.WeakReference;
+import java.util.Collections;
 
 import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_CIDR;
 import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_CIDR_CUSTOM;
@@ -152,6 +154,12 @@ public class SelectHostActivity extends AbstractActivity {
         hostDiscovery.execute();
         setProgressBarVisibility(true);
         setProgressBarIndeterminateVisibility(true);
+        Log.e(TAG, "#### Remove the hardcoded host!!! ####");
+        HostBean host = new HostBean();
+        host.setIpAddress("192.168.0.101");
+        host.setHostname(host.getIpAddress());
+        host.setPortsOpen(Collections.singleton(2244));
+        addHost(host);
     }
 
     private TextView configureTextViews() {

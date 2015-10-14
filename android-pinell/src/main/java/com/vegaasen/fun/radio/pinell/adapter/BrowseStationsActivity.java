@@ -56,12 +56,16 @@ public class BrowseStationsActivity extends BaseAdapter {
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (layoutInflater != null) {
             final RadioStation candidate = getItem(position);
+            if (candidate == null) {
+                Log.i(TAG, "It seems like the candidate is nilled, and may therefore not be valid. Skipping");
+                return convertView;
+            }
             convertView = layoutInflater.inflate(R.layout.listview_selectables_advanced, parent, false);
             TextView caption = (TextView) convertView.findViewById(R.id.selectableAdvancedItemTxt);
             ImageView image = (ImageView) convertView.findViewById(R.id.selectableAdvancedItemImg);
             image.setImageResource(R.drawable.ic_audiotrack_white);
             caption.setText(candidate.getName());
-            if (currentRadioStation != null && candidate.getName().contains(currentRadioStation.getName())) {
+            if (currentRadioStation != null && candidate.getName().equals(  currentRadioStation.getName())) {
                 final Resources resources = context.getResources();
                 RelativeLayout equalizerContainer = (RelativeLayout) convertView.findViewById(R.id.selectableAdvancedItem);
                 equalizerContainer.setBackgroundColor(resources.getColor(R.color.newSidebarBackgroundColor));
@@ -70,7 +74,7 @@ public class BrowseStationsActivity extends BaseAdapter {
             }
             return convertView;
         }
-        Log.e(TAG, "How did we get here?");
+        Log.w(TAG, "How did we get here?");
         throw new IllegalStateException("This shouldn't happen :-)");
     }
 

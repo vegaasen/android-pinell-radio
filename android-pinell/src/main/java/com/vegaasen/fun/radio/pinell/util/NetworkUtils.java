@@ -5,7 +5,7 @@ package com.vegaasen.fun.radio.pinell.util;
  *
  * @author <a href="mailto:vegaasen@gmail.com">vegaasen</a>
  */
-public class NetworkUtils {
+public final class NetworkUtils {
 
     private static final String EMPTY = "";
 

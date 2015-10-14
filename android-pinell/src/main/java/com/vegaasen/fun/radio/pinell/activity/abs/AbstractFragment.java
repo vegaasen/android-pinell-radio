@@ -24,14 +24,18 @@ public abstract class AbstractFragment extends Fragment {
     private static final int MAX_SAFE_CHARS = 22;
     private static final String ADDITION = "...";
 
+    private String version;
+
     public String getApplicationVersion() {
-        try {
-            final String versionName = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName;
-            return Strings.isNullOrEmpty(versionName) ? getUnavailableString() : versionName;
-        } catch (Exception e) {
-            //*gulp*
+        if (Strings.isNullOrEmpty(version)) {
+            try {
+                final String versionName = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName;
+                version = Strings.isNullOrEmpty(versionName) ? getUnavailableString() : versionName;
+            } catch (Exception e) {
+                version = getUnavailableString();
+            }
         }
-        return getUnavailableString();
+        return version;
     }
 
     public static String getSafeString(final String candidate) {

@@ -20,6 +20,40 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             >
+
+        <RelativeLayout
+                android:id="@+id/sectionBeta"
+                android:layout_width="105dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/sidebarBoxOuterMarginTop"
+                android:layout_marginStart="@dimen/sidebarBoxOuterMarginStartAndEnd"
+                android:layout_marginEnd="@dimen/sidebarBoxOuterMarginStartAndEnd"
+                android:clickable="false"
+                android:gravity="center"
+                >
+            <LinearLayout
+                    android:layout_width="@dimen/sidebarBoxInnerWidth"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    >
+                <ImageView
+                        android:layout_width="@dimen/iconSizeWidth"
+                        android:layout_height="@dimen/iconSizeHeight"
+                        android:contentDescription="@string/genericUnknown"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_info_outline_black"
+                        />
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textSize="@dimen/sidebarBoxText"
+                        android:text="@string/sidebarBeta"
+                        />
+            </LinearLayout>
+        </RelativeLayout>
+
+
         <RelativeLayout
                 android:id="@+id/sectionPlaying"
                 android:layout_width="wrap_content"

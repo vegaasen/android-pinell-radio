@@ -92,7 +92,7 @@ public enum ApiConnection {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.warning(String.format("Unable to request {%s}", uri.toString()));
         }
         return null;
     }
@@ -110,7 +110,7 @@ public enum ApiConnection {
         try {
             return UrlBuilder.buildFromSchemeAsUri(urlScheme);
         } catch (URISyntaxException e) {
-            e.printStackTrace();
+            LOG.warning("Unable to get APIUrl without root :-)");
         }
         return null;
     }
@@ -128,7 +128,7 @@ public enum ApiConnection {
         try {
             return UrlBuilder.buildFromSchemeAsUri(urlScheme);
         } catch (URISyntaxException e) {
-            e.printStackTrace();
+            LOG.warning("Unable to get APIUrl");
         }
         return null;
     }

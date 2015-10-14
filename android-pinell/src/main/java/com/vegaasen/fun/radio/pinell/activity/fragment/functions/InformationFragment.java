@@ -13,11 +13,14 @@ import android.widget.TextView;
 import com.google.common.base.Strings;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractFragment;
+import com.vegaasen.fun.radio.pinell.util.scheduler.TaskScheduler;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceAudio;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceInformation;
 import com.vegaasen.lib.ioc.radio.model.system.PowerState;
 import com.vegaasen.lib.ioc.radio.model.system.RadioMode;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Representation of the information regarding the selected device is represented through this fragment
@@ -29,22 +32,22 @@ public class InformationFragment extends AbstractFragment {
 
     private static final String TAG = InformationFragment.class.getSimpleName();
 
+    private static boolean active, scheduled;
+
     private View informationView;
     private Switch powerSwitch;
-    private TextView currentSoundLevel;
-    private TextView currentPinellHost;
-    private TextView currentPinellInputSource;
-    private TextView currentApplicationVersion;
-    private RelativeLayout hostInformation;
+    private TextView currentSoundLevel, currentPinellHost, currentPinellInputSource, currentApplicationVersion;
+    private RelativeLayout hostInformation, informationApplicationVersion;
     private boolean pinellDevice;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         changeActiveContent(container);
-        if (!isWifiEnabledAndConnected()) {
-            informationView = inflater.inflate(R.layout.fragment_pinell_network_offline, container, false);
-            pinellDevice = false;
-        } else if (!getPinellService().isPinellDevice()) {
+//        if (!isWifiEnabledAndConnected()) {
+//            informationView = inflater.inflate(R.layout.fragment_pinell_network_offline, container, false);
+//            pinellDevice = false;
+//        } else
+        if (!getPinellService().isPinellDevice()) {
             informationView = inflater.inflate(R.layout.fragment_pinell_na, container, false);
             pinellDevice = false;
         } else {
@@ -93,20 +96,25 @@ public class InformationFragment extends AbstractFragment {
         changeCurrentActiveApplicationContextContent(container, R.drawable.ic_radio_white, R.string.sidebarInformation);
     }
 
-    private void configureScheduledTasks(boolean used) {
-        Log.d(TAG, String.format("Running the tasks? {%s}", used));
-//        if (!scheduled) {
-//            EXECUTOR_SERVICE.scheduleAtFixedRate(new Runnable() {
-//                @Override
-//                public void run() {
-//                    if (active) {
-//                        Log.d(TAG, "Updating");
-//                        configureElementValues();
-//                    }
-//                }
-//            }, 0, DEFAULT_REFRESH_PERIOD, TimeUnit.SECONDS);
-//            scheduled = true;
-//        }
+    private void configureScheduledTasks(boolean start) {
+        Log.d(TAG, String.format("Running the tasks? {%s}", start));
+        active = start;
+        if (!scheduled) {
+            if (start) {
+                TaskScheduler timer = new TaskScheduler();
+                timer.scheduleAtFixedRate(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (active) {
+                            Log.d(TAG, "Refreshing the information");
+                            configureElementValues();
+                            configurePowerSwitchPosition();
+                        }
+                    }
+                }, TimeUnit.SECONDS.toMillis(25));
+            }
+            scheduled = true;
+        }
     }
 
     private void configureElements() {
@@ -116,6 +124,7 @@ public class InformationFragment extends AbstractFragment {
         currentPinellInputSource = (TextView) informationView.findViewById(R.id.informationCurrentInputSourceTxt);
         currentApplicationVersion = (TextView) informationView.findViewById(R.id.informationApplicationVersionTxt);
         hostInformation = (RelativeLayout) informationView.findViewById(R.id.informationHost);
+        informationApplicationVersion = (RelativeLayout) informationView.findViewById(R.id.informationApplicationVersion);
     }
 
     private void configureBehaviors() {
@@ -129,6 +138,15 @@ public class InformationFragment extends AbstractFragment {
                 new AlertDialog.Builder(getActivity())
                         .setTitle(R.string.messageHostDetailsTitle)
                         .setMessage(assembleHostText())
+                        .show();
+            }
+        });
+        informationApplicationVersion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(getActivity())
+                        .setTitle(R.string.messageApplicationDetailsTitle)
+                        .setMessage(assembleApplicationText())
                         .show();
             }
         });
@@ -164,13 +182,7 @@ public class InformationFragment extends AbstractFragment {
     }
 
     private void configurePowerSwitch() {
-        final boolean poweredOn = getPinellService().isPoweredOn();
-        powerSwitch.post(new Runnable() {
-            @Override
-            public void run() {
-                powerSwitch.setChecked(poweredOn);
-            }
-        });
+        configurePowerSwitchPosition();
         powerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -179,6 +191,16 @@ public class InformationFragment extends AbstractFragment {
                 } else {
                     getPinellService().setPowerState(PowerState.OFF);
                 }
+            }
+        });
+    }
+
+    private void configurePowerSwitchPosition() {
+        final boolean poweredOn = getPinellService().isPoweredOn();
+        powerSwitch.post(new Runnable() {
+            @Override
+            public void run() {
+                powerSwitch.setChecked(poweredOn);
             }
         });
     }
@@ -196,6 +218,11 @@ public class InformationFragment extends AbstractFragment {
 
     private String assembleHostText() {
         final Host selectedHost = getPinellService().getSelectedHost();
-        return String.format("{'ip':'%s','session':'%s'}\n:-)", selectedHost.getHost(), selectedHost.getRadioSession().getId());
+        return String.format("{'hostIp':'%s', 'sessionId':'%s'}\n:-)", selectedHost.getHost(), selectedHost.getRadioSession().getId());
     }
+
+    private String assembleApplicationText() {
+        return String.format("{'applicationVersion':'%s', 'author':'%s', 'authorEmail':'%s'}", getApplicationVersion(), "", "");
+    }
+
 }

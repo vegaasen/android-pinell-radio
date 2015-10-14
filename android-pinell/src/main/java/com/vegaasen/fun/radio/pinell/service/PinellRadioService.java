@@ -110,7 +110,7 @@ interface PinellRadioService {
      *
      * @param radioStation _
      */
-    DeviceCurrentlyPlaying setRadioStation(RadioStation radioStation);
+    void setRadioStation(RadioStation radioStation);
 
     /**
      * Trigger a new search for FM stations forward

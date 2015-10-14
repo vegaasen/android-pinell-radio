@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">android-pinell</string>
+    <string name="app_name">Pinelly</string>
     <string name="activity_host_main">host-related-main-activity</string>
     <string name="messagePinellDeviceNotOn">Powering on Pinell device</string>
     <string name="messageHostDetailsTitle">Pinell host details</string>
+    <string name="messageApplicationDetailsTitle">Application details :-)</string>
 </resources>

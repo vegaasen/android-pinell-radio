@@ -128,6 +128,9 @@ public class RadioFsApiServiceImplIntTest {
     @Test
     public void listEqualizers_normalProcedure() throws InterruptedException {
         turnDeviceOn();
+        Set<RadioMode> radioModes = service.listAvailableRadioModes(host);
+        assertNotNull(radioModes);
+        service.setRadioMode(host, null);
         Set<Equalizer> equalizers = service.listEqualizers(host);
         assertNotNull(equalizers);
     }
@@ -168,8 +171,8 @@ public class RadioFsApiServiceImplIntTest {
         turnDeviceOn();
         final Set<RadioMode> radioModes = service.listAvailableRadioModes(host);
         RadioMode radioModeSelected = null;
-        for(RadioMode radioMode : radioModes) {
-            if(radioMode.getKey() == 0) {
+        for (RadioMode radioMode : radioModes) {
+            if (radioMode.getKey() == 0) {
                 radioModeSelected = radioMode;
             }
         }
@@ -210,7 +213,8 @@ public class RadioFsApiServiceImplIntTest {
         }
         service.selectStation(host, radioStations.get(0));
         Thread.sleep(1500);
-        DeviceCurrentlyPlaying playing = service.selectStation(host, radioStations.get(1));
+        service.selectStation(host, radioStations.get(1));
+        DeviceCurrentlyPlaying playing = service.getCurrentlyPlaying(host);
         System.out.println(playing.toString());
     }
 

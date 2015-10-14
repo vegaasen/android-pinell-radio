@@ -15,7 +15,7 @@ import java.util.concurrent.Future;
 /**
  * @author <a href="mailto:vegaasen@gmail.com">vegaasen</a>
  */
-public class ImageUtils {
+public final class ImageUtils {
 
     private static final String TAG = ImageUtils.class.getName();
     private static final int NUM_THREADS = 1;

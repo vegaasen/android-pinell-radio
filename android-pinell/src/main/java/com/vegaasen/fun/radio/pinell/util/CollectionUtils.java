@@ -40,11 +40,22 @@ public final class CollectionUtils {
         return Lists.newArrayList(candidate);
     }
 
-    public static <T> void clear(List<T> candidate) {
-        if(isEmpty(candidate)) {
+    public static <T> void clear(Collection<T> candidate) {
+        if (isEmpty(candidate)) {
             return;
         }
         candidate.clear();
+    }
+
+    public static <T> void addWithoutDuplicates(Collection<T> originals, Collection<T> candidates) {
+        if (isEmpty(originals)) {
+            originals.addAll(candidates);
+        }
+        for (T t : candidates) {
+            if (!originals.contains(t)) {
+                originals.add(t);
+            }
+        }
     }
 
     public static <T> boolean isEmpty(Collection<T> candidate) {

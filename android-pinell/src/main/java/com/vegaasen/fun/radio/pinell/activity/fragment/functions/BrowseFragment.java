@@ -1,6 +1,7 @@
 package com.vegaasen.fun.radio.pinell.activity.fragment.functions;
 
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,13 +11,13 @@ import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractFragment;
 import com.vegaasen.fun.radio.pinell.adapter.BrowseStationsActivity;
 import com.vegaasen.fun.radio.pinell.context.ApplicationContext;
 import com.vegaasen.fun.radio.pinell.util.CollectionUtils;
 import com.vegaasen.fun.radio.pinell.util.Comparators;
+import com.vegaasen.fun.radio.pinell.util.scheduler.TaskScheduler;
 import com.vegaasen.lib.ioc.radio.model.dab.RadioStation;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceCurrentlyPlaying;
 
@@ -44,19 +45,26 @@ import java.util.concurrent.TimeUnit;
 public class BrowseFragment extends AbstractFragment {
 
     private static final String TAG = BrowseFragment.class.getSimpleName();
+    public static final float ACTIVE = 0.4f;
+    public static final float INACTIVE = 1.0f;
+
+    private static boolean active, scheduled;
 
     private View browseFragment;
     private List<RadioStation> loadedRadioStations;
-    private DeviceCurrentlyPlaying currentlyPlaying;
-
+    private DeviceCurrentlyPlaying currentlyPlaying, previousPlaying;
     private TextView fmPlaying, fmTune;
+    private ImageButton fmRadioChannelSearchForward, fmRadioChannelSearchRewind;
+    private int previousLastItem;
+    private boolean loadedAll, configured;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         changeActiveContent(container);
-        if (!isWifiEnabledAndConnected()) {
-            browseFragment = inflater.inflate(R.layout.fragment_pinell_network_offline, container, false);
-        } else if (!getPinellService().isPinellDevice()) {
+//        if (!isWifiEnabledAndConnected()) {
+//            browseFragment = inflater.inflate(R.layout.fragment_pinell_network_offline, container, false);
+//        } else
+        if (!getPinellService().isPinellDevice()) {
             browseFragment = inflater.inflate(R.layout.fragment_pinell_na, container, false);
         } else {
             switch (ApplicationContext.INSTANCE.getActiveRadioMode()) {
@@ -108,8 +116,9 @@ public class BrowseFragment extends AbstractFragment {
     }
 
     private void configureViewInternetRadio(LayoutInflater inflater, ViewGroup container) {
-        browseFragment = inflater.inflate(R.layout.fragment_browse_internet, container, false);
-        CollectionUtils.clear(loadedRadioStations);
+        browseFragment = inflater.inflate(R.layout.fragment_browse_unsupported, container, false);
+        TextView txtReason = (TextView) browseFragment.findViewById(R.id.txtInputSourceNAConnectedReason);
+        txtReason.setText("Oops. This is currently not supported");
     }
 
     private void configureFMComponents() {
@@ -120,38 +129,69 @@ public class BrowseFragment extends AbstractFragment {
             fmPlaying.setText(currentlyPlaying.getName());
             fmTune.setText(currentlyPlaying.getTune());
         }
-        ImageButton fmRadioChannelSearchForward = (ImageButton) browseFragment.findViewById(R.id.btnFmRadioForward);
-        ImageButton fmRadioChannelSearchRewind = (ImageButton) browseFragment.findViewById(R.id.btnFmRadioRewind);
+        fmRadioChannelSearchForward = (ImageButton) browseFragment.findViewById(R.id.btnFmRadioForward);
+        fmRadioChannelSearchRewind = (ImageButton) browseFragment.findViewById(R.id.btnFmRadioRewind);
         fmRadioChannelSearchForward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                fmTune.setText(getString(R.string.scanning));
+                configureAlpha(fmRadioChannelSearchForward, ACTIVE);
                 getPinellService().searchFMBandForward();
-                triggerFmFrequencyUpdate();
+                triggerFmFrequencyUpdate(fmRadioChannelSearchForward);
             }
         });
         fmRadioChannelSearchRewind.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                fmTune.setText(getString(R.string.scanning));
+                configureAlpha(fmRadioChannelSearchRewind, ACTIVE);
                 getPinellService().searchFMBandRewind();
+                triggerFmFrequencyUpdate(fmRadioChannelSearchRewind);
             }
         });
     }
 
-    private void triggerFmFrequencyUpdate() {
-        long stop = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(8), lastRun = 0;
-        while (System.currentTimeMillis() < stop) {
-            if (lastRun + TimeUnit.SECONDS.toMillis(2) > System.currentTimeMillis()) {
-                updateFrequency();
-                lastRun = System.currentTimeMillis();
-            }
-        }
-        updateFrequency();
+    private void triggerFmFrequencyUpdate(final View zeButton) {
+        active = true;
+        configureScheduledTasks(zeButton);
     }
 
-    private void updateFrequency() {
+    private void configureScheduledTasks(final View zeButton) {
+        if (!scheduled) {
+            final TaskScheduler timer = new TaskScheduler();
+            timer.scheduleAtFixedRate(new Runnable() {
+                @Override
+                public void run() {
+                    if (active) {
+                        updateFrequency(false);
+                        if (currentlyPlaying.equals(previousPlaying)) {
+                            configureAlpha(zeButton, INACTIVE);
+                            active = false;
+                            new TaskScheduler().scheduledAtSpecificTime(new Runnable() {
+                                @Override
+                                public void run() {
+                                    updateFrequency(true);
+                                }
+                            }, SystemClock.uptimeMillis() + TimeUnit.SECONDS.toMillis(2));
+                        }
+                    }
+                }
+            }, 400);
+        }
+        scheduled = true;
+    }
+
+    private void configureAlpha(final View zeButton, float level) {
+        zeButton.setAlpha(level);
+    }
+
+    private void updateFrequency(boolean done) {
+        previousPlaying = currentlyPlaying;
         currentlyPlaying = getPinellService().getCurrentlyPlaying();
         fmPlaying.setText(currentlyPlaying.getName());
-        fmTune.setText(currentlyPlaying.getTune());
+        if (done) {
+            fmTune.setText(currentlyPlaying.getTune());
+        }
     }
 
     private void listRadioStationsAvailableForDAB() {
@@ -166,35 +206,40 @@ public class BrowseFragment extends AbstractFragment {
         }
         final BrowseStationsActivity adapter = getRadioStationsActivity(radioStationsOverview);
         adapter.updateCurrentRadioStation(getPinellService().getCurrentlyPlaying());
-        radioStationsOverview.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                int lastInScreen = firstVisibleItem + visibleItemCount;
-                if ((lastInScreen == totalItemCount)) {
-                    Toast.makeText(getActivity(), "Loading of more stations coming in next release", Toast.LENGTH_SHORT).show();
+        if (!configured) {
+            radioStationsOverview.setOnScrollListener(new AbsListView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(AbsListView view, int scrollState) {
                 }
-            }
-        });
-        radioStationsOverview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(TAG, String.format("Position {%s} and id {%s} clicked", position, id));
-                final RadioStation radioStation = adapter.getItem(position);
-                if (radioStation.isRadioStationContainer()) {
-                    Log.d(TAG, String.format("RadioContainer {%s} selected. Opening the container", radioStation.toString()));
-                    loadedRadioStations = CollectionUtils.toList(getPinellService().enterContainerAndListStations(radioStation));
-                } else {
-                    Log.d(TAG, String.format("RadioStation {%s} selected. Switching to this station", radioStation.toString()));
-                    getPinellService().setRadioStation(radioStation);
+
+                @Override
+                public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                    int currentLastItem = firstVisibleItem + visibleItemCount;
+                    if ((currentLastItem == totalItemCount)) {
+                        if (previousLastItem != currentLastItem) {
+                            appendRadioStationsForDAB(adapter);
+                            previousLastItem = currentLastItem;
+                        }
+                    }
                 }
-                listRadioStationsAvailableForDAB();
-            }
-        });
+            });
+            radioStationsOverview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Log.d(TAG, String.format("Position {%s} and id {%s} clicked", position, id));
+                    final RadioStation radioStation = adapter.getItem(position);
+                    if (radioStation.isRadioStationContainer()) {
+                        Log.d(TAG, String.format("RadioContainer {%s} selected. Opening the container", radioStation.toString()));
+                        loadedRadioStations = CollectionUtils.toList(getPinellService().enterContainerAndListStations(radioStation));
+                    } else {
+                        Log.d(TAG, String.format("RadioStation {%s} selected. Switching to this station", radioStation.toString()));
+                        getPinellService().setRadioStation(radioStation);
+                    }
+                    listRadioStationsAvailableForDAB();
+                }
+            });
+        }
+        configured = true;
     }
 
     private BrowseStationsActivity getRadioStationsActivity(ListView overview) {
@@ -209,6 +254,18 @@ public class BrowseFragment extends AbstractFragment {
             adapter.notifyDataSetChanged();
         }
         return adapter;
+    }
+
+    private void appendRadioStationsForDAB(BrowseStationsActivity adapter) {
+        if (adapter != null && !loadedAll) {
+            List<RadioStation> candidates = assembleRadioStations(loadedRadioStations.size());
+            if (!CollectionUtils.isEmpty(candidates)) {
+                CollectionUtils.addWithoutDuplicates(loadedRadioStations, candidates);
+                adapter.notifyDataSetChanged();
+            } else {
+                loadedAll = true;
+            }
+        }
     }
 
     private List<RadioStation> assembleRadioStations() {

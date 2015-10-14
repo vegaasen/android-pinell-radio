@@ -22,7 +22,9 @@ public class SplashScreenFragment extends AbstractFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        splashScreenView = inflater.inflate(R.layout.fragment_splash, container, false);
+        if (splashScreenView == null) {
+            splashScreenView = inflater.inflate(R.layout.fragment_splash, container, false);
+        }
         if (splashScreenView == null) {
             Log.e(TAG, "For some reason, the splashScreen were unable to be found. Dying");
             throw new RuntimeException("Missing required splashScreen in the initialization of the application");
@@ -32,6 +34,6 @@ public class SplashScreenFragment extends AbstractFragment {
 
     @Override
     protected void changeActiveContent(ViewGroup container) {
-
+        changeCurrentActiveApplicationContextContent(container, R.drawable.ic_radio_white, R.string.splashScreenWelcome);
     }
 }

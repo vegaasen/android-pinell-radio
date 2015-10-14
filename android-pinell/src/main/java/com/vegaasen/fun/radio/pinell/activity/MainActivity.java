@@ -14,7 +14,6 @@ import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractActivity;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractFragment;
 import com.vegaasen.fun.radio.pinell.activity.fragment.SplashScreenFragment;
-import com.vegaasen.fun.radio.pinell.activity.fragment.dialog.EnableWifiDialogFragment;
 import com.vegaasen.fun.radio.pinell.activity.fragment.functions.BrowseFragment;
 import com.vegaasen.fun.radio.pinell.activity.fragment.functions.EqualizerFragment;
 import com.vegaasen.fun.radio.pinell.activity.fragment.functions.InformationFragment;
@@ -55,6 +54,7 @@ public class MainActivity extends AbstractActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e(TAG, "### Remeber to reactivate ALL Fragments ###");
         setContentView(R.layout.main);
         configureCoreElements();
         configureUiElements();
@@ -191,11 +191,12 @@ public class MainActivity extends AbstractActivity {
 
     private boolean renderSelectPinellHost() {
         renderDefaultSplashScreen();
-        if (!isWifiEnabledAndConnected() && !isConnectedToSomeDevice()) {
-            final EnableWifiDialogFragment enableWifiDialogFragment = new EnableWifiDialogFragment();
-            enableWifiDialogFragment.show(getFragmentManager(), TAG);
-            return false;
-        }
+        Log.e(TAG, "WIFI CHECK DISABLED!! WARNING!!!!!!");
+//        if (!isWifiEnabledAndConnected() && !isConnectedToSomeDevice()) {
+//            final EnableWifiDialogFragment enableWifiDialogFragment = new EnableWifiDialogFragment();
+//            enableWifiDialogFragment.show(getFragmentManager(), TAG);
+//            return false;
+//        }
         startActivityForResult(new Intent(this, SelectHostActivity.class), REQUEST_CODE);
         return true;
     }

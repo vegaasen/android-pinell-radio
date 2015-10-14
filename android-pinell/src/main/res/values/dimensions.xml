@@ -4,6 +4,8 @@
     <dimen name="iconBarSizeWidth">23dp</dimen>
     <dimen name="iconSizeHeight">40dp</dimen>
     <dimen name="iconSizeWidth">40dp</dimen>
+    <dimen name="iconSizeBigHeight">60dp</dimen>
+    <dimen name="iconSizeBigWidth">60dp</dimen>
     <dimen name="elementSpacing">5dp</dimen>
     <dimen name="elementStandaloneSpacing">30dp</dimen>
     <dimen name="listElementSpacing">2dp</dimen>

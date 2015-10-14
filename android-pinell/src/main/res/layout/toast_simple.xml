@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/layToastSimple"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:background="@drawable/rectangle_simple"
+              android:layout_margin="25dip">
+    <!--
+        Simple view related to the Toast-messages passed in the application
+
+        @author vegaasen
+        @since 23.09.2015
+    -->
+    <RelativeLayout
+            android:layout_margin="5dip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        <ImageView
+                android:id="@+id/imgToastSimple"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_info_outline_black"
+                android:contentDescription="@string/genericUnknown"/>
+        <TextView
+                android:layout_toEndOf="@id/imgToastSimple"
+                android:paddingStart="10dp"
+                android:paddingEnd="0dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtToastSimple"
+                android:textSize="@dimen/textMediumDefaultHeight"
+                android:layout_centerInParent="true"
+                android:text="@string/genericUnknown"
+                />
+    </RelativeLayout>
+</LinearLayout>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="sidebarBeta">early beta</string>
     <string name="sidebarNowPlaying">Playing</string>
     <string name="sidebarBrowse">Browse</string>
     <string name="sidebarSource">Sources</string>

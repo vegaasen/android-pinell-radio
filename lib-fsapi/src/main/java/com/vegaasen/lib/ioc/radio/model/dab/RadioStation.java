@@ -27,4 +27,13 @@ public class RadioStation extends AbsRadioStation {
         return !item.getFields().isEmpty() && item.getFields().get(ApiResponse.RadioStation.NAME) != null && item.getFields().get(ApiResponse.RadioStation.TYPE) != null && item.getFields().get(ApiResponse.RadioStation.SUBTYPE) != null;
     }
 
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj != null && obj instanceof RadioStation && getName().equals(((RadioStation) obj).getName());
+    }
 }

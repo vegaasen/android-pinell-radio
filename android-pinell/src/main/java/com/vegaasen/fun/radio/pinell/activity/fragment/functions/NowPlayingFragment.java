@@ -13,11 +13,11 @@ import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractFragment;
 import com.vegaasen.fun.radio.pinell.async.NowPlayingAsync;
 import com.vegaasen.fun.radio.pinell.util.ImageUtils;
+import com.vegaasen.fun.radio.pinell.util.scheduler.TaskScheduler;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceAudio;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceCurrentlyPlaying;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The NowPlayingFragment is a fragment which basically just displays all the details about the currently
@@ -29,9 +29,7 @@ import java.util.concurrent.ScheduledExecutorService;
 public class NowPlayingFragment extends AbstractFragment {
 
     private static final String TAG = NowPlayingFragment.class.getSimpleName();
-    private static final ScheduledExecutorService EXECUTOR_SERVICE = Executors.newScheduledThreadPool(1);
-
-    private static boolean active, scheduled;
+    private static boolean active, scheduled, firstTime = true;
 
     private View nowPlayingView;
     private TextView radioTitle;
@@ -42,9 +40,10 @@ public class NowPlayingFragment extends AbstractFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         changeActiveContent(container);
-        if (!isWifiEnabledAndConnected()) {
-            nowPlayingView = inflater.inflate(R.layout.fragment_pinell_network_offline, container, false);
-        } else if (!getPinellService().isPinellDevice()) {
+//        if (!isWifiEnabledAndConnected()) {
+//            nowPlayingView = inflater.inflate(R.layout.fragment_pinell_network_offline, container, false);
+//        } else
+        if (!getPinellService().isPinellDevice()) {
             nowPlayingView = inflater.inflate(R.layout.fragment_pinell_na, container, false);
         } else if (!isDeviceOn()) {
             nowPlayingView = inflater.inflate(R.layout.fragment_now_playing_device_off, container, false);
@@ -60,6 +59,9 @@ public class NowPlayingFragment extends AbstractFragment {
     @Override
     public void onResume() {
         super.onResume();
+//        if (!isWifiEnabledAndConnected()) {
+//            return;
+//        }
         if (getPinellService().isPinellDevice()) {
             configureScheduledTasks(true);
         }
@@ -79,19 +81,23 @@ public class NowPlayingFragment extends AbstractFragment {
     private void configureScheduledTasks(boolean start) {
         Log.d(TAG, String.format("Running the tasks? {%s}", start));
         active = start;
-//        if (!scheduled) {
-//            if (start) {
-//                EXECUTOR_SERVICE.scheduleAtFixedRate(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        if (active) {
-//                            populateComponentInformation();
-//                        }
-//                    }
-//                }, 0, DEFAULT_REFRESH_PERIOD, TimeUnit.SECONDS);
-//            }
-//            scheduled = true;
-//        }
+        if (!scheduled) {
+            if (start) {
+                TaskScheduler timer = new TaskScheduler();
+                timer.scheduleAtFixedRate(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (active && !firstTime) {
+                            Log.d(TAG, "Refreshing the information");
+                            populateComponentInformation();
+                        } else {
+                            firstTime = false;
+                        }
+                    }
+                }, TimeUnit.SECONDS.toMillis(25));
+            }
+            scheduled = true;
+        }
     }
 
     private void configureViewComponents() {
@@ -121,26 +127,18 @@ public class NowPlayingFragment extends AbstractFragment {
     }
 
     private void configureVolume(final SeekBar seekBar) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (seekBar != null) {
-                    int candidateLevel = seekBar.getProgress();
-                    if (candidateLevel == 0) {
-                        getPinellService().setAudioMuted();
-                        return;
-                    }
-                    getPinellService().setAudioLevel(candidateLevel);
-                    Log.d(TAG, String.format("AudioLevel set to {%s}", candidateLevel));
-                }
+        if (seekBar != null) {
+            int candidateLevel = seekBar.getProgress();
+            if (candidateLevel == 0) {
+                getPinellService().setAudioMuted();
+                return;
             }
-        }).run();
+            getPinellService().setAudioLevel(candidateLevel);
+            Log.d(TAG, String.format("AudioLevel set to {%s}", candidateLevel));
+        }
     }
 
     private void refreshCurrentlyPlaying() {
-        if (!getPinellService().isPinellDevice()) {
-            return;
-        }
         NowPlayingAsync nowPlayingAsync = new NowPlayingAsync(nowPlayingView, getPinellService(), getResources().getString(R.string.genericUnknown));
         nowPlayingAsync.execute();
     }

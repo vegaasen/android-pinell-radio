@@ -95,9 +95,7 @@ public class RadioFsApiServiceImpl implements RadioFsApiService {
             LOG.warning("Unable to set radioMode for host. Host or radioMode is nilled");
             return;
         }
-        if (!ApiRequestSystem.INSTANCE.setRadioMode(host, radioMode)) {
-            LOG.warning(String.format("Unable to set radioMode to {%s} for {%s}", radioMode.toString(), host.toString()));
-        }
+        ApiRequestSystem.INSTANCE.setRadioMode(host, radioMode);
     }
 
     @Override
@@ -124,9 +122,7 @@ public class RadioFsApiServiceImpl implements RadioFsApiService {
             LOG.warning(String.format("Unable to set audioLevel to the wanted level due to invalid level {%s}", level));
             return;
         }
-        if (!ApiRequestSystem.INSTANCE.setDeviceAudioLevel(host, level)) {
-            LOG.warning(String.format("Unable to set audioLevel {%s} for {%s}", level, host.toString()));
-        }
+        ApiRequestSystem.INSTANCE.setDeviceAudioLevel(host, level);
     }
 
     @Override
@@ -189,14 +185,13 @@ public class RadioFsApiServiceImpl implements RadioFsApiService {
     }
 
     @Override
-    public DeviceCurrentlyPlaying selectStation(Host host, RadioStation radioStation) {
+    public void selectStation(Host host, RadioStation radioStation) {
         if (host == null || radioStation == null) {
             LOG.warning("Unable to selectStation due to either host or selected folder is nilled/empty");
-            return null;
+            return;
         }
         LOG.fine(String.format("Selecting station {%s} for {%s}", radioStation.toString(), host.toString()));
         ApiRequestRadio.INSTANCE.selectRadioStation(host, radioStation);
-        return ApiRequestSystem.INSTANCE.getCurrentlyPlaying(host);
     }
 
     @Override

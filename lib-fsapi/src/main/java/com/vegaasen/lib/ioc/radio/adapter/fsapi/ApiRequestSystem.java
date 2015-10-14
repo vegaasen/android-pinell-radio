@@ -12,6 +12,7 @@ import com.vegaasen.lib.ioc.radio.model.system.Equalizer;
 import com.vegaasen.lib.ioc.radio.model.system.PowerState;
 import com.vegaasen.lib.ioc.radio.model.system.RadioMode;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
+import com.vegaasen.lib.ioc.radio.util.ItemUtils;
 import com.vegaasen.lib.ioc.radio.util.XmlUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -20,6 +21,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * Simple class which basically just connects to the API. All of these methods requires a host is present
@@ -33,6 +35,7 @@ public enum ApiRequestSystem {
 
     INSTANCE;
 
+    private static final Logger LOG = Logger.getLogger(ApiRequestSystem.class.getSimpleName());
     private static final String EMPTY = "";
     private static final String MIN = "-1", MAX = Integer.toString(Integer.MAX_VALUE);
 
@@ -123,11 +126,10 @@ public enum ApiRequestSystem {
         return null;
     }
 
-    public boolean setRadioMode(Host host, RadioMode radioMode) {
+    public void setRadioMode(Host host, RadioMode radioMode) {
         final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
         params.put(Parameter.QueryParameter.VALUE, radioMode.getKeyAsString());
-        final Document document = ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.System.RADIO_MODE_SET, params));
-        return document != null && ApiConnection.INSTANCE.verifyResponseOk(document);
+        ApiConnection.INSTANCE.requestAsync(ApiConnection.INSTANCE.getApiUri(host, UriContext.System.RADIO_MODE_SET, params));
     }
 
     public DeviceAudio getDeviceAudioInformation(Host host) {
@@ -151,14 +153,14 @@ public enum ApiRequestSystem {
         return null;
     }
 
-    public boolean setDeviceAudioLevel(Host host, int level) {
+    public void setDeviceAudioLevel(Host host, int level) {
         if (host == null || level < 0) {
-            return false;
+            LOG.info("Unable to set audioLevel to nilled hosts or zero levels");
+            return;
         }
         final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
         params.put(Parameter.QueryParameter.VALUE, Integer.toString(level));
-        final Document document = ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.Device.AUDIO_VOLUME_LEVEL_SET, params));
-        return document != null && ApiConnection.INSTANCE.verifyResponseOk(document);
+        ApiConnection.INSTANCE.requestAsync(ApiConnection.INSTANCE.getApiUri(host, UriContext.Device.AUDIO_VOLUME_LEVEL_SET, params));
     }
 
     public DeviceCurrentlyPlaying getCurrentlyPlaying(Host host) {
@@ -172,7 +174,7 @@ public enum ApiRequestSystem {
                 getResponse(host, UriContext.Device.CURRENTLY_PLAYING_STATUS),
                 getResponse(host, UriContext.Device.CURRENTLY_PLAYING_FREQUENCY),
                 getResponse(host, UriContext.Device.CURRENTLY_PLAYING_DAB_SERVICE_ID),
-                Integer.parseInt(getResponse(host, UriContext.Device.CURRENTLY_PLAYING_DURATION))
+                ItemUtils.parseSafeInt(getResponse(host, UriContext.Device.CURRENTLY_PLAYING_DURATION))
         );
     }
 

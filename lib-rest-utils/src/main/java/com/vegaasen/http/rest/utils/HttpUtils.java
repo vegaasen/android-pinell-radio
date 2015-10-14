@@ -203,7 +203,7 @@ public final class HttpUtils {
                 urlConnection = (HttpURLConnection) scheme.getTo().openConnection();
                 urlConnection.setRequestMethod(requestType.getType());
                 urlConnection.setInstanceFollowRedirects(false);
-                urlConnection.setUseCaches(false);
+                urlConnection.setUseCaches(true);
                 urlConnection.setDoOutput(false);
                 configureConnection(urlConnection);
                 appendHeadersForConnection(urlConnection, scheme);

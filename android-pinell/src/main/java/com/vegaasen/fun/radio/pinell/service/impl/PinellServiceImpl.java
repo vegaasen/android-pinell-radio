@@ -247,12 +247,12 @@ public class PinellServiceImpl implements PinellService {
     }
 
     @Override
-    public DeviceCurrentlyPlaying setRadioStation(RadioStation radioStation) {
+    public void setRadioStation(RadioStation radioStation) {
         if (radioStation == null) {
             Log.d(TAG, "Unable to select the radio station as it seems to be nilled");
-            return null;
+            return;
         }
-        return getRadioService().selectStation(getSelectedHost(), radioStation);
+        getRadioService().selectStation(getSelectedHost(), radioStation);
     }
 
     @Override

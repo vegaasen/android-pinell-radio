@@ -37,7 +37,7 @@
                 android:layout_height="300dp"
                 android:id="@+id/playingRadioChannelImg"
                 android:adjustViewBounds="true"
-                android:scaleType="matrix"
+                android:scaleType="centerCrop"
                 android:layout_centerInParent="true"
                 android:background="@drawable/placeholder"
                 android:contentDescription="@string/genericUnknown"/>

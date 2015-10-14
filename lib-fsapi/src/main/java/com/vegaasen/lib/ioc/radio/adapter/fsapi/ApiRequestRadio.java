@@ -29,13 +29,13 @@ public enum ApiRequestRadio {
     public void searchFMForward(Host host) {
         final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
         params.put(Parameter.QueryParameter.VALUE, FM_SEARCH_FORWARD);
-        ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.FM.SEEK_FORWARD, params));
+        ApiConnection.INSTANCE.requestAsync(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.FM.SEEK_FORWARD, params));
     }
 
     public void searchFMRewind(Host host) {
         final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
         params.put(Parameter.QueryParameter.VALUE, FM_SEARCH_REWIND);
-        ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.FM.SEEK_REWIND, params));
+        ApiConnection.INSTANCE.requestAsync(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.FM.SEEK_REWIND, params));
     }
 
     public String getCurrentFMBand(Host host) {
@@ -129,7 +129,7 @@ public enum ApiRequestRadio {
             }
             final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
             params.put(Parameter.QueryParameter.VALUE, radioStation.getKeyIdAsString());
-            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.STATION_SELECT, params));
+            ApiConnection.INSTANCE.requestAsync(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.STATION_SELECT, params));
         } finally {
             postSelectRadioStation(host);
         }

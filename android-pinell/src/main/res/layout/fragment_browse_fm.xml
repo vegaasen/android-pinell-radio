@@ -20,7 +20,8 @@
             android:id="@+id/imgFmRadioLogo"
             android:layout_width="@dimen/defaultBigIconSize"
             android:layout_height="@dimen/defaultBigIconSize"
-            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="100dp"
             android:background="@drawable/ic_radio_black"
             android:contentDescription="@string/genericUnknown"
             />
@@ -46,29 +47,35 @@
             android:textSize="@dimen/textSmallDefaultHeight"
             android:text="@string/genericUnknown"
             />
-    <RelativeLayout
-            android:layout_width="160dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/txtFmRadioCaption"
-            android:layout_marginTop="20dp"
-            android:layout_centerHorizontal="true"
+    <RelativeLayout android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginTop="10dp"
+                    android:layout_below="@id/txtFmRadioCaption"
+                    android:background="#B0BEC5"
             >
-        <ImageButton
-                android:id="@+id/btnFmRadioRewind"
-                android:layout_width="@dimen/iconSizeWidth"
-                android:layout_height="@dimen/iconSizeHeight"
-                android:background="@drawable/ic_fast_rewind_black"
-                android:clickable="true"
-                android:hapticFeedbackEnabled="true"
-                />
-        <ImageButton
-                android:id="@+id/btnFmRadioForward"
-                android:layout_width="@dimen/iconSizeWidth"
-                android:layout_height="@dimen/iconSizeHeight"
-                android:layout_alignParentEnd="true"
-                android:background="@drawable/ic_fast_forward_black"
-                android:clickable="true"
-                android:hapticFeedbackEnabled="true"
-                />
+        <RelativeLayout
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_centerHorizontal="true"
+                >
+            <ImageButton
+                    android:id="@+id/btnFmRadioRewind"
+                    android:layout_width="@dimen/iconSizeBigWidth"
+                    android:layout_height="@dimen/iconSizeBigHeight"
+                    android:background="@drawable/ic_fast_rewind_black"
+                    android:clickable="true"
+                    android:hapticFeedbackEnabled="true"
+                    />
+            <ImageButton
+                    android:id="@+id/btnFmRadioForward"
+                    android:layout_width="@dimen/iconSizeBigWidth"
+                    android:layout_height="@dimen/iconSizeBigHeight"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/ic_fast_forward_black"
+                    android:clickable="true"
+                    android:hapticFeedbackEnabled="true"
+                    />
+        </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>

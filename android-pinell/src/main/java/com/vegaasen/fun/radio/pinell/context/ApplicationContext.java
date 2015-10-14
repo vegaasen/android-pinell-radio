@@ -31,12 +31,12 @@ public enum ApplicationContext {
     public PinellService getPinellService() {
         if (pinellService == null) {
             final String subnet = NetworkUtils.fromIntToIp(getWifiManager().getConnectionInfo().getIpAddress());
-            if (Strings.isNullOrEmpty(subnet)) {
-                return null;
-            }
+//            if (Strings.isNullOrEmpty(subnet)) {
+//                return null;
+//            }
             pinellService = new PinellServiceImpl();
             Log.d(TAG, String.format("Device connected to subnet {%s}", subnet));
-            pinellService.setCurrentSubnet(subnet);
+            pinellService.setCurrentSubnet("192.168.0");
         }
         return pinellService;
     }

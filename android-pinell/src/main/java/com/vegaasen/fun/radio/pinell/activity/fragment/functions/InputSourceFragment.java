@@ -34,9 +34,10 @@ public class InputSourceFragment extends AbstractFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         changeActiveContent(container);
-        if (!isWifiEnabledAndConnected()) {
-            inputSourceView = inflater.inflate(R.layout.fragment_pinell_network_offline, container, false);
-        } else if (!getPinellService().isPinellDevice()) {
+//        if (!isWifiEnabledAndConnected()) {
+//            inputSourceView = inflater.inflate(R.layout.fragment_pinell_network_offline, container, false);
+//        } else
+        if (!getPinellService().isPinellDevice()) {
             inputSourceView = inflater.inflate(R.layout.fragment_pinell_na, container, false);
         } else {
             inputSourceView = inflater.inflate(R.layout.fragment_input_sources, container, false);

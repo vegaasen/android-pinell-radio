@@ -5,7 +5,7 @@ import com.vegaasen.http.rest.model.http.Response;
 /**
  * @author <a href="vegaasen@gmail.com">vegardaasen</a>
  */
-public abstract interface HttpMethod {
+public interface HttpMethod {
 
     Response get();
 

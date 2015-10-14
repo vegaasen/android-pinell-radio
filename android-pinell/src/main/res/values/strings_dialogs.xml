@@ -5,10 +5,13 @@
     <string name="dialogChooserPressRefresh">Click to locate devices</string>
     <string name="dialogSearchingForDevices">Locating devices…</string>
     <string name="dialogIconDescription">RadioSymbol</string>
-    <string name="genericUnknown">-</string>
-    <string name="dialogWifiContent">In order to control Pinell devices, you need to be connected to a Wifi network</string>
+    <string name="genericUnknown">Unknown :-/</string>
+    <string name="dialogWifiContent">
+        In order to control Pinell devices, you need to be connected to a Wifi network
+    </string>
     <string name="dialogWifiEnable">Connect to Wifi</string>
     <string name="dialogWifiCancel">Exit</string>
     <string name="discoveryComplete">Scanning complete</string>
     <string name="discoveryCancel">Scanning interrupted</string>
+    <string name="splashScreenWelcome">Welcome</string>
 </resources>

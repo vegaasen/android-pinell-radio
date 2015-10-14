@@ -74,6 +74,11 @@ public class DeviceCurrentlyPlaying {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        return obj instanceof DeviceCurrentlyPlaying && getName() != null && getName().equals(((DeviceCurrentlyPlaying) obj).getName());
+    }
+
+    @Override
     public String toString() {
         return "DeviceCurrentlyPlaying{" +
                 "lastUpdated=" + lastUpdated +
