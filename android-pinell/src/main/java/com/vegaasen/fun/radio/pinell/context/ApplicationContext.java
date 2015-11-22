@@ -3,7 +3,6 @@ package com.vegaasen.fun.radio.pinell.context;
 import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.util.Log;
-import com.google.common.base.Strings;
 import com.vegaasen.fun.radio.pinell.model.PinellRadioMode;
 import com.vegaasen.fun.radio.pinell.service.PinellService;
 import com.vegaasen.fun.radio.pinell.service.impl.PinellServiceImpl;
@@ -13,7 +12,13 @@ import com.vegaasen.lib.ioc.radio.model.system.Equalizer;
 import com.vegaasen.lib.ioc.radio.model.system.RadioMode;
 
 /**
+ * Represents the context of the application itself. It also contains a few convenience methods like "isPinellDevice" etc.
+ * The determination of the Pinell-device is handled in the referenced class
+ *
  * @author <a href="mailto:vegaasen@gmail.com">vegaasen</a>
+ * @version 22.11.2015
+ * @see com.vegaasen.fun.radio.pinell.async.function.SetPinellHostAsync
+ * @since 29.3.2015
  */
 public enum ApplicationContext {
 
@@ -26,7 +31,7 @@ public enum ApplicationContext {
     private RadioStation activeRadioStation;
     private Equalizer activeEqualizer;
     private PinellRadioMode activeRadioMode;
-    private boolean radioConnected = false;
+    private boolean radioConnected = false, pinellDevice = false;
 
     public PinellService getPinellService() {
         if (pinellService == null) {
@@ -88,5 +93,13 @@ public enum ApplicationContext {
 
     public void setRadioConnected(boolean radioConnected) {
         this.radioConnected = radioConnected;
+    }
+
+    public boolean isPinellDevice() {
+        return pinellDevice;
+    }
+
+    public void setPinellDevice(boolean pinellDevice) {
+        this.pinellDevice = pinellDevice;
     }
 }

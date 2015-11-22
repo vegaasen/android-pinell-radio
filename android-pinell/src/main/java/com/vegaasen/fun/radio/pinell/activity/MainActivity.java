@@ -20,8 +20,9 @@ import com.vegaasen.fun.radio.pinell.activity.fragment.functions.InformationFrag
 import com.vegaasen.fun.radio.pinell.activity.fragment.functions.InputSourceFragment;
 import com.vegaasen.fun.radio.pinell.activity.fragment.functions.NowPlayingFragment;
 import com.vegaasen.fun.radio.pinell.activity.host.SelectHostActivity;
+import com.vegaasen.fun.radio.pinell.async.function.UpdateAudioLevelAsync;
+import com.vegaasen.fun.radio.pinell.async.function.UpdateRadioModeAsync;
 import com.vegaasen.fun.radio.pinell.context.ApplicationContext;
-import com.vegaasen.lib.ioc.radio.model.device.DeviceAudio;
 
 /**
  * This is the main activity which controls all the various fragments within the application itself.
@@ -75,9 +76,11 @@ public class MainActivity extends AbstractActivity {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG, String.format("Response from request {%s} was {%s}", requestCode, resultCode));
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+            configureCurrentInputSource();
             buttonChangePinellHost.setBackgroundResource(R.drawable.ic_cast_connected_white);
             getSupportFragmentManager().beginTransaction().replace(R.id.fragmentReplacer, informationFragment).commit();
-            informationFragment.refreshDeviceInformation();
+            //todo: Is this even required?
+            informationFragment.refreshView();
             setActiveFragmentLayout(currentActiveFragmentView);
         }
     }
@@ -85,23 +88,23 @@ public class MainActivity extends AbstractActivity {
     @Override
     public boolean onKeyUp(int keyCode, @NonNull KeyEvent event) {
         if (ApplicationContext.INSTANCE.isRadioConnected() && keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-            final DeviceAudio audioLevels = getPinellService().getAudioLevels();
-            final int candidateLevel = audioLevels.getLevel();
-            getPinellService().setAudioLevel(candidateLevel <= 38 ? candidateLevel + 1 : candidateLevel);
+            new UpdateAudioLevelAsync(getPinellService(), true);
             conditionallyUpdateFragment();
         }
         return true;
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
         if (ApplicationContext.INSTANCE.isRadioConnected() && keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-            final DeviceAudio audioLevels = getPinellService().getAudioLevels();
-            final int candidateLevel = audioLevels.getLevel();
-            getPinellService().setAudioLevel(candidateLevel > 0 ? candidateLevel - 1 : candidateLevel);
+            new UpdateAudioLevelAsync(getPinellService(), false);
             conditionallyUpdateFragment();
         }
         return true;
+    }
+
+    private void configureCurrentInputSource() {
+        new UpdateRadioModeAsync(getPinellService()).execute();
     }
 
     private void conditionallyUpdateFragment() {

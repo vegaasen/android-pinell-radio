@@ -5,17 +5,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.SeekBar;
-import android.widget.TextView;
-import com.google.common.base.Strings;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractFragment;
-import com.vegaasen.fun.radio.pinell.async.NowPlayingAsync;
-import com.vegaasen.fun.radio.pinell.util.ImageUtils;
+import com.vegaasen.fun.radio.pinell.async.function.IsDeviceOnAsync;
+import com.vegaasen.fun.radio.pinell.async.function.UpdateAudioLevelAsync;
+import com.vegaasen.fun.radio.pinell.async.playing.NowPlayingAsync;
+import com.vegaasen.fun.radio.pinell.context.ApplicationContext;
 import com.vegaasen.fun.radio.pinell.util.scheduler.TaskScheduler;
-import com.vegaasen.lib.ioc.radio.model.device.DeviceAudio;
-import com.vegaasen.lib.ioc.radio.model.device.DeviceCurrentlyPlaying;
 
 import java.util.concurrent.TimeUnit;
 
@@ -24,6 +21,7 @@ import java.util.concurrent.TimeUnit;
  * active source and what is playing right "now".
  *
  * @author <a href="mailto:vegaasen@gmail.com">vegaasen</a>
+ * @version 16.11.2015
  * @since 27.5.2015
  */
 public class NowPlayingFragment extends AbstractFragment {
@@ -32,9 +30,6 @@ public class NowPlayingFragment extends AbstractFragment {
     private static boolean active, scheduled, firstTime = true;
 
     private View nowPlayingView;
-    private TextView radioTitle;
-    private ImageView radioImage;
-    private TextView artistTitle;
     private SeekBar volumeControl;
 
     @Override
@@ -43,15 +38,21 @@ public class NowPlayingFragment extends AbstractFragment {
 //        if (!isWifiEnabledAndConnected()) {
 //            nowPlayingView = inflater.inflate(R.layout.fragment_pinell_network_offline, container, false);
 //        } else
-        if (!getPinellService().isPinellDevice()) {
+        boolean deviceOn = false;
+        try {
+            deviceOn = new IsDeviceOnAsync(getPinellService()).execute().get(2, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            Log.d(TAG, "Unable to fetch deviceOn status");
+        }
+        if (!ApplicationContext.INSTANCE.isPinellDevice()) {
             nowPlayingView = inflater.inflate(R.layout.fragment_pinell_na, container, false);
-        } else if (!isDeviceOn()) {
+        } else if (!deviceOn) {
             nowPlayingView = inflater.inflate(R.layout.fragment_now_playing_device_off, container, false);
         } else {
             nowPlayingView = inflater.inflate(R.layout.fragment_now_playing, container, false);
             configureViewComponents();
             configureVolumeController();
-            refreshCurrentlyPlaying();
+            refreshView();
         }
         return nowPlayingView;
     }
@@ -62,7 +63,7 @@ public class NowPlayingFragment extends AbstractFragment {
 //        if (!isWifiEnabledAndConnected()) {
 //            return;
 //        }
-        if (getPinellService().isPinellDevice()) {
+        if (ApplicationContext.INSTANCE.isPinellDevice()) {
             configureScheduledTasks(true);
         }
     }
@@ -78,6 +79,10 @@ public class NowPlayingFragment extends AbstractFragment {
         changeCurrentActiveApplicationContextContent(container, R.drawable.ic_volume_up_white, R.string.sidebarNowPlaying);
     }
 
+    protected void refreshView() {
+        new NowPlayingAsync(getFragmentManager(), nowPlayingView, getPinellService(), getResources().getString(R.string.genericUnknown)).execute();
+    }
+
     private void configureScheduledTasks(boolean start) {
         Log.d(TAG, String.format("Running the tasks? {%s}", start));
         active = start;
@@ -88,7 +93,7 @@ public class NowPlayingFragment extends AbstractFragment {
                     @Override
                     public void run() {
                         if (active && !firstTime) {
-                            Log.d(TAG, "Refreshing the information");
+                            Log.d(TAG, "Refreshing the now playing details :-)");
                             populateComponentInformation();
                         } else {
                             firstTime = false;
@@ -101,13 +106,10 @@ public class NowPlayingFragment extends AbstractFragment {
     }
 
     private void configureViewComponents() {
-        radioTitle = (TextView) nowPlayingView.findViewById(R.id.playingRadioChannelTxt);
-        radioImage = (ImageView) nowPlayingView.findViewById(R.id.playingRadioChannelImg);
-        artistTitle = (TextView) nowPlayingView.findViewById(R.id.playingArtistTitleTxt);
         volumeControl = (SeekBar) nowPlayingView.findViewById(R.id.playingVolumeControlSeek);
     }
 
-    //todo: the rest
+    //todo: should it change upon Changed, or is it enough with "onStopTrackingTouch"? :)
     private void configureVolumeController() {
         volumeControl.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -129,49 +131,13 @@ public class NowPlayingFragment extends AbstractFragment {
     private void configureVolume(final SeekBar seekBar) {
         if (seekBar != null) {
             int candidateLevel = seekBar.getProgress();
-            if (candidateLevel == 0) {
-                getPinellService().setAudioMuted();
-                return;
-            }
-            getPinellService().setAudioLevel(candidateLevel);
-            Log.d(TAG, String.format("AudioLevel set to {%s}", candidateLevel));
+            Log.d(TAG, String.format("Setting AudioLevel to {%s}", candidateLevel));
+            new UpdateAudioLevelAsync(getPinellService(), candidateLevel).execute();
         }
-    }
-
-    private void refreshCurrentlyPlaying() {
-        NowPlayingAsync nowPlayingAsync = new NowPlayingAsync(nowPlayingView, getPinellService(), getResources().getString(R.string.genericUnknown));
-        nowPlayingAsync.execute();
     }
 
     private void populateComponentInformation() {
-        if (!componentsAvailable()) {
-            return;
-        }
-        DeviceCurrentlyPlaying deviceCurrentlyPlaying = getPinellService().getCurrentlyPlaying();
-        if (deviceCurrentlyPlaying == null) {
-            Log.w(TAG, "Unable to fetch currently playing. Device not turned on or not a Pinell device?");
-            return;
-        }
-        radioTitle.setText(Strings.isNullOrEmpty(deviceCurrentlyPlaying.getName()) ? getResources().getString(R.string.genericUnknown) : deviceCurrentlyPlaying.getName());
-        artistTitle.setText(Strings.isNullOrEmpty(deviceCurrentlyPlaying.getTune()) ? getResources().getString(R.string.genericUnknown) : deviceCurrentlyPlaying.getTune());
-        if (!Strings.isNullOrEmpty(deviceCurrentlyPlaying.getGraphicsUri())) {
-            radioImage.setBackground(ImageUtils.convert(deviceCurrentlyPlaying.getGraphicsUri()));
-        }
-        final DeviceAudio audioLevels = getPinellService().getAudioLevels();
-        if (audioLevels == null) {
-            Log.w(TAG, "For some reason, the AudioLevel could not be obtained - disabling the volumeControl");
-            volumeControl.setEnabled(false);
-            return;
-        }
-        volumeControl.setProgress(audioLevels.getLevel());
-    }
-
-    private boolean componentsAvailable() {
-        return radioTitle != null;
-    }
-
-    private boolean isDeviceOn() {
-        return getPinellService().isPoweredOn();
+        new NowPlayingAsync(getFragmentManager(), nowPlayingView, getPinellService(), getResources().getString(R.string.genericUnknown)).execute();
     }
 
 }

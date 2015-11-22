@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/newBackgroundColor">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/newBackgroundColor">
     <!--
         This should just display the various registered Equalizer options defined in the Pinell device.
         The user should also be able to select whatever equalizer he/she want to use..
@@ -11,10 +11,17 @@
         @author vegaasen
         @since 27.5.2015
     -->
-
+    <ProgressBar
+            style="?android:attr/progressBarStyleLargeInverse"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/equalizerSpinner"
+            android:layout_centerInParent="true"
+            android:progressDrawable="@drawable/progress_bar_circular"/>
     <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_below="@id/equalizerSpinner">
         <ListView
                 android:id="@+id/equalizerListOfEqualizers"
                 android:layout_width="match_parent"
@@ -28,4 +35,4 @@
                 >
         </ListView>
     </LinearLayout>
-</LinearLayout>
+</RelativeLayout>

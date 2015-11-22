@@ -6,12 +6,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Toast;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractActivity;
-import com.vegaasen.fun.radio.pinell.context.ApplicationContext;
+import com.vegaasen.fun.radio.pinell.async.function.SetPinellHostAsync;
 import com.vegaasen.fun.radio.pinell.discovery.model.HostBean;
 import com.vegaasen.fun.radio.pinell.service.PinellService;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
 
 import java.lang.ref.WeakReference;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This actually controls the select host activity. Whenever the user selects a wanted host, the activity will be closed with a
@@ -48,13 +49,25 @@ public class DeviceListListener implements AdapterView.OnItemClickListener {
             Log.w(TAG, "Unable to fetch wanted hostBean");
             return;
         }
+        cancelLoading();
         Log.d(TAG, String.format("CandidateHostBean {%s}", hostBean.toString()));
         final Host candidateHost = pinellService.assembleHost(hostBean);
-        Log.d(TAG, String.format("CandidateHost {%s}", candidateHost.toString()));
-        final boolean pinellHostSet = pinellService.setCurrentPinellHost(candidateHost);
-        Log.d(TAG, String.format("Selecting {%s} as the wanted host. Selection was successful {%s}", position, pinellHostSet));
+        Log.d(TAG, String.format("Selecting {%s} as the wanted host, CandidateHost {%s}", position, candidateHost.toString()));
+        try {
+            new SetPinellHostAsync(pinellService, candidateHost).execute().get(15, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            Log.w(TAG, "Unable to determine pinellHost. Skipping");
+        }
         Toast.makeText(getActivity().getBaseContext(), String.format("Connected to %s", candidateHost.getHost()), Toast.LENGTH_SHORT).show();
         hideDialogBoxPostHostSelection();
+    }
+
+    private void cancelLoading() {
+        if (activity == null) {
+            return;
+        }
+        Log.d(TAG, "Cancelling loading of details regarding pinellHost candidates");
+        getActivity().cancel();
     }
 
     private void hideDialogBoxPostHostSelection() {
@@ -62,26 +75,12 @@ public class DeviceListListener implements AdapterView.OnItemClickListener {
             Log.w(TAG, "Unable to automatically close the activity due to the dialog being nilled");
             return;
         }
-        configureCurrentInputSource();
-        getActivity().cancel();
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }
 
     private AbstractActivity getActivity() {
         return activity.get();
-    }
-
-    private void configureCurrentInputSource() {
-        Runnable configureCurrentInputSource = new Runnable() {
-            @Override
-            public void run() {
-                ApplicationContext.INSTANCE.setActiveRadioMode(pinellService.getCurrentInputSource());
-                ApplicationContext.INSTANCE.setRadioConnected(true);
-            }
-        };
-        final Thread thread = new Thread(configureCurrentInputSource);
-        thread.run();
     }
 
 }

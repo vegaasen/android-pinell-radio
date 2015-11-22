@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="1"
+        android:background="@color/newBackgroundColor">
+    <!--
+        When loading any of the fragments (except the find-host part),
+        this can be used. It basically just displays a spinner whilst waiting for more
+        stuff to happen.
+
+        @author vegaasen
+        @since 15.10.2015
+    -->
+    <ProgressBar
+            style="?android:attr/progressBarStyleLargeInverse"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/loadingProgressBar"
+            android:layout_gravity="center"
+            android:progressDrawable="@drawable/progress_bar_circular"/>
+</LinearLayout>
