@@ -49,7 +49,6 @@ public class EqualizerAsync extends AbstractFragmentVoidAsync {
 
     @Override
     protected Void doInBackground(Void... voids) {
-        configureViewComponents();
         if (view == null) {
             Log.w(TAG, "It seems like the equalizerOverview is nilled, skipping");
             return null;
@@ -61,6 +60,7 @@ public class EqualizerAsync extends AbstractFragmentVoidAsync {
 
     @Override
     protected void onPostExecute(Void aVoid) {
+        configureViewComponents();
         final EqualizerAdapter equalizerAdapter = (EqualizerAdapter) equalizerOverview.getAdapter();
         equalizerOverview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

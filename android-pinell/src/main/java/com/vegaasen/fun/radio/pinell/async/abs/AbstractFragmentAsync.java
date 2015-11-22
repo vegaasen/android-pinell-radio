@@ -29,7 +29,7 @@ public abstract class AbstractFragmentAsync<T> extends AsyncTask<T, T, T> {
     public AbstractFragmentAsync(FragmentManager fragmentManager, View view, PinellService pinellService, String unknown) {
         super();
         if (view == null || unknown == null || pinellService == null || fragmentManager == null) {
-            Log.w(TAG, "Shits gonna fail :-)! Missing required stuff for the async operations");
+            Log.w(TAG, "Wups! Shit may fail :-)! Missing required stuff for the async operations");
         }
         this.view = view;
         this.unknown = unknown;

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:scrollbars="vertical"
-              android:scrollbarAlwaysDrawVerticalTrack="true"
-              android:background="@color/newBackgroundColor">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical"
+                android:scrollbarAlwaysDrawVerticalTrack="true"
+                android:background="@color/newBackgroundColor">
     <!--
         This is the view related to browsing. Here you will be able to browse through a list
         of current detected radiostations, or similar.
@@ -15,10 +15,20 @@
 
         @author vegaasen
         @since 27.5.2015
+        @version 22.11.2015
     -->
+    <ProgressBar
+            style="?android:attr/progressBarStyleLargeInverse"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/browseDabSpinner"
+            android:layout_centerInParent="true"
+            android:progressDrawable="@drawable/progress_bar_circular"/>
     <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_below="@id/browseDabSpinner"
+            >
         <ListView
                 android:id="@+id/browseListOfStations"
                 android:layout_width="match_parent"
@@ -32,4 +42,4 @@
                 >
         </ListView>
     </LinearLayout>
-</LinearLayout>
+</RelativeLayout>

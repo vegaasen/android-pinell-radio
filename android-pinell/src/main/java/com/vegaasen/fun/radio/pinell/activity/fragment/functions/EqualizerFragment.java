@@ -57,11 +57,6 @@ public class EqualizerFragment extends AbstractFragment {
         return equalizerView;
     }
 
-    @Override
-    protected void changeActiveContent(ViewGroup container) {
-        changeCurrentActiveApplicationContextContent(container, R.drawable.ic_equalizer_white, R.string.sidebarEqualizer);
-    }
-
     public void refreshView() {
         if (equalizerView == null) {
             Log.w(TAG, "Unable to list equalizers, as the equalizerView is not available");
@@ -76,6 +71,11 @@ public class EqualizerFragment extends AbstractFragment {
         equalizerAdapter.updateEqualizers(equalizers);
         equalizerAdapter.updateCurrentEqualizer(currentEqualizer);
         equalizerAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void changeActiveContent(ViewGroup container) {
+        changeCurrentActiveApplicationContextContent(container, R.drawable.ic_equalizer_white, R.string.sidebarEqualizer);
     }
 
     private void configureComponents() {

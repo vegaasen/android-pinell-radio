@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.vegaasen.fun.radio.pinell.R;
+import com.vegaasen.http.rest.utils.StringUtils;
 import com.vegaasen.lib.ioc.radio.model.dab.RadioStation;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceCurrentlyPlaying;
 
@@ -65,7 +66,7 @@ public class BrowseStationsActivity extends BaseAdapter {
             ImageView image = (ImageView) convertView.findViewById(R.id.selectableAdvancedItemImg);
             image.setImageResource(R.drawable.ic_audiotrack_white);
             caption.setText(candidate.getName());
-            if (currentRadioStation != null && candidate.getName().equals(  currentRadioStation.getName())) {
+            if (currentRadioStation != null && StringUtils.equalsTrimmed(currentRadioStation.getName(), candidate.getName())) {
                 final Resources resources = context.getResources();
                 RelativeLayout equalizerContainer = (RelativeLayout) convertView.findViewById(R.id.selectableAdvancedItem);
                 equalizerContainer.setBackgroundColor(resources.getColor(R.color.newSidebarBackgroundColor));
