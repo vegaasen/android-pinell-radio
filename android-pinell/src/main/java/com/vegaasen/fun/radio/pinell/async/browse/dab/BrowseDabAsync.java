@@ -71,7 +71,7 @@ public class BrowseDabAsync extends AbstractFragmentVoidAsync {
                 if ((currentLastItem == totalItemCount)) {
                     BrowseFragment browseFragment = fragmentAdapter.get();
                     if (browseFragment.getPreviousLastItem() != currentLastItem) {
-                        new OnScrollAppendStationsAsync(pinellService, fragmentAdapter);
+                        new OnScrollAppendStationsAsync(pinellService, fragmentAdapter).execute();
                         browseFragment.setPreviousLastItem(currentLastItem);
                     }
                 }

@@ -21,30 +21,32 @@ public class OnScrollAppendStationsAsync extends AbstractFragmentVoidAsync {
 
     private static final String TAG = OnScrollAppendStationsAsync.class.getSimpleName();
 
-    private final WeakReference<BrowseFragment> weakReference;
+    private final WeakReference<BrowseFragment> browseFragment;
+
+    private List<RadioStation> additionalRadioStations, loadedRadioStations;
 
     public OnScrollAppendStationsAsync(PinellService pinellService, WeakReference<BrowseFragment> fragmentWeakReference) {
         super(pinellService);
-        weakReference = fragmentWeakReference;
+        browseFragment = fragmentWeakReference;
     }
 
     @Override
     protected Void doInBackground(Void... voids) {
-        Log.d(TAG, "Attempting to update radioStations");
-        BrowseFragment browseFragment = weakReference.get();
+        BrowseFragment browseFragment = this.browseFragment.get();
         if (!browseFragment.isLoadedAll()) {
-            List<RadioStation> loadedRadioStations = browseFragment.getLoadedRadioStations();
-            List<RadioStation> radioStations = assembleRadioStations(loadedRadioStations.size());
-            if (!CollectionUtils.isEmpty(radioStations)) {
-                CollectionUtils.addWithoutDuplicates(loadedRadioStations, radioStations);
-                browseFragment.refreshDabSimpleDataSet(loadedRadioStations);
-            }
+            loadedRadioStations = browseFragment.getLoadedRadioStations();
+            additionalRadioStations = assembleRadioStations(loadedRadioStations.size());
         }
         return null;
     }
 
     @Override
     protected void onPostExecute(Void aVoid) {
+        if (!CollectionUtils.isEmpty(additionalRadioStations)) {
+            Log.d(TAG, "Attempting to update radioStations");
+            CollectionUtils.addWithoutDuplicates(loadedRadioStations, additionalRadioStations);
+            browseFragment.get().refreshDabSimpleDataSet(loadedRadioStations);
+        }
     }
 
     @Override
