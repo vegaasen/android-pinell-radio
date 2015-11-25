@@ -1,28 +1,25 @@
 package com.vegaasen.fun.radio.pinell.activity.fragment.functions;
 
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractFragment;
 import com.vegaasen.fun.radio.pinell.adapter.BrowseStationsActivity;
 import com.vegaasen.fun.radio.pinell.async.browse.dab.BrowseDabAsync;
+import com.vegaasen.fun.radio.pinell.async.browse.fm.BrowseFmAsync;
 import com.vegaasen.fun.radio.pinell.context.ApplicationContext;
 import com.vegaasen.fun.radio.pinell.util.CollectionUtils;
-import com.vegaasen.fun.radio.pinell.util.scheduler.TaskScheduler;
 import com.vegaasen.lib.ioc.radio.model.dab.RadioStation;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceCurrentlyPlaying;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Represents the browsing features of the Pinell device. This is only related to the various radio stations available.
@@ -35,27 +32,21 @@ import java.util.concurrent.TimeUnit;
  * <p/>
  * TODO: Implement searching possibilities which updates async on searching (based on Mhz etc)
  * TODO: See how Internet Radio works
- * FIXME: Not able to see more than n-number of radio stations..what is going on :-)?
+ * FIXME: Performance-wise, this thing sucks. Should be fixed
+ * FIXME: When loading more channels (DAB, Internet-mode), this must be illustrated somehow. Figure it out!
  *
  * @author <a href="mailto:vegaasen@gmail.com">vegaasen</a>
- * @version 22.11.2015
+ * @version 24.11.2015
  * @since 27.5.2015
  */
 public class BrowseFragment extends AbstractFragment {
 
     private static final String TAG = BrowseFragment.class.getSimpleName();
-    public static final float ACTIVE = 0.4f;
-    public static final float INACTIVE = 1.0f;
-
-    private static boolean active, scheduled;
 
     private View browseFragment;
     private List<RadioStation> loadedRadioStations = new ArrayList<>();
-    private DeviceCurrentlyPlaying currentlyPlaying, previousPlaying;
-    private TextView fmPlaying, fmTune;
-    private ImageButton fmRadioChannelSearchForward, fmRadioChannelSearchRewind;
     private int previousLastItem;
-    private boolean loadedAll, configured;
+    private boolean loadedAll;
 
     private ListView dabStationsListView;
 
@@ -141,7 +132,7 @@ public class BrowseFragment extends AbstractFragment {
 
     private void configureViewFM(LayoutInflater inflater, ViewGroup container) {
         browseFragment = inflater.inflate(R.layout.fragment_browse_fm, container, false);
-        configureFMComponents();
+        new BrowseFmAsync(getPinellService(), browseFragment, getString(R.string.scanning)).execute();
         Log.d(TAG, "FM configured");
     }
 
@@ -150,79 +141,6 @@ public class BrowseFragment extends AbstractFragment {
         TextView txtReason = (TextView) browseFragment.findViewById(R.id.txtInputSourceNAConnectedReason);
         txtReason.setText("Oops. This is currently not supported");
         Log.d(TAG, "Internet configured");
-    }
-
-    private void configureFMComponents() {
-        DeviceCurrentlyPlaying currentlyPlaying = getPinellService().getCurrentlyPlaying();
-        if (currentlyPlaying != null) {
-            fmPlaying = (TextView) browseFragment.findViewById(R.id.txtFmRadioFrequency);
-            fmTune = (TextView) browseFragment.findViewById(R.id.txtFmRadioCaption);
-            fmPlaying.setText(currentlyPlaying.getName());
-            fmTune.setText(currentlyPlaying.getTune());
-        }
-        fmRadioChannelSearchForward = (ImageButton) browseFragment.findViewById(R.id.btnFmRadioForward);
-        fmRadioChannelSearchRewind = (ImageButton) browseFragment.findViewById(R.id.btnFmRadioRewind);
-        fmRadioChannelSearchForward.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fmTune.setText(getString(R.string.scanning));
-                configureAlpha(fmRadioChannelSearchForward, ACTIVE);
-                getPinellService().searchFMBandForward();
-                triggerFmFrequencyUpdate(fmRadioChannelSearchForward);
-            }
-        });
-        fmRadioChannelSearchRewind.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fmTune.setText(getString(R.string.scanning));
-                configureAlpha(fmRadioChannelSearchRewind, ACTIVE);
-                getPinellService().searchFMBandRewind();
-                triggerFmFrequencyUpdate(fmRadioChannelSearchRewind);
-            }
-        });
-    }
-
-    private void triggerFmFrequencyUpdate(final View zeButton) {
-        active = true;
-        configureScheduledTasks(zeButton);
-    }
-
-    private void configureScheduledTasks(final View zeButton) {
-        if (!scheduled) {
-            final TaskScheduler timer = new TaskScheduler();
-            timer.scheduleAtFixedRate(new Runnable() {
-                @Override
-                public void run() {
-                    if (active) {
-                        updateFrequency(false);
-                        if (currentlyPlaying.equals(previousPlaying)) {
-                            configureAlpha(zeButton, INACTIVE);
-                            active = false;
-                            new TaskScheduler().scheduledAtSpecificTime(new Runnable() {
-                                @Override
-                                public void run() {
-                                    updateFrequency(true);
-                                }
-                            }, SystemClock.uptimeMillis() + TimeUnit.SECONDS.toMillis(2));
-                        }
-                    }
-                }
-            }, 400);
-        }
-        scheduled = true;
-    }
-
-    private void configureAlpha(final View zeButton, float level) {
-        zeButton.setAlpha(level);
-    }
-
-    private void updateFrequency(boolean done) {
-        previousPlaying = currentlyPlaying;
-        currentlyPlaying = getPinellService().getCurrentlyPlaying();
-        fmPlaying.setText(currentlyPlaying.getName());
-        if (done) {
-            fmTune.setText(currentlyPlaying.getTune());
-        }
     }
 
     public int getPreviousLastItem() {
