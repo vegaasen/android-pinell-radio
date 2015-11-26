@@ -91,8 +91,8 @@ public class BrowseDabAsync extends AbstractFragmentVoidAsync {
                 } else {
                     new SetRadioStationAsync(pinellService, radioStation).execute();
                 }
-                browseFragment.refreshDabDataSet(radioStations, currentlyPlaying, radioStation);
-                new BrowseDabAsync(fragmentManager, view, dabListView, fragmentAdapter, pinellService).execute();
+                browseFragment.refreshDabDataSet(radioStations, radioStation);
+                //new BrowseDabAsync(fragmentManager, view, dabListView, fragmentAdapter, pinellService).execute();
             }
         });
         if (browseDabSpinner != null) {

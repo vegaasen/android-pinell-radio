@@ -29,7 +29,11 @@ public final class StringUtils {
     }
 
     public static boolean equalsTrimmed(final String what, final String candidate) {
-        return !isBlank(what, candidate) && what.equals(candidate.trim());
+        return !isBlank(what, candidate) && trim(what).equals(trim(candidate));
+    }
+
+    public static String trim(final String candidate) {
+        return isBlank(candidate) ? candidate : candidate.trim();
     }
 
 }

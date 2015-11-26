@@ -147,11 +147,11 @@ public class BrowseFragment extends AbstractFragment {
         adapter.notifyDataSetChanged();
     }
 
-    public void refreshDabDataSet(List<RadioStation> radioStations, DeviceCurrentlyPlaying currentRadioStationDetails, RadioStation currentRadioStation) {
+    public void refreshDabDataSet(List<RadioStation> radioStations, RadioStation currentRadioStation) {
         ApplicationContext.INSTANCE.setActiveRadioStation(currentRadioStation);
         BrowseStationsActivity adapter = (BrowseStationsActivity) dabStationsListView.getAdapter();
         adapter.updateRadioStations(radioStations);
-        adapter.updateCurrentRadioStation(currentRadioStationDetails);
+        adapter.updateCurrentRadioStation(currentRadioStation);
         loadedRadioStations = radioStations;
         adapter.notifyDataSetChanged();
     }

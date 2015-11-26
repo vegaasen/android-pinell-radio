@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import com.google.common.base.Strings;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.http.rest.utils.StringUtils;
 import com.vegaasen.lib.ioc.radio.model.dab.RadioStation;
@@ -82,6 +83,13 @@ public class BrowseStationsActivity extends BaseAdapter {
     @SuppressWarnings("unused")
     public void updateCurrentRadioStation(DeviceCurrentlyPlaying selected) {
         this.currentRadioStation = selected;
+    }
+
+    public void updateCurrentRadioStation(RadioStation radioStation) {
+        if (radioStation == null || Strings.isNullOrEmpty(radioStation.getName())) {
+            return;
+        }
+        this.currentRadioStation = DeviceCurrentlyPlaying.createSimple(radioStation.getName());
     }
 
     public void updateRadioStations(List<RadioStation> updatedRadioStations) {
