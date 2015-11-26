@@ -15,6 +15,7 @@ import com.vegaasen.fun.radio.pinell.async.function.SetRadioStationAsync;
 import com.vegaasen.fun.radio.pinell.service.PinellService;
 import com.vegaasen.fun.radio.pinell.util.CollectionUtils;
 import com.vegaasen.fun.radio.pinell.util.Comparators;
+import com.vegaasen.http.rest.utils.StringUtils;
 import com.vegaasen.lib.ioc.radio.model.dab.RadioStation;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceCurrentlyPlaying;
 
@@ -85,6 +86,10 @@ public class BrowseDabAsync extends AbstractFragmentVoidAsync {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d(TAG, String.format("Position {%s} and id {%s} clicked", position, id));
                 final RadioStation radioStation = adapter.getItem(position);
+                if (currentlyPlaying != null && StringUtils.equalsTrimmed(radioStation.getName(), currentlyPlaying.getName())) {
+                    Log.d(TAG, "Skipping the change of radioStation as it seems like the exact same was requested");
+                    return;
+                }
                 if (radioStation.isRadioStationContainer()) {
                     Log.d(TAG, String.format("RadioContainer {%s} selected. Opening the container", radioStation.toString()));
                     browseFragment.refreshDabSimpleDataSet(CollectionUtils.toList(pinellService.enterContainerAndListStations(radioStation)));
