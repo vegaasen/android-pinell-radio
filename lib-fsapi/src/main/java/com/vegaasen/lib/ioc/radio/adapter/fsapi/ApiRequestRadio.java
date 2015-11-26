@@ -6,6 +6,7 @@ import com.vegaasen.lib.ioc.radio.adapter.constants.UriContext;
 import com.vegaasen.lib.ioc.radio.model.dab.RadioStation;
 import com.vegaasen.lib.ioc.radio.model.response.Item;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
+import com.vegaasen.lib.ioc.radio.util.RandomUtils;
 import com.vegaasen.lib.ioc.radio.util.XmlUtils;
 import org.w3c.dom.Document;
 
@@ -19,17 +20,16 @@ import java.util.Set;
  * <p/>
  * Todo: Review. Does this even work as intended? There are quite a few bugs here, surely this can be done better?
  *
- * @version 25.11.2015
+ * @version 26.11.2015
  * @since 9.2.2015
  */
 public enum ApiRequestRadio {
 
     INSTANCE;
 
-    private static final String PREVIOUS_LEVEL = "0xffffffff";
-    private static final String FM_SEARCH_FORWARD = "3";
-    private static final String FM_SEARCH_REWIND = "4";
-    public static final String EMPTY = "";
+    private static final String PREVIOUS_HIERARCHY_LEVEL = "0xffffffff";
+    private static final String FM_SEARCH_FORWARD = "3", FM_SEARCH_REWIND = "4";
+    private static final String RANDOM = RandomUtils.randomAsString(), EMPTY = "";
 
     public void searchFMForward(Host host) {
         final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
@@ -69,7 +69,7 @@ public enum ApiRequestRadio {
      */
     public Set<RadioStation> selectPreviousContainer(Host host, int maxItems) {
         final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
-        params.put(Parameter.QueryParameter.VALUE, PREVIOUS_LEVEL);
+        params.put(Parameter.QueryParameter.VALUE, PREVIOUS_HIERARCHY_LEVEL);
         ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.SUB_CONTAINER_SELECT, params));
         return getRadioStations(host, -1, maxItems);
     }
@@ -136,7 +136,18 @@ public enum ApiRequestRadio {
             params.put(Parameter.QueryParameter.VALUE, radioStation.getKeyIdAsString());
             ApiConnection.INSTANCE.requestAsync(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.STATION_SELECT, params));
         } finally {
-            postSelectRadioStation(host);
+            getNotifies(host);
+            postGenericRadioStations(host);
+        }
+    }
+
+    public void getNotifies(Host host) {
+        try {
+            final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
+            params.put(Parameter.QueryParameter.RANDOM, RANDOM);
+            ApiConnection.INSTANCE.requestAsync(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NOTIFIES));
+        } catch (Exception e) {
+            // *gulp*
         }
     }
 
@@ -148,22 +159,15 @@ public enum ApiRequestRadio {
      */
     private void preGenericRadioStations(Host host) {
         try {
-            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_CAPS));
-            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_STATE));
             final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
             params.put(Parameter.QueryParameter.VALUE, "0");
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_SET_NAV_STATE, params));
             params.put(Parameter.QueryParameter.VALUE, "1");
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_SET_NAV_STATE, params));
-            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_STATE));
+            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_CAPS));
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_STATUS));
-            try {
-                //todo: messy? Oh, never!!! :-) for some reason, the get_notifies may fail on strange occasions. Wrapping this crappy stuff
-                //todo: create a common wrapper for callables..?
-                ApiConnection.INSTANCE.requestAsync(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NOTIFIES));
-            } catch (Exception e) {
-                //*gulp*
-            }
+            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_STATE));
+            getNotifies(host);
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NUM_ITEMS));
         } catch (final Exception e) {
             //*gulp*
@@ -183,20 +187,6 @@ public enum ApiRequestRadio {
             ApiConnection.INSTANCE.requestAsync(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_SET_NAV_STATE, params));
         } catch (final Exception e) {
             //*gulp*
-        }
-    }
-
-    /**
-     * For some reason, we also need to ensure that some of the APIs is getting requested. Atleast, that is how it looks like in the proxy listner application
-     *
-     * @param host _
-     */
-    private void postSelectRadioStation(Host host) {
-        try {
-            ApiConnection.INSTANCE.requestAsync(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NOTIFIES));
-            postGenericRadioStations(host);
-        } catch (Exception e) {
-            // *gulp*
         }
     }
 

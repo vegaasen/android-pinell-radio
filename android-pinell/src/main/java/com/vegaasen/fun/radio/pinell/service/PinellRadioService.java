@@ -122,4 +122,9 @@ interface PinellRadioService {
      */
     void searchFMBandRewind();
 
+    /**
+     * The mysterious duck! :-P
+     */
+    void triggerGetNotifies();
+
 }

@@ -2,6 +2,7 @@ package com.vegaasen.lib.ioc.radio.service.impl;
 
 import com.vegaasen.http.rest.utils.StringUtils;
 import com.vegaasen.lib.ioc.radio.adapter.fsapi.ApiConnection;
+import com.vegaasen.lib.ioc.radio.adapter.fsapi.ApiRequestRadio;
 import com.vegaasen.lib.ioc.radio.adapter.fsapi.ApiRequestSystem;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Connection;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
@@ -53,5 +54,10 @@ public class RadioFsApiConnectionServiceImpl implements RadioFsApiConnectionServ
             throw new IllegalArgumentException("Required parameter was nilled or empty");
         }
         return ApiConnection.INSTANCE.createHost(host, port);
+    }
+
+    @Override
+    public void getNotifies(Host host) {
+        ApiRequestRadio.INSTANCE.getNotifies(host);
     }
 }

@@ -20,9 +20,13 @@ import com.vegaasen.fun.radio.pinell.activity.fragment.functions.InformationFrag
 import com.vegaasen.fun.radio.pinell.activity.fragment.functions.InputSourceFragment;
 import com.vegaasen.fun.radio.pinell.activity.fragment.functions.NowPlayingFragment;
 import com.vegaasen.fun.radio.pinell.activity.host.SelectHostActivity;
+import com.vegaasen.fun.radio.pinell.async.function.GetNotifiesAsync;
 import com.vegaasen.fun.radio.pinell.async.function.UpdateAudioLevelAsync;
 import com.vegaasen.fun.radio.pinell.async.function.UpdateRadioModeAsync;
 import com.vegaasen.fun.radio.pinell.context.ApplicationContext;
+import com.vegaasen.fun.radio.pinell.util.scheduler.TaskScheduler;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * This is the main activity which controls all the various fragments within the application itself.
@@ -38,6 +42,8 @@ public class MainActivity extends AbstractActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int TRANSIT_FRAGMENT_FADE = FragmentTransaction.TRANSIT_FRAGMENT_FADE;
     private static final int REQUEST_CODE = 1;
+    private static final long REFRESH_PERIOD = TimeUnit.SECONDS.toMillis(60);
+    private static boolean active, scheduled;
 
     private SplashScreenFragment splashScreen;
     private NowPlayingFragment nowPlayingFragment;
@@ -63,12 +69,19 @@ public class MainActivity extends AbstractActivity {
         if (renderSelectPinellHost()) {
             configureSidebarActionListeners();
         }
+        configureScheduledTasks(true);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "Resuming");
+        configureScheduledTasks(true);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        configureScheduledTasks(false);
     }
 
     @Override
@@ -101,6 +114,24 @@ public class MainActivity extends AbstractActivity {
             conditionallyUpdateFragment();
         }
         return true;
+    }
+
+    private void configureScheduledTasks(boolean start) {
+        active = start;
+        if (!scheduled) {
+            if (active) {
+                TaskScheduler timer = new TaskScheduler();
+                timer.scheduleAtFixedRate(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (active) {
+                            new GetNotifiesAsync(getPinellService()).execute();
+                        }
+                    }
+                }, REFRESH_PERIOD);
+            }
+            scheduled = true;
+        }
     }
 
     private void configureCurrentInputSource() {
