@@ -57,9 +57,13 @@ public class BrowseDabAsync extends AbstractFragmentVoidAsync {
 
     @Override
     protected void onPostExecute(Void aVoid) {
+        final BrowseFragment browseFragment = fragmentAdapter.get();
+        if (!browseFragment.isAdded()) {
+            Log.d(TAG, "Fragment removed. Skipping handling");
+        }
         configureViewComponents();
         final BrowseStationsActivity adapter = (BrowseStationsActivity) dabListView.getAdapter();
-        fragmentAdapter.get().refreshDabSimpleDataSet(radioStations, currentlyPlaying);
+        browseFragment.refreshDabSimpleDataSet(radioStations, currentlyPlaying);
         dabListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -69,7 +73,6 @@ public class BrowseDabAsync extends AbstractFragmentVoidAsync {
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 int currentLastItem = firstVisibleItem + visibleItemCount;
                 if ((currentLastItem == totalItemCount)) {
-                    BrowseFragment browseFragment = fragmentAdapter.get();
                     if (browseFragment.getPreviousLastItem() != currentLastItem) {
                         new OnScrollAppendStationsAsync(pinellService, fragmentAdapter).execute();
                         browseFragment.setPreviousLastItem(currentLastItem);
@@ -84,11 +87,11 @@ public class BrowseDabAsync extends AbstractFragmentVoidAsync {
                 final RadioStation radioStation = adapter.getItem(position);
                 if (radioStation.isRadioStationContainer()) {
                     Log.d(TAG, String.format("RadioContainer {%s} selected. Opening the container", radioStation.toString()));
-                    fragmentAdapter.get().refreshDabSimpleDataSet(CollectionUtils.toList(pinellService.enterContainerAndListStations(radioStation)));
+                    browseFragment.refreshDabSimpleDataSet(CollectionUtils.toList(pinellService.enterContainerAndListStations(radioStation)));
                 } else {
                     new SetRadioStationAsync(pinellService, radioStation).execute();
                 }
-                fragmentAdapter.get().refreshDabDataSet(radioStations, currentlyPlaying, radioStation);
+                browseFragment.refreshDabDataSet(radioStations, currentlyPlaying, radioStation);
                 new BrowseDabAsync(fragmentManager, view, dabListView, fragmentAdapter, pinellService).execute();
             }
         });

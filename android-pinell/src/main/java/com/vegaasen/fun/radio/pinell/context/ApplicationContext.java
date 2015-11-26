@@ -30,7 +30,7 @@ public enum ApplicationContext {
     private PinellService pinellService;
     private RadioStation activeRadioStation;
     private Equalizer activeEqualizer;
-    private PinellRadioMode activeRadioMode;
+    private PinellRadioMode activeRadioMode = PinellRadioMode.UNKNOWN;
     private boolean radioConnected = false, pinellDevice = false;
 
     public PinellService getPinellService() {

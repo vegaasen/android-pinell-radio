@@ -33,16 +33,16 @@ public class EqualizerAsync extends AbstractFragmentVoidAsync {
     private static final String TAG = EqualizerAsync.class.getSimpleName();
 
     private final View view;
-    private final WeakReference<EqualizerFragment> adapter;
+    private final WeakReference<EqualizerFragment> equalizerFragment;
     private final ListView equalizerOverview;
 
     private ProgressBar spinner;
     private List<Equalizer> equalizers;
     private Equalizer currentEqualizer;
 
-    public EqualizerAsync(FragmentManager fragmentManager, View view, ListView equalizerOverview, WeakReference<EqualizerFragment> adapter, PinellService pinellService) {
+    public EqualizerAsync(FragmentManager fragmentManager, View view, ListView equalizerOverview, WeakReference<EqualizerFragment> equalizerFragment, PinellService pinellService) {
         super(fragmentManager, null, pinellService, null);
-        this.adapter = adapter;
+        this.equalizerFragment = equalizerFragment;
         this.view = view;
         this.equalizerOverview = equalizerOverview;
     }
@@ -60,6 +60,11 @@ public class EqualizerAsync extends AbstractFragmentVoidAsync {
 
     @Override
     protected void onPostExecute(Void aVoid) {
+        EqualizerFragment equalizerFragmentInstance = equalizerFragment.get();
+        if (!equalizerFragmentInstance.isAdded()) {
+            Log.d(TAG, "Fragment removed. Skipping handling");
+            return;
+        }
         configureViewComponents();
         final EqualizerAdapter equalizerAdapter = (EqualizerAdapter) equalizerOverview.getAdapter();
         equalizerOverview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -69,13 +74,13 @@ public class EqualizerAsync extends AbstractFragmentVoidAsync {
                 final Equalizer selectedEqualizer = equalizerAdapter.getItem(position);
                 new EqualizerSelectModeAsync(pinellService, selectedEqualizer).execute();
                 // Perform a refresh of the list of available equalizers
-                new EqualizerAsync(fragmentManager, view, equalizerOverview, adapter, pinellService).execute();
+                new EqualizerAsync(fragmentManager, view, equalizerOverview, equalizerFragment, pinellService).execute();
             }
         });
         if (spinner != null) {
             spinner.setVisibility(View.GONE);
         }
-        adapter.get().refreshDataSet(equalizers, currentEqualizer);
+        equalizerFragmentInstance.refreshDataSet(equalizers, currentEqualizer);
     }
 
     @Override

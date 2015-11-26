@@ -15,7 +15,12 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Todo: beautify.
+ * The idea behind this class is to gather all the various API-Requests that exists within the Radio-atmosphere
+ * <p/>
+ * Todo: Review. Does this even work as intended? There are quite a few bugs here, surely this can be done better?
+ *
+ * @version 25.11.2015
+ * @since 9.2.2015
  */
 public enum ApiRequestRadio {
 
@@ -155,7 +160,7 @@ public enum ApiRequestRadio {
             try {
                 //todo: messy? Oh, never!!! :-) for some reason, the get_notifies may fail on strange occasions. Wrapping this crappy stuff
                 //todo: create a common wrapper for callables..?
-                ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NOTIFIES));
+                ApiConnection.INSTANCE.requestAsync(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NOTIFIES));
             } catch (Exception e) {
                 //*gulp*
             }

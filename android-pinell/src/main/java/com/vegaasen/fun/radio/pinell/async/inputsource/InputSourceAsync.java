@@ -59,6 +59,11 @@ public class InputSourceAsync extends AbstractFragmentVoidAsync {
 
     @Override
     protected void onPostExecute(Void aVoid) {
+        InputSourceFragment inputSourceFragment = adapter.get();
+        if (!inputSourceFragment.isAdded()) {
+            Log.d(TAG, "Fragment removed. Skipping handling");
+            return;
+        }
         final InputSourceAdapter inputSourceAdapter = (InputSourceAdapter) inputSourceList.getAdapter();
         inputSourceList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -73,7 +78,7 @@ public class InputSourceAsync extends AbstractFragmentVoidAsync {
         if (spinner != null) {
             spinner.setVisibility(View.GONE);
         }
-        adapter.get().refreshDataSet(radioModes, currentMode);
+        inputSourceFragment.refreshDataSet(radioModes, currentMode);
 
     }
 

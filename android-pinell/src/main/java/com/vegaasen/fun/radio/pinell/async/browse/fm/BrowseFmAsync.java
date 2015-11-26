@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import com.vegaasen.fun.radio.pinell.R;
+import com.vegaasen.fun.radio.pinell.activity.fragment.functions.BrowseFragment;
 import com.vegaasen.fun.radio.pinell.async.abs.AbstractFragmentVoidAsync;
 import com.vegaasen.fun.radio.pinell.async.function.GetCurrentPlayingAsync;
 import com.vegaasen.fun.radio.pinell.async.function.search.FmSearchAsync;
@@ -13,6 +14,7 @@ import com.vegaasen.fun.radio.pinell.service.PinellService;
 import com.vegaasen.fun.radio.pinell.util.scheduler.TaskScheduler;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceCurrentlyPlaying;
 
+import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -25,6 +27,7 @@ public class BrowseFmAsync extends AbstractFragmentVoidAsync {
     private static final float ACTIVE = 0.4f;
     private static final float INACTIVE = 1.0f;
 
+    private final WeakReference<BrowseFragment> browseFragment;
     private final View currentView;
     private final String scanning;
 
@@ -33,8 +36,9 @@ public class BrowseFmAsync extends AbstractFragmentVoidAsync {
     private ImageButton fmRadioChannelSearchForward, fmRadioChannelSearchRewind;
     private boolean active, scheduled;
 
-    public BrowseFmAsync(PinellService pinellService, View currentView, String scanning) {
+    public BrowseFmAsync(PinellService pinellService, WeakReference<BrowseFragment> browseFragment, View currentView, String scanning) {
         super(pinellService);
+        this.browseFragment = browseFragment;
         this.currentView = currentView;
         this.scanning = scanning;
     }
@@ -47,6 +51,11 @@ public class BrowseFmAsync extends AbstractFragmentVoidAsync {
 
     @Override
     protected void onPostExecute(Void aVoid) {
+        BrowseFragment browseFragment = this.browseFragment.get();
+        if (!browseFragment.isAdded()) {
+            Log.d(TAG, "Information-fragment not loaded anymore. Skipping");
+            return;
+        }
         configureViewComponents();
         if (currentlyPlaying != null) {
             fmPlaying.setText(currentlyPlaying.getName());
@@ -81,17 +90,19 @@ public class BrowseFmAsync extends AbstractFragmentVoidAsync {
     }
 
     private void triggerFmFrequencyUpdate(final View zeButton) {
-        active = true;
+        scheduled = false;
         configureScheduledTasks(zeButton);
     }
 
     private void configureScheduledTasks(final View zeButton) {
         if (!scheduled) {
+            active = true;
             final TaskScheduler timer = new TaskScheduler();
             timer.scheduleAtFixedRate(new Runnable() {
                 @Override
                 public void run() {
                     if (active) {
+                        Log.d(TAG, "Refrshing");
                         updateFrequency(false);
                         if (currentlyPlaying.equals(previousPlaying)) {
                             configureAlpha(zeButton, INACTIVE);

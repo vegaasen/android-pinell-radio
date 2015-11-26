@@ -9,11 +9,14 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import com.google.common.base.Strings;
 import com.vegaasen.fun.radio.pinell.R;
+import com.vegaasen.fun.radio.pinell.activity.fragment.functions.NowPlayingFragment;
 import com.vegaasen.fun.radio.pinell.async.abs.AbstractFragmentVoidAsync;
 import com.vegaasen.fun.radio.pinell.service.PinellService;
 import com.vegaasen.fun.radio.pinell.util.ImageUtils;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceAudio;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceCurrentlyPlaying;
+
+import java.lang.ref.WeakReference;
 
 /**
  * Simple nowPlaying asyncronious task. This should help on making the application more snappy,
@@ -28,6 +31,8 @@ public class NowPlayingAsync extends AbstractFragmentVoidAsync {
 
     private static final String TAG = NowPlayingAsync.class.getSimpleName();
 
+    private final WeakReference<NowPlayingFragment> nowPlayingFragment;
+
     private DeviceCurrentlyPlaying deviceCurrentlyPlaying;
     private DeviceAudio audioLevels;
     private TextView radioTitle;
@@ -36,8 +41,9 @@ public class NowPlayingAsync extends AbstractFragmentVoidAsync {
     private SeekBar volumeControl;
     private ProgressBar progressBar;
 
-    public NowPlayingAsync(FragmentManager fragmentManager, View view, PinellService pinellService, String unknown) {
+    public NowPlayingAsync(FragmentManager fragmentManager, View view, WeakReference<NowPlayingFragment> nowPlayingFragment, PinellService pinellService, String unknown) {
         super(fragmentManager, view, pinellService, unknown);
+        this.nowPlayingFragment = nowPlayingFragment;
     }
 
     @Override
@@ -49,6 +55,11 @@ public class NowPlayingAsync extends AbstractFragmentVoidAsync {
 
     @Override
     protected void onPostExecute(Void aVoid) {
+        NowPlayingFragment nowPlayingFragment = this.nowPlayingFragment.get();
+        if (!nowPlayingFragment.isAdded()) {
+            Log.d(TAG, "Fragment removed. Skipping handling");
+            return;
+        }
         configureViewComponents();
         if (deviceCurrentlyPlaying == null) {
             Log.w(TAG, "Unable to fetch currently playing. Device not turned on or not a Pinell device?");

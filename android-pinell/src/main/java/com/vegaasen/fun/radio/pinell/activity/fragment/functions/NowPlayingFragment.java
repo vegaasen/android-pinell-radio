@@ -14,6 +14,7 @@ import com.vegaasen.fun.radio.pinell.async.playing.NowPlayingAsync;
 import com.vegaasen.fun.radio.pinell.context.ApplicationContext;
 import com.vegaasen.fun.radio.pinell.util.scheduler.TaskScheduler;
 
+import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -27,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 public class NowPlayingFragment extends AbstractFragment {
 
     private static final String TAG = NowPlayingFragment.class.getSimpleName();
+    private static final long REFRESH_PERIOD = TimeUnit.SECONDS.toMillis(10);
     private static boolean active, scheduled, firstTime = true;
 
     private View nowPlayingView;
@@ -79,10 +81,6 @@ public class NowPlayingFragment extends AbstractFragment {
         changeCurrentActiveApplicationContextContent(container, R.drawable.ic_volume_up_white, R.string.sidebarNowPlaying);
     }
 
-    protected void refreshView() {
-        new NowPlayingAsync(getFragmentManager(), nowPlayingView, getPinellService(), getResources().getString(R.string.genericUnknown)).execute();
-    }
-
     private void configureScheduledTasks(boolean start) {
         Log.d(TAG, String.format("Running the tasks? {%s}", start));
         active = start;
@@ -94,15 +92,19 @@ public class NowPlayingFragment extends AbstractFragment {
                     public void run() {
                         if (active && !firstTime) {
                             Log.d(TAG, "Refreshing the now playing details :-)");
-                            populateComponentInformation();
+                            refreshView();
                         } else {
                             firstTime = false;
                         }
                     }
-                }, TimeUnit.SECONDS.toMillis(25));
+                }, REFRESH_PERIOD);
             }
             scheduled = true;
         }
+    }
+
+    protected void refreshView() {
+        new NowPlayingAsync(getFragmentManager(), nowPlayingView, new WeakReference<>(this), getPinellService(), getResources().getString(R.string.genericUnknown)).execute();
     }
 
     private void configureViewComponents() {
@@ -134,10 +136,6 @@ public class NowPlayingFragment extends AbstractFragment {
             Log.d(TAG, String.format("Setting AudioLevel to {%s}", candidateLevel));
             new UpdateAudioLevelAsync(getPinellService(), candidateLevel).execute();
         }
-    }
-
-    private void populateComponentInformation() {
-        new NowPlayingAsync(getFragmentManager(), nowPlayingView, getPinellService(), getResources().getString(R.string.genericUnknown)).execute();
     }
 
 }

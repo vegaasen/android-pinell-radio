@@ -2,6 +2,7 @@ package com.vegaasen.fun.radio.pinell.async.information;
 
 import android.app.AlertDialog;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ProgressBar;
@@ -30,6 +31,8 @@ import java.lang.ref.WeakReference;
  */
 public class InformationLoadingAsync extends AbstractFragmentVoidAsync {
 
+    private static final String TAG = InformationLoadingAsync.class.getSimpleName();
+
     private final WeakReference<InformationFragment> fragment;
 
     private Switch powerSwitch;
@@ -39,7 +42,7 @@ public class InformationLoadingAsync extends AbstractFragmentVoidAsync {
     private Host host;
     private RadioMode currentInputSource;
     private DeviceAudio audioLevels;
-    private boolean isPoweredOn, stop = false;
+    private boolean isPoweredOn;
 
     public InformationLoadingAsync(FragmentManager fragmentManager, WeakReference<InformationFragment> fragment, View informationView, PinellService pinellService, String unknown) {
         super(fragmentManager, informationView, pinellService, unknown);
@@ -57,12 +60,14 @@ public class InformationLoadingAsync extends AbstractFragmentVoidAsync {
 
     @Override
     protected void onPostExecute(Void aVoid) {
+        final InformationFragment informationFragment = fragment.get();
+        if (!informationFragment.isAdded()) {
+            Log.d(TAG, "Fragment removed. Skipping handling");
+            return;
+        }
         configureViewComponents();
         if (host == null) {
             allUnavailable();
-            return;
-        }
-        if (stop) {
             return;
         }
         if (currentInputSource != null && !Strings.isNullOrEmpty(currentInputSource.getName())) {
@@ -74,7 +79,6 @@ public class InformationLoadingAsync extends AbstractFragmentVoidAsync {
         } else {
             pinellUnavailable();
         }
-        final InformationFragment informationFragment = fragment.get();
         currentApplicationVersion.setText(informationFragment.getApplicationVersion());
         currentSoundLevel.setText(audioLevels == null ? unknown : String.format("%s of %s", Integer.toString(audioLevels.getLevel()), "32")); // getString(R.integer.volumeControlMax)
         spinner.setVisibility(View.GONE);
@@ -124,12 +128,6 @@ public class InformationLoadingAsync extends AbstractFragmentVoidAsync {
         spinner = (ProgressBar) view.findViewById(R.id.informationSpinner);
         hostInformation = (RelativeLayout) view.findViewById(R.id.informationHost);
         informationApplicationVersion = (RelativeLayout) view.findViewById(R.id.informationApplicationVersion);
-    }
-
-    @Override
-    protected void onCancelled() {
-        stop = true;
-        cancel(true);
     }
 
     private void allUnavailable() {

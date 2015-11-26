@@ -14,12 +14,14 @@ import com.vegaasen.fun.radio.pinell.async.browse.dab.BrowseDabAsync;
 import com.vegaasen.fun.radio.pinell.async.browse.fm.BrowseFmAsync;
 import com.vegaasen.fun.radio.pinell.context.ApplicationContext;
 import com.vegaasen.fun.radio.pinell.util.CollectionUtils;
+import com.vegaasen.fun.radio.pinell.util.scheduler.TaskScheduler;
 import com.vegaasen.lib.ioc.radio.model.dab.RadioStation;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceCurrentlyPlaying;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Represents the browsing features of the Pinell device. This is only related to the various radio stations available.
@@ -42,6 +44,8 @@ import java.util.List;
 public class BrowseFragment extends AbstractFragment {
 
     private static final String TAG = BrowseFragment.class.getSimpleName();
+    private static final long REFRESH_PERIOD = TimeUnit.SECONDS.toMillis(10);
+    private static boolean active, scheduled, firstTime = true;
 
     private View browseFragment;
     private List<RadioStation> loadedRadioStations = new ArrayList<>();
@@ -81,6 +85,53 @@ public class BrowseFragment extends AbstractFragment {
         return browseFragment;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+//        if (!isWifiEnabledAndConnected()) {
+//            return;
+//        }
+        if (ApplicationContext.INSTANCE.isPinellDevice()) {
+            configureScheduledTasks(true);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        configureScheduledTasks(false);
+    }
+
+    private void configureScheduledTasks(boolean start) {
+        active = start;
+        if (!scheduled) {
+            if (start) {
+                TaskScheduler timer = new TaskScheduler();
+                timer.scheduleAtFixedRate(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (active && !firstTime) {
+                            switch (ApplicationContext.INSTANCE.getActiveRadioMode()) {
+                                case FM_AM:
+                                    refreshFm();
+                                    break;
+                                case DAB:
+                                case INTERNET_RADIO:
+                                case MUSIC_PLAYER:
+                                case AUX:
+                                case UNKNOWN:
+                                default:
+                            }
+                        } else {
+                            firstTime = false;
+                        }
+                    }
+                }, REFRESH_PERIOD);
+            }
+            scheduled = true;
+        }
+    }
+
     public void refreshDabSimpleDataSet(List<RadioStation> radioStations) {
         BrowseStationsActivity adapter = (BrowseStationsActivity) dabStationsListView.getAdapter();
         adapter.updateRadioStations(radioStations);
@@ -103,6 +154,30 @@ public class BrowseFragment extends AbstractFragment {
         adapter.updateCurrentRadioStation(currentRadioStationDetails);
         loadedRadioStations = radioStations;
         adapter.notifyDataSetChanged();
+    }
+
+    public int getPreviousLastItem() {
+        return previousLastItem;
+    }
+
+    public void setPreviousLastItem(int previousLastItem) {
+        this.previousLastItem = previousLastItem;
+    }
+
+    public boolean isLoadedAll() {
+        return loadedAll;
+    }
+
+    public void setLoadedAll(boolean loadedAll) {
+        this.loadedAll = loadedAll;
+    }
+
+    public List<RadioStation> getLoadedRadioStations() {
+        return loadedRadioStations;
+    }
+
+    public void setLoadedRadioStations(List<RadioStation> loadedRadioStations) {
+        this.loadedRadioStations = loadedRadioStations;
     }
 
     @Override
@@ -132,7 +207,7 @@ public class BrowseFragment extends AbstractFragment {
 
     private void configureViewFM(LayoutInflater inflater, ViewGroup container) {
         browseFragment = inflater.inflate(R.layout.fragment_browse_fm, container, false);
-        new BrowseFmAsync(getPinellService(), browseFragment, getString(R.string.scanning)).execute();
+        refreshFm();
         Log.d(TAG, "FM configured");
     }
 
@@ -143,28 +218,9 @@ public class BrowseFragment extends AbstractFragment {
         Log.d(TAG, "Internet configured");
     }
 
-    public int getPreviousLastItem() {
-        return previousLastItem;
-    }
-
-    public void setPreviousLastItem(int previousLastItem) {
-        this.previousLastItem = previousLastItem;
-    }
-
-    public boolean isLoadedAll() {
-        return loadedAll;
-    }
-
-    public void setLoadedAll(boolean loadedAll) {
-        this.loadedAll = loadedAll;
-    }
-
-    public List<RadioStation> getLoadedRadioStations() {
-        return loadedRadioStations;
-    }
-
-    public void setLoadedRadioStations(List<RadioStation> loadedRadioStations) {
-        this.loadedRadioStations = loadedRadioStations;
+    private void refreshFm() {
+        Log.d(TAG, "Refreshing the FM details :-)");
+        new BrowseFmAsync(getPinellService(), new WeakReference<>(this), browseFragment, getString(R.string.scanning)).execute();
     }
 
 }
