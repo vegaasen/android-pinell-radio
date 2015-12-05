@@ -50,7 +50,6 @@ public class BrowseFragment extends AbstractFragment {
     private View browseFragment;
     private List<RadioStation> loadedRadioStations = new ArrayList<>();
     private int previousLastItem;
-    private boolean loadedAll;
 
     private ListView dabStationsListView;
 
@@ -143,16 +142,14 @@ public class BrowseFragment extends AbstractFragment {
         BrowseStationsActivity adapter = (BrowseStationsActivity) dabStationsListView.getAdapter();
         adapter.updateRadioStations(radioStations);
         adapter.updateCurrentRadioStation(currentlyPlaying);
-        loadedRadioStations = radioStations;
+        setLoadedRadioStations(radioStations);
         adapter.notifyDataSetChanged();
     }
 
-    public void refreshDabDataSet(List<RadioStation> radioStations, RadioStation currentRadioStation) {
+    public void refreshDabDataSet(RadioStation currentRadioStation) {
         ApplicationContext.INSTANCE.setActiveRadioStation(currentRadioStation);
         BrowseStationsActivity adapter = (BrowseStationsActivity) dabStationsListView.getAdapter();
-        adapter.updateRadioStations(radioStations);
         adapter.updateCurrentRadioStation(currentRadioStation);
-        loadedRadioStations = radioStations;
         adapter.notifyDataSetChanged();
     }
 
@@ -162,14 +159,6 @@ public class BrowseFragment extends AbstractFragment {
 
     public void setPreviousLastItem(int previousLastItem) {
         this.previousLastItem = previousLastItem;
-    }
-
-    public boolean isLoadedAll() {
-        return loadedAll;
-    }
-
-    public void setLoadedAll(boolean loadedAll) {
-        this.loadedAll = loadedAll;
     }
 
     public List<RadioStation> getLoadedRadioStations() {

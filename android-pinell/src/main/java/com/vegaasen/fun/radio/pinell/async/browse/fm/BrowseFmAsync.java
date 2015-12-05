@@ -102,7 +102,7 @@ public class BrowseFmAsync extends AbstractFragmentVoidAsync {
                 @Override
                 public void run() {
                     if (active) {
-                        Log.d(TAG, "Refrshing");
+                        Log.d(TAG, "Refreshing FM details");
                         updateFrequency(false);
                         if (currentlyPlaying.equals(previousPlaying)) {
                             configureAlpha(zeButton, INACTIVE);

@@ -33,10 +33,8 @@ public class OnScrollAppendStationsAsync extends AbstractFragmentVoidAsync {
     @Override
     protected Void doInBackground(Void... voids) {
         BrowseFragment browseFragment = this.browseFragment.get();
-        if (!browseFragment.isLoadedAll()) {
-            loadedRadioStations = browseFragment.getLoadedRadioStations();
-            additionalRadioStations = assembleRadioStations(loadedRadioStations.size());
-        }
+        loadedRadioStations = browseFragment.getLoadedRadioStations();
+        additionalRadioStations = assembleRadioStations(loadedRadioStations.size());
         return null;
     }
 

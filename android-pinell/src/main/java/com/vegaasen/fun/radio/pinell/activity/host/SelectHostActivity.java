@@ -154,11 +154,12 @@ public class SelectHostActivity extends AbstractActivity {
         hostDiscovery.execute();
         setProgressBarVisibility(true);
         setProgressBarIndeterminateVisibility(true);
-        Log.e(TAG, "#### Remove the hardcoded host!!! ####");
+        Log.e(TAG, "#### ---v Remove the hardcoded host!!! ####");
         HostBean host = new HostBean();
-        host.setIpAddress("192.168.0.102");
+        host.setIpAddress("192.168.0.99");
         host.setHostname(host.getIpAddress());
-        host.setPortsOpen(Collections.singleton(2244));
+        host.setPortsOpen(Collections.singleton(80));
+        Log.e(TAG, "#### ^--- Remove the hardcoded host!!! ####");
         addHost(host);
     }
 

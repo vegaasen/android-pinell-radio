@@ -73,6 +73,13 @@ public class EqualizerFragment extends AbstractFragment {
         equalizerAdapter.notifyDataSetChanged();
     }
 
+    public void refreshDataSet(Equalizer currentEqualizer) {
+        ApplicationContext.INSTANCE.setActiveEqualizer(currentEqualizer);
+        EqualizerAdapter equalizerAdapter = (EqualizerAdapter) listView.getAdapter();
+        equalizerAdapter.updateCurrentEqualizer(currentEqualizer);
+        equalizerAdapter.notifyDataSetChanged();
+    }
+
     @Override
     protected void changeActiveContent(ViewGroup container) {
         changeCurrentActiveApplicationContextContent(container, R.drawable.ic_equalizer_white, R.string.sidebarEqualizer);

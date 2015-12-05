@@ -31,16 +31,16 @@ public class InputSourceAsync extends AbstractFragmentVoidAsync {
     private static final String TAG = InputSourceAsync.class.getSimpleName();
 
     private final View view;
-    private final WeakReference<InputSourceFragment> adapter;
+    private final WeakReference<InputSourceFragment> inputSourceFragment;
     private final ListView inputSourceList;
 
     private ProgressBar spinner;
     private List<RadioMode> radioModes;
     private RadioMode currentMode;
 
-    public InputSourceAsync(FragmentManager fragmentManager, View view, ListView equalizerOverview, WeakReference<InputSourceFragment> adapter, PinellService pinellService) {
+    public InputSourceAsync(FragmentManager fragmentManager, View view, ListView equalizerOverview, WeakReference<InputSourceFragment> inputSourceFragment, PinellService pinellService) {
         super(fragmentManager, null, pinellService, null);
-        this.adapter = adapter;
+        this.inputSourceFragment = inputSourceFragment;
         this.view = view;
         this.inputSourceList = equalizerOverview;
     }
@@ -53,17 +53,19 @@ public class InputSourceAsync extends AbstractFragmentVoidAsync {
             return null;
         }
         currentMode = pinellService.getCurrentInputSource();
-        radioModes = getInputSources();
+        List<RadioMode> inputSources = inputSourceFragment.get().getInputSources();
+        radioModes = CollectionUtils.isEmpty(inputSources) ? getInputSources() : inputSources;
         return null;
     }
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        InputSourceFragment inputSourceFragment = adapter.get();
+        final InputSourceFragment inputSourceFragment = this.inputSourceFragment.get();
         if (!inputSourceFragment.isAdded()) {
             Log.d(TAG, "Fragment removed. Skipping handling");
             return;
         }
+        inputSourceFragment.refreshDataSet(radioModes, currentMode);
         final InputSourceAdapter inputSourceAdapter = (InputSourceAdapter) inputSourceList.getAdapter();
         inputSourceList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -71,14 +73,12 @@ public class InputSourceAsync extends AbstractFragmentVoidAsync {
                 Log.d(TAG, String.format("Position {%s} and id {%s} clicked", position, id));
                 final RadioMode selectedMode = inputSourceAdapter.getItem(position);
                 new InputSourceSelectModeAsync(pinellService, selectedMode).execute();
-                // Perform a refresh of the list of available radioModes
-                new InputSourceAsync(fragmentManager, view, inputSourceList, adapter, pinellService).execute();
+                inputSourceFragment.refreshDataSet(selectedMode);
             }
         });
         if (spinner != null) {
             spinner.setVisibility(View.GONE);
         }
-        inputSourceFragment.refreshDataSet(radioModes, currentMode);
 
     }
 

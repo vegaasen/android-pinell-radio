@@ -30,6 +30,7 @@ public class InputSourceFragment extends AbstractFragment {
 
     private View inputSourceView;
     private ListView listView;
+    private List<RadioMode> inputSources;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -70,6 +71,22 @@ public class InputSourceFragment extends AbstractFragment {
         equalizerAdapter.updateRadioModes(inputSources);
         equalizerAdapter.updateCurrentRadioMode(inputSource);
         equalizerAdapter.notifyDataSetChanged();
+        setInputSources(inputSources);
+    }
+
+    public void refreshDataSet(RadioMode inputSource) {
+        ApplicationContext.INSTANCE.setActiveRadioMode(inputSource);
+        InputSourceAdapter equalizerAdapter = (InputSourceAdapter) listView.getAdapter();
+        equalizerAdapter.updateCurrentRadioMode(inputSource);
+        equalizerAdapter.notifyDataSetChanged();
+    }
+
+    public List<RadioMode> getInputSources() {
+        return inputSources;
+    }
+
+    public void setInputSources(List<RadioMode> inputSources) {
+        this.inputSources = inputSources;
     }
 
     private void configureComponents() {

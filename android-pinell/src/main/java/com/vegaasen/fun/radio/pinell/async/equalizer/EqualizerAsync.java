@@ -60,11 +60,12 @@ public class EqualizerAsync extends AbstractFragmentVoidAsync {
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        EqualizerFragment equalizerFragmentInstance = equalizerFragment.get();
+        final EqualizerFragment equalizerFragmentInstance = equalizerFragment.get();
         if (!equalizerFragmentInstance.isAdded()) {
             Log.d(TAG, "Fragment removed. Skipping handling");
             return;
         }
+        equalizerFragmentInstance.refreshDataSet(equalizers, currentEqualizer);
         configureViewComponents();
         final EqualizerAdapter equalizerAdapter = (EqualizerAdapter) equalizerOverview.getAdapter();
         equalizerOverview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -73,14 +74,12 @@ public class EqualizerAsync extends AbstractFragmentVoidAsync {
                 Log.d(TAG, String.format("Position {%s} and id {%s} clicked", position, id));
                 final Equalizer selectedEqualizer = equalizerAdapter.getItem(position);
                 new EqualizerSelectModeAsync(pinellService, selectedEqualizer).execute();
-                // Perform a refresh of the list of available equalizers
-                new EqualizerAsync(fragmentManager, view, equalizerOverview, equalizerFragment, pinellService).execute();
+                equalizerFragmentInstance.refreshDataSet(selectedEqualizer);
             }
         });
         if (spinner != null) {
             spinner.setVisibility(View.GONE);
         }
-        equalizerFragmentInstance.refreshDataSet(equalizers, currentEqualizer);
     }
 
     @Override

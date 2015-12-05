@@ -35,16 +35,16 @@ public class BrowseDabAsync extends AbstractFragmentVoidAsync {
     private static final String TAG = BrowseDabAsync.class.getSimpleName();
 
     private final View view;
-    private final WeakReference<BrowseFragment> fragmentAdapter;
+    private final WeakReference<BrowseFragment> browseFragmentReference;
     private final ListView dabListView;
 
     private DeviceCurrentlyPlaying currentlyPlaying;
     private List<RadioStation> radioStations;
     private ProgressBar browseDabSpinner;
 
-    public BrowseDabAsync(FragmentManager fragmentManager, View view, ListView dabListView, WeakReference<BrowseFragment> fragmentAdapter, PinellService pinellService) {
+    public BrowseDabAsync(FragmentManager fragmentManager, View view, ListView dabListView, WeakReference<BrowseFragment> browseFragmentReference, PinellService pinellService) {
         super(fragmentManager, null, pinellService, null);
-        this.fragmentAdapter = fragmentAdapter;
+        this.browseFragmentReference = browseFragmentReference;
         this.view = view;
         this.dabListView = dabListView;
     }
@@ -58,7 +58,7 @@ public class BrowseDabAsync extends AbstractFragmentVoidAsync {
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        final BrowseFragment browseFragment = fragmentAdapter.get();
+        final BrowseFragment browseFragment = browseFragmentReference.get();
         if (!browseFragment.isAdded()) {
             Log.d(TAG, "Fragment removed. Skipping handling");
         }
@@ -75,7 +75,7 @@ public class BrowseDabAsync extends AbstractFragmentVoidAsync {
                 int currentLastItem = firstVisibleItem + visibleItemCount;
                 if ((currentLastItem == totalItemCount)) {
                     if (browseFragment.getPreviousLastItem() != currentLastItem) {
-                        new OnScrollAppendStationsAsync(pinellService, fragmentAdapter).execute();
+                        new OnScrollAppendStationsAsync(pinellService, browseFragmentReference).execute();
                         browseFragment.setPreviousLastItem(currentLastItem);
                     }
                 }
@@ -96,7 +96,7 @@ public class BrowseDabAsync extends AbstractFragmentVoidAsync {
                 } else {
                     new SetRadioStationAsync(pinellService, radioStation).execute();
                 }
-                browseFragment.refreshDabDataSet(radioStations, radioStation);
+                browseFragment.refreshDabDataSet(radioStation);
                 //new BrowseDabAsync(fragmentManager, view, dabListView, fragmentAdapter, pinellService).execute();
             }
         });

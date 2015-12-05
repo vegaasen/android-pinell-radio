@@ -3,6 +3,7 @@ package com.vegaasen.fun.radio.pinell.context;
 import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.util.Log;
+import com.google.common.base.Strings;
 import com.vegaasen.fun.radio.pinell.model.PinellRadioMode;
 import com.vegaasen.fun.radio.pinell.service.PinellService;
 import com.vegaasen.fun.radio.pinell.service.impl.PinellServiceImpl;
@@ -35,13 +36,14 @@ public enum ApplicationContext {
 
     public PinellService getPinellService() {
         if (pinellService == null) {
-            final String subnet = NetworkUtils.fromIntToIp(getWifiManager().getConnectionInfo().getIpAddress());
-//            if (Strings.isNullOrEmpty(subnet)) {
-//                return null;
-//            }
+            String subnet = NetworkUtils.fromIntToIp(getWifiManager().getConnectionInfo().getIpAddress());
+            if (Strings.isNullOrEmpty(subnet)) {
+                Log.w(TAG, "Unable to detect subnet. Defaulting (will most likely be wrong..)");
+                subnet = "192.168.0";
+            }
             pinellService = new PinellServiceImpl();
             Log.d(TAG, String.format("Device connected to subnet {%s}", subnet));
-            pinellService.setCurrentSubnet("192.168.0");
+            pinellService.setCurrentSubnet(subnet);
         }
         return pinellService;
     }

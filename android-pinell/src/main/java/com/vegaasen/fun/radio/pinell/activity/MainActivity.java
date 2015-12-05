@@ -20,7 +20,6 @@ import com.vegaasen.fun.radio.pinell.activity.fragment.functions.InformationFrag
 import com.vegaasen.fun.radio.pinell.activity.fragment.functions.InputSourceFragment;
 import com.vegaasen.fun.radio.pinell.activity.fragment.functions.NowPlayingFragment;
 import com.vegaasen.fun.radio.pinell.activity.host.SelectHostActivity;
-import com.vegaasen.fun.radio.pinell.async.function.GetNotifiesAsync;
 import com.vegaasen.fun.radio.pinell.async.function.UpdateAudioLevelAsync;
 import com.vegaasen.fun.radio.pinell.async.function.UpdateRadioModeAsync;
 import com.vegaasen.fun.radio.pinell.context.ApplicationContext;
@@ -125,7 +124,7 @@ public class MainActivity extends AbstractActivity {
                     @Override
                     public void run() {
                         if (active) {
-                            new GetNotifiesAsync(getPinellService()).execute();
+//                            new GetNotifiesAsync(getPinellService()).execute();
                         }
                     }
                 }, REFRESH_PERIOD);

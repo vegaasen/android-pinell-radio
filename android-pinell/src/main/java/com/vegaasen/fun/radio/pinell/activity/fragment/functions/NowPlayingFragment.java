@@ -103,7 +103,7 @@ public class NowPlayingFragment extends AbstractFragment {
         }
     }
 
-    protected void refreshView() {
+    private void refreshView() {
         new NowPlayingAsync(getFragmentManager(), nowPlayingView, new WeakReference<>(this), getPinellService(), getResources().getString(R.string.genericUnknown)).execute();
     }
 
