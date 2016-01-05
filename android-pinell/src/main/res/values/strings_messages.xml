@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">Pinelly</string>
     <string name="activity_host_main">host-related-main-activity</string>
+    <string name="hidden_activity_host_main">host-related-main-activity</string>
     <string name="messagePinellDeviceNotOn">Powering on Pinell device</string>
     <string name="messageHostDetailsTitle">Pinell host details</string>
     <string name="messageApplicationDetailsTitle">Application details :-)</string>

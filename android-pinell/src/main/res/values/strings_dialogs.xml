@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="dialogSettingsTitle">Debug &amp; Misc</string>
     <string name="dialogChooserTitle">Browse &amp; Connect</string>
     <string name="dialogChooserDeviceNotFound">No devices located</string>
     <string name="dialogChooserPressRefresh">Click to locate devices</string>

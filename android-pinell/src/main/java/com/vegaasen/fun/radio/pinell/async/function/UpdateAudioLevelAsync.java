@@ -16,8 +16,6 @@ public class UpdateAudioLevelAsync extends AbstractFragmentVoidAsync {
     private final boolean up;
     private final int level;
 
-    private DeviceAudio audioLevels;
-
     public UpdateAudioLevelAsync(PinellService pinellService, boolean up) {
         super(pinellService);
         this.up = up;
@@ -32,9 +30,9 @@ public class UpdateAudioLevelAsync extends AbstractFragmentVoidAsync {
 
     @Override
     protected Void doInBackground(Void... voids) {
-        int candidate = 0;
+        int candidate;
         if (level == UNDEFINED) {
-            audioLevels = pinellService.getAudioLevels();
+            DeviceAudio audioLevels = pinellService.getAudioLevels();
             final int candidateLevel = audioLevels.getLevel();
             candidate = up ?
                     candidateLevel <= 38 ? candidateLevel + 1 : candidateLevel :

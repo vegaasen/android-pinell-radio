@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="btnLoadMore">Load more..</string>
+    <string name="btnClearExistingHosts">Clear saved hosts</string>
+    <string name="btnAddNewHost">Add host</string>
+    <string name="btnAcquireNewSession">Acquire new session</string>
 </resources>

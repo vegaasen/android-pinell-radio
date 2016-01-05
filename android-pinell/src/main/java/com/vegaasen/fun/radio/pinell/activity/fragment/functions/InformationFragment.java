@@ -61,7 +61,7 @@ public class InformationFragment extends AbstractFragment {
     }
 
     public void updateSoundLevel() {
-        new InformationSoundLevelAsync(getFragmentManager(), informationView, getPinellService(), getResources().getString(R.string.genericUnknown));
+        new InformationSoundLevelAsync(getFragmentManager(), informationView, getPinellService(), getResources().getString(R.string.genericUnknown)).execute();
     }
 
     public void refreshView() {

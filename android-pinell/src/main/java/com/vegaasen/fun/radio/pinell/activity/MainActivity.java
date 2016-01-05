@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractActivity;
@@ -19,6 +20,7 @@ import com.vegaasen.fun.radio.pinell.activity.fragment.functions.EqualizerFragme
 import com.vegaasen.fun.radio.pinell.activity.fragment.functions.InformationFragment;
 import com.vegaasen.fun.radio.pinell.activity.fragment.functions.InputSourceFragment;
 import com.vegaasen.fun.radio.pinell.activity.fragment.functions.NowPlayingFragment;
+import com.vegaasen.fun.radio.pinell.activity.hidden.HiddenMenuActivity;
 import com.vegaasen.fun.radio.pinell.activity.host.SelectHostActivity;
 import com.vegaasen.fun.radio.pinell.async.function.UpdateAudioLevelAsync;
 import com.vegaasen.fun.radio.pinell.async.function.UpdateRadioModeAsync;
@@ -44,6 +46,8 @@ public class MainActivity extends AbstractActivity {
     private static final long REFRESH_PERIOD = TimeUnit.SECONDS.toMillis(60);
     private static boolean active, scheduled;
 
+    private int clickedHiddenDoor;
+
     private SplashScreenFragment splashScreen;
     private NowPlayingFragment nowPlayingFragment;
     private BrowseFragment browseFragment;
@@ -56,6 +60,7 @@ public class MainActivity extends AbstractActivity {
     private SlidingPaneLayout componentSlidingSidebar;
     private View currentActiveFragmentView;
     private ImageButton buttonChangePinellHost;
+    private ImageView sidebarBranding;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -100,7 +105,7 @@ public class MainActivity extends AbstractActivity {
     @Override
     public boolean onKeyUp(int keyCode, @NonNull KeyEvent event) {
         if (ApplicationContext.INSTANCE.isRadioConnected() && keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-            new UpdateAudioLevelAsync(getPinellService(), true);
+            new UpdateAudioLevelAsync(getPinellService(), true).execute();
             conditionallyUpdateFragment();
         }
         return true;
@@ -109,7 +114,7 @@ public class MainActivity extends AbstractActivity {
     @Override
     public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
         if (ApplicationContext.INSTANCE.isRadioConnected() && keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-            new UpdateAudioLevelAsync(getPinellService(), false);
+            new UpdateAudioLevelAsync(getPinellService(), false).execute();
             conditionallyUpdateFragment();
         }
         return true;
@@ -153,6 +158,7 @@ public class MainActivity extends AbstractActivity {
         inputSourceFragment = new InputSourceFragment();
         equalizerFragment = new EqualizerFragment();
         informationFragment = new InformationFragment();
+        sidebarBranding = (ImageView) findViewById(R.id.imgSidebarBranding);
         sectionPlaying = (RelativeLayout) findViewById(R.id.sectionPlaying);
         sectionBrowse = (RelativeLayout) findViewById(R.id.sectionBrowse);
         sectionSource = (RelativeLayout) findViewById(R.id.sectionSource);
@@ -164,6 +170,7 @@ public class MainActivity extends AbstractActivity {
     }
 
     private void configureButtonActionListeners() {
+        final MainActivity activity = this;
         buttonChangePinellHost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -179,6 +186,17 @@ public class MainActivity extends AbstractActivity {
                     componentSlidingSidebar.closePane();
                 } else {
                     componentSlidingSidebar.openPane();
+                }
+            }
+        });
+        sidebarBranding.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (clickedHiddenDoor > 3) {
+                    clickedHiddenDoor = 0;
+                    startActivityForResult(new Intent(activity, HiddenMenuActivity.class), REQUEST_CODE);
+                } else {
+                    clickedHiddenDoor++;
                 }
             }
         });
