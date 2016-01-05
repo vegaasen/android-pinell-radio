@@ -4,9 +4,12 @@ import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 import com.google.common.base.Strings;
+import com.vegaasen.fun.radio.pinell.common.PinellyConstants;
 import com.vegaasen.fun.radio.pinell.model.PinellRadioMode;
 import com.vegaasen.fun.radio.pinell.service.PinellService;
+import com.vegaasen.fun.radio.pinell.service.StorageService;
 import com.vegaasen.fun.radio.pinell.service.impl.PinellServiceImpl;
+import com.vegaasen.fun.radio.pinell.service.impl.SharedPreferencesStorageServiceImpl;
 import com.vegaasen.fun.radio.pinell.util.NetworkUtils;
 import com.vegaasen.lib.ioc.radio.model.dab.RadioStation;
 import com.vegaasen.lib.ioc.radio.model.system.Equalizer;
@@ -28,6 +31,7 @@ public enum ApplicationContext {
     private static final String TAG = ApplicationContext.class.getSimpleName();
 
     private Context context;
+    private StorageService storageService;
     private PinellService pinellService;
     private RadioStation activeRadioStation;
     private Equalizer activeEqualizer;
@@ -79,6 +83,16 @@ public enum ApplicationContext {
 
     public PinellRadioMode getActiveRadioMode() {
         return activeRadioMode;
+    }
+
+    public StorageService getStorageService() {
+        if (storageService == null) {
+            storageService = new SharedPreferencesStorageServiceImpl(
+                    context.getSharedPreferences(
+                            PinellyConstants.STORAGE_PREFERENCES_KEY,
+                            Context.MODE_PRIVATE));
+        }
+        return storageService;
     }
 
     public void setActiveRadioMode(RadioMode activeRadioMode) {

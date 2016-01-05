@@ -15,8 +15,8 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Set;
 
-import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_VIBRATE_FINISH;
-import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_VIBRATE_FINISH;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.DEFAULT_VIBRATE_FINISH;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_VIBRATE_FINISH;
 
 /**
  * This is used in order to define the abstract layer related to the network discovery

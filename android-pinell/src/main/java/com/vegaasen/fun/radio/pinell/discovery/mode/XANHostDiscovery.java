@@ -17,12 +17,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_RATECTRL_ENABLE;
-import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_RESOLVE_NAME;
-import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_TIMEOUT_DISCOVER;
-import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_RATECTRL_ENABLE;
-import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_RESOLVE_NAME;
-import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_TIMEOUT_DISCOVER;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.DEFAULT_RATECTRL_ENABLE;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.DEFAULT_RESOLVE_NAME;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.DEFAULT_TIMEOUT_DISCOVER;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_RATECTRL_ENABLE;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_RESOLVE_NAME;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_TIMEOUT_DISCOVER;
 
 /**
  * Finding hosts on the X-AN (WAN, LAN)

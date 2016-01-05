@@ -3,7 +3,7 @@ package com.vegaasen.fun.radio.pinell.common;
 /**
  * @author <a href="mailto:vegaasen@gmail.com">vegaasen</a>
  */
-public final class Constants {
+public final class PinellyConstants {
 
     public static final String PACKAGE = "com.vegaasen.fun.radio.pinell";
 
@@ -57,7 +57,8 @@ public final class Constants {
     public static final String KEY_EMAIL = "email";
     public static final String KEY_VERSION = "version";
     public static final String KEY_WIFI = "wifi";
+    public static final String STORAGE_PREFERENCES_KEY = "PinellyPreferencesStore";
 
-    private Constants() {
+    private PinellyConstants() {
     }
 }

@@ -9,25 +9,27 @@ import android.widget.TextView;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractActivity;
 import com.vegaasen.fun.radio.pinell.adapter.HostArrayAdapter;
+import com.vegaasen.fun.radio.pinell.context.ApplicationContext;
 import com.vegaasen.fun.radio.pinell.discovery.abs.AbstractHostDiscovery;
 import com.vegaasen.fun.radio.pinell.discovery.mode.XANHostDiscovery;
 import com.vegaasen.fun.radio.pinell.discovery.model.HostBean;
 import com.vegaasen.fun.radio.pinell.discovery.model.NetInfo;
 import com.vegaasen.fun.radio.pinell.listeners.DeviceListListener;
+import com.vegaasen.fun.radio.pinell.util.translator.HostTranslator;
 
 import java.lang.ref.WeakReference;
 import java.util.Collections;
 
-import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_CIDR;
-import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_CIDR_CUSTOM;
-import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_IP_CUSTOM;
-import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_IP_END;
-import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_IP_START;
-import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_CIDR;
-import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_CIDR_CUSTOM;
-import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_IP_CUSTOM;
-import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_IP_END;
-import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_IP_START;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.DEFAULT_CIDR;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.DEFAULT_CIDR_CUSTOM;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.DEFAULT_IP_CUSTOM;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.DEFAULT_IP_END;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.DEFAULT_IP_START;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_CIDR;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_CIDR_CUSTOM;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_IP_CUSTOM;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_IP_END;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_IP_START;
 
 /**
  * This represents the selectable host activity. Its main objective is just to let the user select which host that he/she would like to connect to.
@@ -57,6 +59,7 @@ public class SelectHostActivity extends AbstractActivity {
         setContentView(R.layout.dialog_device_chooser);
         configureElements();
         configureActions();
+        appendExistingHosts();
     }
 
     @Override
@@ -81,6 +84,12 @@ public class SelectHostActivity extends AbstractActivity {
             hostDiscovery = null;
             setProgressBarIndeterminateVisibility(false);
         }
+    }
+
+    @Override
+    public void postLoadingActions() {
+        refreshHelpText.setVisibility(View.VISIBLE);
+        refreshInProgress.setVisibility(View.GONE);
     }
 
     @Override
@@ -119,6 +128,10 @@ public class SelectHostActivity extends AbstractActivity {
         }
     }
 
+    private void appendExistingHosts() {
+
+    }
+
     private void configureElements() {
         refreshHelpText = (TextView) findViewById(R.id.txtListClickRefresh);
         refreshInProgress = (TextView) findViewById(R.id.txtListClickRefreshInProgress);
@@ -135,6 +148,23 @@ public class SelectHostActivity extends AbstractActivity {
     }
 
     private void refreshHostsToList(AbstractActivity activity) {
+        configureAdapter(activity).setEmptyView(configureTextViews());
+        hostDiscovery = new XANHostDiscovery(activity);
+        hostDiscovery.setNetwork(networkIp, networkStart, networkEnd);
+        hostDiscovery.execute();
+        setProgressBarVisibility(true);
+        setProgressBarIndeterminateVisibility(true);
+        Log.e(TAG, "#### ---v Remove the hardcoded host!!! ####");
+        HostBean host = new HostBean();
+        host.setIpAddress("192.168.0.102");
+        host.setHostname(host.getIpAddress());
+        host.setPortsOpen(Collections.singleton(2244));
+        Log.e(TAG, "#### ^--- Remove the hardcoded host!!! ####");
+        addHost(HostTranslator.INSTANCE.translateBean(ApplicationContext.INSTANCE.getStorageService().getAll()));
+        addHost(host);
+    }
+
+    private ListView configureAdapter(AbstractActivity activity) {
         final ListView deviceOverview = (ListView) findViewById(R.id.listDevices);
         if (deviceOverview != null) {
             if (deviceOverview.getAdapter() == null) {
@@ -147,32 +177,14 @@ public class SelectHostActivity extends AbstractActivity {
                 clearHosts();
                 cancel();
             }
-            deviceOverview.setEmptyView(configureTextViews());
         }
-        hostDiscovery = new XANHostDiscovery(activity);
-        hostDiscovery.setNetwork(networkIp, networkStart, networkEnd);
-        hostDiscovery.execute();
-        setProgressBarVisibility(true);
-        setProgressBarIndeterminateVisibility(true);
-        Log.e(TAG, "#### ---v Remove the hardcoded host!!! ####");
-        HostBean host = new HostBean();
-        host.setIpAddress("192.168.0.103");
-        host.setHostname(host.getIpAddress());
-        host.setPortsOpen(Collections.singleton(2244));
-        Log.e(TAG, "#### ^--- Remove the hardcoded host!!! ####");
-        addHost(host);
+        return deviceOverview;
     }
 
     private TextView configureTextViews() {
         refreshHelpText.setVisibility(View.GONE);
         refreshInProgress.setVisibility(View.VISIBLE);
         return refreshInProgress;
-    }
-
-    @Override
-    public void postLoadingActions() {
-        refreshHelpText.setVisibility(View.VISIBLE);
-        refreshInProgress.setVisibility(View.GONE);
     }
 
 }

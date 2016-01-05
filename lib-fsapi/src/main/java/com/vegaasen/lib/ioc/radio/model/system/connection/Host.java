@@ -3,6 +3,11 @@ package com.vegaasen.lib.ioc.radio.model.system.connection;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceInformation;
 import com.vegaasen.lib.ioc.radio.model.system.auth.RadioSession;
 
+/**
+ * @author vegardaasen
+ * @version 05.1.2016@0.5
+ * @since 29.1.2015@0.1
+ */
 public class Host {
 
     private static final String HTTP_SCHEME = "http";
@@ -21,6 +26,12 @@ public class Host {
 
     public static Host create(String host, int port, String code) {
         return new Host(host, port, code);
+    }
+
+    public static Host create(String friendlyName, String host, int port, String code) {
+        Host candidate = create(host, port, code);
+        candidate.setDeviceInformation(DeviceInformation.create(friendlyName, null, null));
+        return candidate;
     }
 
     public String getHost() {

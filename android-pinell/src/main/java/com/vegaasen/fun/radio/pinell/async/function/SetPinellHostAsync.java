@@ -30,6 +30,9 @@ public class SetPinellHostAsync extends AbstractFragmentVoidAsync {
         boolean pinellDevice = pinellService.isPinellDevice();
         Log.d(TAG, String.format("Setting {%s} as the host were successful {%s}. It seems like the device is a pinellDevice {%s}", host.toString(), pinellHostSet, pinellDevice));
         ApplicationContext.INSTANCE.setPinellDevice(pinellDevice);
+        if (pinellDevice) {
+            ApplicationContext.INSTANCE.getStorageService().store(host);
+        }
         return null;
     }
 

@@ -31,24 +31,24 @@ import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_IP_END;
-import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_IP_START;
-import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_PORT_END;
-import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_PORT_START;
-import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_CIDR_CUSTOM;
-import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_DONATE;
-import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_EMAIL;
-import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_INTF;
-import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_IP_CUSTOM;
-import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_IP_END;
-import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_IP_START;
-import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_PORT_END;
-import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_PORT_START;
-import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_RATECTRL_ENABLE;
-import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_TIMEOUT_DISCOVER;
-import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_VERSION;
-import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_WEBSITE;
-import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_WIFI;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.DEFAULT_IP_END;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.DEFAULT_IP_START;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.DEFAULT_PORT_END;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.DEFAULT_PORT_START;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_CIDR_CUSTOM;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_DONATE;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_EMAIL;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_INTF;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_IP_CUSTOM;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_IP_END;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_IP_START;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_PORT_END;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_PORT_START;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_RATECTRL_ENABLE;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_TIMEOUT_DISCOVER;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_VERSION;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_WEBSITE;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_WIFI;
 
 /**
  * @author vegaasen

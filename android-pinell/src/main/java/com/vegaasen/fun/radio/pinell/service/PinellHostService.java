@@ -35,7 +35,8 @@ interface PinellHostService {
     boolean setCurrentPinellHost(int index);
 
     /**
-     * Set the wanted pinellHost by a supplied host
+     * Set the wanted pinellHost by a supplied host. This will also update the existing details related
+     * to the selected host
      *
      * @param host _
      * @return _
