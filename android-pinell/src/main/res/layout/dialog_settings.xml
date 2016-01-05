@@ -58,20 +58,20 @@
         <Button android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/btnClearExistingHosts"
-                android:id="@+id/btnClearSavedHosts"
+                android:id="@+id/btnSettingsClearSavedHosts"
                 android:layout_below="@id/btnSettingsVolumeDown"
                 />
         <Button android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/btnAddNewHost"
-                android:id="@+id/btnAddHost"
-                android:layout_below="@id/btnClearSavedHosts"
+                android:id="@+id/btnSettingsAddHost"
+                android:layout_below="@id/btnSettingsClearSavedHosts"
                 />
         <Button android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/btnAcquireNewSession"
-                android:id="@+id/btnAquireNewSession"
-                android:layout_below="@id/btnAddHost"
+                android:id="@+id/btnSettingsAquireNewSession"
+                android:layout_below="@id/btnSettingsAddHost"
                 />
     </RelativeLayout>
 </LinearLayout>

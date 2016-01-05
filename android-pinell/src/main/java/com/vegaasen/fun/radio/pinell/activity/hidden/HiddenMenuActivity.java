@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractActivity;
 import com.vegaasen.fun.radio.pinell.async.function.UpdateAudioLevelAsync;
@@ -33,6 +34,9 @@ public class HiddenMenuActivity extends AbstractActivity {
     private void configureElements() {
         volumeUp = (ImageButton) findViewById(R.id.btnSettingsVolumeUp);
         volumeDown = (ImageButton) findViewById(R.id.btnSettingsVolumeDown);
+        clearHosts = (Button) findViewById(R.id.btnSettingsClearSavedHosts);
+        acquireNewSession = (Button) findViewById(R.id.btnSettingsAquireNewSession);
+        addHost = (Button) findViewById(R.id.btnSettingsAddHost);
     }
 
     private void configureActions() {
@@ -41,6 +45,7 @@ public class HiddenMenuActivity extends AbstractActivity {
             public void onClick(View view) {
                 if (ApplicationContext.INSTANCE.isRadioConnected()) {
                     new UpdateAudioLevelAsync(getPinellService(), true).execute();
+                    Toast.makeText(getBaseContext(), "Volume up", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -49,7 +54,32 @@ public class HiddenMenuActivity extends AbstractActivity {
             public void onClick(View view) {
                 if (ApplicationContext.INSTANCE.isRadioConnected()) {
                     new UpdateAudioLevelAsync(getPinellService(), false).execute();
+                    Toast.makeText(getBaseContext(), "Volume down", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+        clearHosts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast
+                        .makeText(
+                                getBaseContext(),
+                                String.format("{%s} hosts cleared from the cache", ApplicationContext.INSTANCE.getStorageService().clear()),
+                                Toast.LENGTH_SHORT
+                        )
+                        .show();
+            }
+        });
+        acquireNewSession.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getBaseContext(), "Not implemented yet", Toast.LENGTH_SHORT).show();
+            }
+        });
+        addHost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getBaseContext(), "Not implemented yet", Toast.LENGTH_SHORT).show();
             }
         });
     }

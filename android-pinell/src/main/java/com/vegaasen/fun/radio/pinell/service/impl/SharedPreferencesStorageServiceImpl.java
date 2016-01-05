@@ -22,12 +22,14 @@ public class SharedPreferencesStorageServiceImpl implements StorageService {
     }
 
     @Override
-    public void clear() {
+    public int clear() {
         if (preferences == null) {
             Log.w(TAG, "Unable to clear the existing preferences due to preferences being nilled");
-            return;
+            return -1;
         }
+        int savedElements = preferences.getAll().size();
         preferences.edit().clear().apply();
+        return savedElements;
     }
 
     @Override

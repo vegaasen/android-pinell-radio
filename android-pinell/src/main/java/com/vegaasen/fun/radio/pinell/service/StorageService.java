@@ -21,7 +21,7 @@ public interface StorageService {
     /**
      * Reset the full cache that already exists within the storage
      */
-    void clear();
+    int clear();
 
     /**
      * Remove the provided hostBean from the storage
