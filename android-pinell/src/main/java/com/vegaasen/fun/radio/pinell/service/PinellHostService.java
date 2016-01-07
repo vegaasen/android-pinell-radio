@@ -88,4 +88,9 @@ interface PinellHostService {
      */
     void setCurrentSubnet(String currentSubnet);
 
+    /**
+     * Fetches the host-details
+     */
+    void updateHostBeanDetails(HostBean host);
+
 }

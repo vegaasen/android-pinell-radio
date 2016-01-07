@@ -71,6 +71,7 @@ public enum HostTranslator {
         }
         bean.setIpAddress(candidate.getHost());
         bean.setPortsOpen(Collections.singleton(candidate.getPort()));
+        bean.setFromCache(candidate.isCached());
         return bean;
     }
 

@@ -8,10 +8,12 @@ import android.view.ViewGroup;
 import android.widget.SeekBar;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractFragment;
+import com.vegaasen.fun.radio.pinell.async.browse.fm.BrowseFmAsync;
 import com.vegaasen.fun.radio.pinell.async.function.IsDeviceOnAsync;
 import com.vegaasen.fun.radio.pinell.async.function.UpdateAudioLevelAsync;
 import com.vegaasen.fun.radio.pinell.async.playing.NowPlayingAsync;
 import com.vegaasen.fun.radio.pinell.context.ApplicationContext;
+import com.vegaasen.fun.radio.pinell.model.PinellRadioMode;
 import com.vegaasen.fun.radio.pinell.util.scheduler.TaskScheduler;
 
 import java.lang.ref.WeakReference;
@@ -33,6 +35,7 @@ public class NowPlayingFragment extends AbstractFragment {
 
     private View nowPlayingView;
     private SeekBar volumeControl;
+    private boolean deviceOn;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -40,7 +43,7 @@ public class NowPlayingFragment extends AbstractFragment {
 //        if (!isWifiEnabledAndConnected()) {
 //            nowPlayingView = inflater.inflate(R.layout.fragment_pinell_network_offline, container, false);
 //        } else
-        boolean deviceOn = false;
+        deviceOn = false;
         try {
             deviceOn = new IsDeviceOnAsync(getPinellService()).execute().get(2, TimeUnit.SECONDS);
         } catch (Exception e) {
@@ -52,8 +55,8 @@ public class NowPlayingFragment extends AbstractFragment {
             nowPlayingView = inflater.inflate(R.layout.fragment_now_playing_device_off, container, false);
         } else {
             nowPlayingView = inflater.inflate(R.layout.fragment_now_playing, container, false);
-            configureViewComponents();
-            configureVolumeController();
+            configureComponents();
+            configureActions();
             refreshView();
         }
         return nowPlayingView;
@@ -65,7 +68,7 @@ public class NowPlayingFragment extends AbstractFragment {
 //        if (!isWifiEnabledAndConnected()) {
 //            return;
 //        }
-        if (ApplicationContext.INSTANCE.isPinellDevice()) {
+        if (ApplicationContext.INSTANCE.isPinellDevice() && deviceOn) {
             configureScheduledTasks(true);
         }
     }
@@ -107,12 +110,11 @@ public class NowPlayingFragment extends AbstractFragment {
         new NowPlayingAsync(getFragmentManager(), nowPlayingView, new WeakReference<>(this), getPinellService(), getResources().getString(R.string.genericUnknown)).execute();
     }
 
-    private void configureViewComponents() {
+    private void configureComponents() {
         volumeControl = (SeekBar) nowPlayingView.findViewById(R.id.playingVolumeControlSeek);
     }
 
-    //todo: should it change upon Changed, or is it enough with "onStopTrackingTouch"? :)
-    private void configureVolumeController() {
+    private void configureActions() {
         volumeControl.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -128,6 +130,12 @@ public class NowPlayingFragment extends AbstractFragment {
                 configureVolume(seekBar);
             }
         });
+        if (!ApplicationContext.INSTANCE.getActiveRadioMode().equals(PinellRadioMode.FM_AM)) {
+            nowPlayingView.findViewById(R.id.playingartistChannelSelector).setVisibility(View.GONE);
+            return;
+        }
+        Log.d(TAG, "FM seems to be active. Configuring controls");
+        new BrowseFmAsync(getPinellService(), new WeakReference<>(this), nowPlayingView, getString(R.string.scanning), R.id.playingRadioChannelTxt, R.id.playingArtistTitleTxt, R.id.btnPlayingFmRadioForward, R.id.btnPlayingFmRadioRewind).execute();
     }
 
     private void configureVolume(final SeekBar seekBar) {

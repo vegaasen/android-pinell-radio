@@ -15,8 +15,10 @@ public class Host {
     private final String host;
     private final int port;
     private final String code;
+
     private RadioSession radioSession;
     private DeviceInformation deviceInformation;
+    private boolean cached;
 
     private Host(String host, int port, String code) {
         this.host = host;
@@ -32,6 +34,14 @@ public class Host {
         Host candidate = create(host, port, code);
         candidate.setDeviceInformation(DeviceInformation.create(friendlyName, null, null));
         return candidate;
+    }
+
+    public boolean isCached() {
+        return cached;
+    }
+
+    public void setCached(boolean cached) {
+        this.cached = cached;
     }
 
     public String getHost() {

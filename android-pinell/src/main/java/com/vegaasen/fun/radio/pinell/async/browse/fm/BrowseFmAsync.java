@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import com.vegaasen.fun.radio.pinell.R;
-import com.vegaasen.fun.radio.pinell.activity.fragment.functions.BrowseFragment;
+import com.vegaasen.fun.radio.pinell.activity.abs.AbstractFragment;
 import com.vegaasen.fun.radio.pinell.async.abs.AbstractFragmentVoidAsync;
 import com.vegaasen.fun.radio.pinell.async.function.GetCurrentPlayingAsync;
 import com.vegaasen.fun.radio.pinell.async.function.search.FmSearchAsync;
@@ -27,7 +27,7 @@ public class BrowseFmAsync extends AbstractFragmentVoidAsync {
     private static final float ACTIVE = 0.4f;
     private static final float INACTIVE = 1.0f;
 
-    private final WeakReference<BrowseFragment> browseFragment;
+    private final WeakReference<? extends AbstractFragment> currentFragment;
     private final View currentView;
     private final String scanning;
 
@@ -35,12 +35,28 @@ public class BrowseFmAsync extends AbstractFragmentVoidAsync {
     private TextView fmPlaying, fmTune;
     private ImageButton fmRadioChannelSearchForward, fmRadioChannelSearchRewind;
     private boolean active, scheduled;
+    private int playing = R.id.txtFmRadioFrequency, tune = R.id.txtFmRadioCaption, forward = R.id.btnFmRadioForward, rewind = R.id.btnFmRadioRewind;
 
-    public BrowseFmAsync(PinellService pinellService, WeakReference<BrowseFragment> browseFragment, View currentView, String scanning) {
+    public BrowseFmAsync(PinellService pinellService, WeakReference<? extends AbstractFragment> currentFragment, View currentView, String scanning) {
         super(pinellService);
-        this.browseFragment = browseFragment;
+        this.currentFragment = currentFragment;
         this.currentView = currentView;
         this.scanning = scanning;
+    }
+
+    public BrowseFmAsync(PinellService pinellService,
+                         WeakReference<? extends AbstractFragment> currentFragment,
+                         View currentView,
+                         String scanning,
+                         int playing, int tune, int forward, int rewind) {
+        super(pinellService);
+        this.currentFragment = currentFragment;
+        this.currentView = currentView;
+        this.scanning = scanning;
+        this.playing = playing;
+        this.tune = tune;
+        this.forward = forward;
+        this.rewind = rewind;
     }
 
     @Override
@@ -51,8 +67,8 @@ public class BrowseFmAsync extends AbstractFragmentVoidAsync {
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        BrowseFragment browseFragment = this.browseFragment.get();
-        if (!browseFragment.isAdded()) {
+        AbstractFragment abstractFragment = this.currentFragment.get();
+        if (!abstractFragment.isAdded()) {
             Log.d(TAG, "Information-fragment not loaded anymore. Skipping");
             return;
         }
@@ -83,10 +99,10 @@ public class BrowseFmAsync extends AbstractFragmentVoidAsync {
 
     @Override
     protected void configureViewComponents() {
-        fmPlaying = (TextView) currentView.findViewById(R.id.txtFmRadioFrequency);
-        fmTune = (TextView) currentView.findViewById(R.id.txtFmRadioCaption);
-        fmRadioChannelSearchForward = (ImageButton) currentView.findViewById(R.id.btnFmRadioForward);
-        fmRadioChannelSearchRewind = (ImageButton) currentView.findViewById(R.id.btnFmRadioRewind);
+        fmPlaying = (TextView) currentView.findViewById(playing);
+        fmTune = (TextView) currentView.findViewById(tune);
+        fmRadioChannelSearchForward = (ImageButton) currentView.findViewById(forward);
+        fmRadioChannelSearchRewind = (ImageButton) currentView.findViewById(rewind);
     }
 
     private void triggerFmFrequencyUpdate(final View zeButton) {

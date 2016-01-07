@@ -62,4 +62,8 @@ public final class CollectionUtils {
         return candidate == null || candidate.isEmpty();
     }
 
+    public static boolean isEmpty(Object[] candidate) {
+        return candidate == null || candidate.length == 0;
+    }
+
 }

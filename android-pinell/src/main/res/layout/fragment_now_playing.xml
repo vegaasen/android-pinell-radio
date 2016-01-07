@@ -73,12 +73,38 @@
                     android:text="@string/genericUnknown"
                     />
             <RelativeLayout
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/playingArtistTitleTxt"
+                    android:id="@+id/playingartistChannelSelector"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="20dp"
+                    >
+                <ImageButton
+                        android:id="@+id/btnPlayingFmRadioRewind"
+                        android:layout_width="@dimen/iconSizeWidth"
+                        android:layout_height="@dimen/iconSizeHeight"
+                        android:background="@drawable/ic_fast_rewind_black"
+                        android:clickable="true"
+                        android:hapticFeedbackEnabled="true"
+                        />
+                <ImageButton
+                        android:id="@+id/btnPlayingFmRadioForward"
+                        android:layout_width="@dimen/iconSizeWidth"
+                        android:layout_height="@dimen/iconSizeHeight"
+                        android:layout_alignParentEnd="true"
+                        android:background="@drawable/ic_fast_forward_black"
+                        android:clickable="true"
+                        android:hapticFeedbackEnabled="true"
+                        />
+            </RelativeLayout>
+            <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
                     android:layout_gravity="center"
-                    android:layout_marginTop="30dp"
-                    android:layout_below="@id/playingArtistTitleTxt">
+                    android:layout_marginTop="20dp"
+                    android:layout_below="@id/playingartistChannelSelector">
                 <SeekBar
                         android:id="@+id/playingVolumeControlSeek"
                         android:layout_width="240dp"

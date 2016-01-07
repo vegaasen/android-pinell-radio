@@ -170,7 +170,7 @@ public abstract class AbstractActivity extends FragmentActivity {
     }
 
     public void addHost(HostBean host) {
-        if (host == null) {
+        if (host == null || hosts.contains(host)) {
             return;
         }
         host.setPosition(hosts.size());

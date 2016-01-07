@@ -7,6 +7,8 @@ import android.util.Log;
 import com.google.common.collect.Lists;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractActivity;
+import com.vegaasen.fun.radio.pinell.async.function.host.UpdateHostBeanInformationAsync;
+import com.vegaasen.fun.radio.pinell.context.ApplicationContext;
 import com.vegaasen.fun.radio.pinell.discovery.model.HostBean;
 import com.vegaasen.lib.ioc.radio.adapter.fsapi.ApiConnection;
 import com.vegaasen.lib.utils.TelnetUtil;
@@ -76,6 +78,7 @@ public abstract class AbstractHostDiscovery extends AsyncTask<Void, HostBean, Vo
                     final Set<Integer> candidates = TelnetUtil.isAlive(candidate.getIpAddress(), PORTS);
                     if (!candidates.isEmpty()) {
                         candidate.setPortsOpen(candidates);
+                        new UpdateHostBeanInformationAsync(ApplicationContext.INSTANCE.getPinellService(), candidate).silentGet();
                         discover.addHost(candidate);
                     }
                 }

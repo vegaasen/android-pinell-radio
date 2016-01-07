@@ -64,6 +64,7 @@ public class SharedPreferencesStorageServiceImpl implements StorageService {
         for (String candidate : preferences.getAll().keySet()) {
             Host translated = HostTranslator.INSTANCE.translate(candidate);
             if (translated != null) {
+                translated.setCached(true);
                 hosts.add(translated);
             }
         }

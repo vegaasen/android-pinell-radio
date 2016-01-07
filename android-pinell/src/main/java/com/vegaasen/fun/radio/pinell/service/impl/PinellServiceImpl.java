@@ -147,6 +147,21 @@ public class PinellServiceImpl implements PinellService {
     }
 
     @Override
+    public void updateHostBeanDetails(HostBean candidate) {
+        Host host = getRadioConnectionService().createHost(
+                candidate.getIpAddress(),
+                assembleCandidatePort(candidate.getPortsOpen()));
+        if (host == null) {
+            return;
+        }
+        getRadioService().updateHostDeviceInformation(host);
+        if (host.getDeviceInformation() == null) {
+            return;
+        }
+        candidate.setHostname(host.getDeviceInformation().getName());
+    }
+
+    @Override
     public DeviceAudio getAudioLevels() {
         return getRadioService().getCurrentAudioInformation(getSelectedHost());
     }
