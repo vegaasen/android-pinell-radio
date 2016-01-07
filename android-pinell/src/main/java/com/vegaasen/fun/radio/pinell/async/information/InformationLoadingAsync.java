@@ -145,7 +145,8 @@ public class InformationLoadingAsync extends AbstractFragmentVoidAsync {
     }
 
     private String assembleApplicationText() {
-        return String.format("{'applicationVersion':'%s', 'author':'%s', 'authorEmail':'%s'}", fragment.get().getApplicationVersion(), "", "");
+        InformationFragment informationFragment = fragment.get();
+        return String.format("{'applicationVersion':'%s', 'author':'%s', 'authorEmail':'%s'}", informationFragment.getApplicationVersion(), informationFragment.getString(R.string.me), informationFragment.getString(R.string.me_email));
     }
 
 

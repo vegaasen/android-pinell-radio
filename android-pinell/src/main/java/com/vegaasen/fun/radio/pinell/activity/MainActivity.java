@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractActivity;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractFragment;
@@ -196,6 +197,7 @@ public class MainActivity extends AbstractActivity {
                     clickedHiddenDoor = 0;
                     startActivityForResult(new Intent(activity, HiddenMenuActivity.class), REQUEST_CODE);
                 } else {
+                    Toast.makeText(getBaseContext(), String.format("%s pow!", clickedHiddenDoor), Toast.LENGTH_SHORT).show();
                     clickedHiddenDoor++;
                 }
             }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="me">vegardaasen</string>
     <string name="me_email">vegaasen@gmail.com</string>
     <string name="me_email_subject">vegaasen@gmail.com</string>
 </resources>
