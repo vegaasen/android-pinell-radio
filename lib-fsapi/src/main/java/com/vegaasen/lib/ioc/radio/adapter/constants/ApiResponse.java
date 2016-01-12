@@ -34,6 +34,11 @@ public final class ApiResponse {
         public static final String TYPE_STATION = "1";
     }
 
+    public static final class Value {
+        public static final String FALSE = "0";
+        public static final String TRUE = "1";
+    }
+
     private ApiResponse() {
     }
 

@@ -26,7 +26,7 @@ import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_TIMEOUT_
 
 /**
  * Finding hosts on the X-AN (WAN, LAN)
- * Todo: Beautify
+ * Todo: Beautify, Betterify
  *
  * @author <a href="mailto:vegaasen@gmail.com">vegaasen</a>
  * @version 1.0
@@ -34,13 +34,12 @@ import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_TIMEOUT_
  */
 public final class XANHostDiscovery extends AbstractHostDiscovery {
 
-    private static final String TAG = XANHostDiscovery.class.getSimpleName();
-    private static final int[] OPTIONS_PORTS = {139, 445, 22, 80};
-    private static final int TIMEOUT_SCAN = 1500, TIMEOUT_SHUTDOWN = 10;
-    private static final int NUM_THREADS = 5; //FIXME: Test, plz set in options again ?
-    private static final int RATE_ALIVE_HOSTS = 5; // Number of alive hosts between Rate
-
-    private final ExecutorService mPool = Executors.newFixedThreadPool(NUM_THREADS);
+    private final static String TAG = XANHostDiscovery.class.getSimpleName();
+    private final static int[] OPTIONS_PORTS = {139, 445, 22, 80};
+    private final static int TIMEOUT_SCAN = 1500, TIMEOUT_SHUTDOWN = 10;
+    private final static int NUM_THREADS = 8;
+    private final static int RATE_ALIVE_HOSTS = 5; // Number of alive hosts between Rate
+    private final static ExecutorService POOL = Executors.newFixedThreadPool(NUM_THREADS);
 
     private int move = 2; // 1=backward 2=forward
     private boolean doRateControl;
@@ -73,7 +72,7 @@ public final class XANHostDiscovery extends AbstractHostDiscovery {
                 launch(start);
                 // hosts
                 long ptBackward = ip, ptForward = ip + 1, sizeHosts = size - 1;
-                for (int i = 0; i < sizeHosts; i++) {
+                for (int i = 1; i < sizeHosts; i++) {
                     // Set pointer if of limits
                     if (ptBackward <= start) {
                         move = 2;
@@ -96,18 +95,18 @@ public final class XANHostDiscovery extends AbstractHostDiscovery {
                     launch(i);
                 }
             }
-            mPool.shutdown();
+            POOL.shutdown();
             try {
-                if (!mPool.awaitTermination(TIMEOUT_SCAN, TimeUnit.SECONDS)) {
-                    mPool.shutdownNow();
+                if (!POOL.awaitTermination(TIMEOUT_SCAN, TimeUnit.SECONDS)) {
+                    POOL.shutdownNow();
                     Log.i(TAG, "Shutting down pool");
-                    if (!mPool.awaitTermination(TIMEOUT_SHUTDOWN, TimeUnit.SECONDS)) {
+                    if (!POOL.awaitTermination(TIMEOUT_SHUTDOWN, TimeUnit.SECONDS)) {
                         Log.w(TAG, "Pool did not terminate");
                     }
                 }
             } catch (InterruptedException e) {
                 Log.e(TAG, e.getMessage());
-                mPool.shutdownNow();
+                POOL.shutdownNow();
                 Thread.currentThread().interrupt();
             }
         }
@@ -116,9 +115,9 @@ public final class XANHostDiscovery extends AbstractHostDiscovery {
 
     @Override
     public void onCancelled() {
-        if (mPool != null) {
-            synchronized (mPool) {
-                mPool.shutdownNow();
+        if (POOL != null) {
+            synchronized (POOL) {
+                POOL.shutdownNow();
                 // FIXME: Prevents some task to end (and close the Save DB)
             }
         }
@@ -126,8 +125,8 @@ public final class XANHostDiscovery extends AbstractHostDiscovery {
     }
 
     private void launch(long i) {
-        if (!mPool.isShutdown()) {
-            mPool.execute(new CheckHost(NetInfo.getIpFromLongUnsigned(i)));
+        if (!POOL.isShutdown()) {
+            POOL.execute(new CheckHost(NetInfo.getIpFromLongUnsigned(i)));
         }
     }
 
@@ -178,16 +177,19 @@ public final class XANHostDiscovery extends AbstractHostDiscovery {
             //    Log.i(TAG, e.getMessage());
             //}
         }
+        //see the onProgressUpdate() located in the AbstractHostDiscovery
         publishProgress(host);
     }
 
     private class CheckHost implements Runnable {
+
         private String addr;
 
-        CheckHost(String addr) {
+        private CheckHost(String addr) {
             this.addr = addr;
         }
 
+        @Override
         public void run() {
             if (isCancelled()) {
                 publish(null);
@@ -198,7 +200,7 @@ public final class XANHostDiscovery extends AbstractHostDiscovery {
             host.setResponseTime(getRate());
             host.setIpAddress(addr);
             try {
-                InetAddress h = InetAddress.getByName(addr);
+                InetAddress candidate = InetAddress.getByName(addr);
                 // Rate control check
                 if (doRateControl && mRateControl.indicator != null && hosts_done % RATE_ALIVE_HOSTS == 0) {
                     mRateControl.adaptRate();
@@ -211,7 +213,7 @@ public final class XANHostDiscovery extends AbstractHostDiscovery {
                     return;
                 }
                 // Native InetAddress check
-                if (h.isReachable(getRate())) {
+                if (candidate.isReachable(getRate())) {
                     Log.e(TAG, "found using InetAddress ping " + addr);
                     publish(host);
                     // Set indicator and get a rate
@@ -248,7 +250,7 @@ public final class XANHostDiscovery extends AbstractHostDiscovery {
                     }
                 }
                 /*
-                if ((port = Reachable.isReachable(h, getRate())) > -1) {
+                if ((port = Reachable.isReachable(candidate, getRate())) > -1) {
                     Log.v(TAG, "used Network.Reachable object, "+addr+" port=" + port);
                     publish(host);
                     return;

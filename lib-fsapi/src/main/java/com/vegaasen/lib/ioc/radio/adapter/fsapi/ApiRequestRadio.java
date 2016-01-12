@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * The idea behind this class is to gather all the various API-Requests that exists within the Radio-atmosphere
@@ -27,9 +28,11 @@ public enum ApiRequestRadio {
 
     INSTANCE;
 
+    private static final Logger LOG = Logger.getLogger(ApiRequestRadio.class.getSimpleName());
     private static final String PREVIOUS_HIERARCHY_LEVEL = "0xffffffff";
     private static final String FM_SEARCH_FORWARD = "3", FM_SEARCH_REWIND = "4";
     private static final String RANDOM = RandomUtils.randomAsString(), EMPTY = "";
+    private static final int MAX_TRIES = 5, AWAITING_READYNESS = 30;
 
     public void searchFMForward(Host host) {
         final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
@@ -141,13 +144,19 @@ public enum ApiRequestRadio {
         }
     }
 
+    /**
+     * Checks if anything has changed upon the last time checked. This results most of the times in the following response:
+     * FS_TIMEOUT (after 30ish seconds)
+     *
+     * @param host _
+     */
     public void getNotifies(Host host) {
         try {
             final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
             params.put(Parameter.QueryParameter.RANDOM, RANDOM);
             ApiConnection.INSTANCE.requestAsync(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NOTIFIES));
         } catch (Exception e) {
-            // *gulp*
+            LOG.info("Unable to getNotifies");
         }
     }
 
@@ -159,18 +168,18 @@ public enum ApiRequestRadio {
      */
     private void preGenericRadioStations(Host host) {
         try {
+            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_STATE));
             final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
             params.put(Parameter.QueryParameter.VALUE, "0");
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_SET_NAV_STATE, params));
             params.put(Parameter.QueryParameter.VALUE, "1");
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_SET_NAV_STATE, params));
-            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_CAPS));
-            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_STATUS));
-            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_STATE));
             getNotifies(host);
+            awaitRadioReady(host);
+            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_DEPTH));
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NUM_ITEMS));
         } catch (final Exception e) {
-            //*gulp*
+            LOG.info("Unable to execute pre-generics for radio station");
         }
     }
 
@@ -186,7 +195,26 @@ public enum ApiRequestRadio {
             params.put(Parameter.QueryParameter.VALUE, "0");
             ApiConnection.INSTANCE.requestAsync(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_SET_NAV_STATE, params));
         } catch (final Exception e) {
-            //*gulp*
+            LOG.warning("Unable to execute post-generics for radio station");
+        }
+    }
+
+    private void awaitRadioReady(Host host) {
+        int tries = 0;
+        while (tries <= MAX_TRIES) {
+            Document candidate = ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_STATUS));
+            if (candidate != null) {
+                if (XmlUtils.INSTANCE.getTextContentByNode(candidate.getDocumentElement(), ApiResponse.VALUE_U_8).equals(ApiResponse.Value.TRUE)) {
+                    return;
+                }
+                try {
+                    Thread.sleep(AWAITING_READYNESS);
+                } catch (InterruptedException e) {
+                    // * gulp *
+                }
+            }
+            LOG.warning(String.format("Try {%s}", tries));
+            tries++;
         }
     }
 
