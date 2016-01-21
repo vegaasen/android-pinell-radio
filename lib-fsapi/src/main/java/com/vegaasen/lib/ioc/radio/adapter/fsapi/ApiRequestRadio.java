@@ -95,15 +95,26 @@ public enum ApiRequestRadio {
      * @return _
      */
     public Set<RadioStation> selectContainerAndGetRadioStations(Host host, RadioStation radioStation, int maxItems) {
+        preGenericRadioStations(host);
         final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
         params.put(Parameter.QueryParameter.VALUE, radioStation.getKeyIdAsString());
         ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.SUB_CONTAINER_SELECT, params));
-        return getRadioStations(host, -1, maxItems);
+        awaitRadioReady(host);
+        return getRadioStations(host, -1, maxItems, true);
     }
 
-    //TODO: There is, for some reason, something not working as it should regarding the listing of radio stations/containers. Look into the sniffing session
     public Set<RadioStation> getRadioStations(Host host, int fromIndex, int maxItems) {
-        preGenericRadioStations(host);
+        return getRadioStations(host, fromIndex, maxItems, false);
+    }
+
+    public Set<RadioStation> getRadioStations(Host host, int fromIndex, int maxItems, boolean container) {
+        if (container) {
+            LOG.finest("Container selected, treating it as such");
+            preFolderRadioStations(host);
+        } else {
+            LOG.finest("Normal loading operation, loading stations for the first time/default list");
+            preGenericRadioStations(host);
+        }
         final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
         params.put(Parameter.QueryParameter.MAX_ITEMS, Integer.toString(maxItems));
         final Document document = ApiConnection.INSTANCE.request(
@@ -180,7 +191,17 @@ public enum ApiRequestRadio {
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_DEPTH));
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NUM_ITEMS));
         } catch (final Exception e) {
-            LOG.info("Unable to execute pre-generics for radio station");
+            LOG.info("Unable to execute pre-generics for radio stations");
+        }
+    }
+
+    private void preFolderRadioStations(Host host) {
+        try {
+            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_STATE));
+            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_DEPTH));
+            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NUM_ITEMS));
+        } catch (Exception e) {
+            LOG.info("Unable to execute pre-folder for radio stations");
         }
     }
 

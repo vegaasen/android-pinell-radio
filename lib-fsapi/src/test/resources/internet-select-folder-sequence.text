@@ -1,0 +1,6 @@
+http://192.168.0.102:2244/fsapi/SET/netRemote.nav.action.navigate?pin=1234&value=1	200	GET	192.168.0.102:2244	/fsapi/SET/netRemote.nav.action.navigate?pin=1234&value=1	Thu Jan 21 22:15:40 CET 2016	30	369	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.nav.status?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.nav.status?pin=1234	Thu Jan 21 22:15:40 CET 2016	17	378	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.nav.depth?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.nav.depth?pin=1234	Thu Jan 21 22:15:41 CET 2016	35	368	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.nav.numItems?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.nav.numItems?pin=1234	Thu Jan 21 22:15:41 CET 2016	19	383	Complete
+http://192.168.0.102:2244/fsapi/LIST_GET_NEXT/netRemote.nav.list/-1?maxItems=30&pin=1234	200	GET	192.168.0.102:2244	/fsapi/LIST_GET_NEXT/netRemote.nav.list/-1?maxItems=30&pin=1234	Thu Jan 21 22:15:41 CET 2016	56	4252	Complete
+http://192.168.0.102:2244/fsapi/LIST_GET_NEXT/netRemote.nav.list/23?maxItems=6&pin=1234	200	GET	192.168.0.102:2244	/fsapi/LIST_GET_NEXT/netRemote.nav.list/23?maxItems=6&pin=1234	Thu Jan 21 22:15:42 CET 2016	36	1332	Complete
