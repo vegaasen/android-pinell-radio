@@ -3,6 +3,7 @@ package com.vegaasen.lib.ioc.radio.adapter.fsapi;
 import com.vegaasen.lib.ioc.radio.adapter.constants.ApiResponse;
 import com.vegaasen.lib.ioc.radio.adapter.constants.Parameter;
 import com.vegaasen.lib.ioc.radio.adapter.constants.UriContext;
+import com.vegaasen.lib.ioc.radio.model.annotation.Beta;
 import com.vegaasen.lib.ioc.radio.model.dab.RadioStation;
 import com.vegaasen.lib.ioc.radio.model.response.Item;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
@@ -139,7 +140,6 @@ public enum ApiRequestRadio {
             params.put(Parameter.QueryParameter.VALUE, radioStation.getKeyIdAsString());
             ApiConnection.INSTANCE.requestAsync(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.STATION_SELECT, params));
         } finally {
-            getNotifies(host);
             postGenericRadioStations(host);
         }
     }
@@ -150,6 +150,8 @@ public enum ApiRequestRadio {
      *
      * @param host _
      */
+    @Deprecated
+    @Beta
     public void getNotifies(Host host) {
         try {
             final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
@@ -174,7 +176,6 @@ public enum ApiRequestRadio {
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_SET_NAV_STATE, params));
             params.put(Parameter.QueryParameter.VALUE, "1");
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_SET_NAV_STATE, params));
-            getNotifies(host);
             awaitRadioReady(host);
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_DEPTH));
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NUM_ITEMS));

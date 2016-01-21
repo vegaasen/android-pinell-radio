@@ -60,10 +60,4 @@ public interface RadioFsApiConnectionService {
      */
     Host createHost(String host, int port);
 
-    /**
-     * Runs the mysterious "getNotifies" method within the Pinell Radio. No idea what this thing does,
-     * but it seems to be vital..
-     */
-    void getNotifies(Host host);
-
 }

@@ -51,7 +51,7 @@ public class BrowseFragment extends AbstractFragment {
     private List<RadioStation> loadedRadioStations = new ArrayList<>();
     private int previousLastItem;
 
-    private ListView dabStationsListView;
+    private ListView stationsListView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -132,14 +132,14 @@ public class BrowseFragment extends AbstractFragment {
     }
 
     public void refreshDabSimpleDataSet(List<RadioStation> radioStations) {
-        BrowseStationsActivity adapter = (BrowseStationsActivity) dabStationsListView.getAdapter();
+        BrowseStationsActivity adapter = (BrowseStationsActivity) stationsListView.getAdapter();
         adapter.updateRadioStations(radioStations);
         loadedRadioStations = radioStations;
         adapter.notifyDataSetChanged();
     }
 
     public void refreshDabSimpleDataSet(List<RadioStation> radioStations, DeviceCurrentlyPlaying currentlyPlaying) {
-        BrowseStationsActivity adapter = (BrowseStationsActivity) dabStationsListView.getAdapter();
+        BrowseStationsActivity adapter = (BrowseStationsActivity) stationsListView.getAdapter();
         adapter.updateRadioStations(radioStations);
         adapter.updateCurrentRadioStation(currentlyPlaying);
         setLoadedRadioStations(radioStations);
@@ -148,7 +148,7 @@ public class BrowseFragment extends AbstractFragment {
 
     public void refreshDabDataSet(RadioStation currentRadioStation) {
         ApplicationContext.INSTANCE.setActiveRadioStation(currentRadioStation);
-        BrowseStationsActivity adapter = (BrowseStationsActivity) dabStationsListView.getAdapter();
+        BrowseStationsActivity adapter = (BrowseStationsActivity) stationsListView.getAdapter();
         adapter.updateCurrentRadioStation(currentRadioStation);
         adapter.notifyDataSetChanged();
     }
@@ -188,9 +188,9 @@ public class BrowseFragment extends AbstractFragment {
     private void configureViewDAB(LayoutInflater inflater, ViewGroup container) {
         browseFragment = inflater.inflate(R.layout.fragment_browse_dab, container, false);
         CollectionUtils.clear(loadedRadioStations);
-        dabStationsListView = (ListView) browseFragment.findViewById(R.id.browseListOfStations);
-        dabStationsListView.setAdapter(new BrowseStationsActivity(browseFragment.getContext(), loadedRadioStations));
-        new BrowseDabAsync(getFragmentManager(), browseFragment, dabStationsListView, new WeakReference<>(this), getPinellService()).execute();
+        stationsListView = (ListView) browseFragment.findViewById(R.id.browseListOfStations);
+        stationsListView.setAdapter(new BrowseStationsActivity(browseFragment.getContext(), loadedRadioStations));
+        new BrowseDabAsync(getFragmentManager(), browseFragment, stationsListView, new WeakReference<>(this), getPinellService()).execute();
         Log.d(TAG, "DAB configured");
     }
 
@@ -201,9 +201,12 @@ public class BrowseFragment extends AbstractFragment {
     }
 
     private void configureViewInternetRadio(LayoutInflater inflater, ViewGroup container) {
-        browseFragment = inflater.inflate(R.layout.fragment_browse_unsupported, container, false);
-        TextView txtReason = (TextView) browseFragment.findViewById(R.id.txtInputSourceNAConnectedReason);
-        txtReason.setText("Oops. This is currently not supported");
+        browseFragment = inflater.inflate(R.layout.fragment_browse_internet, container, false);
+        CollectionUtils.clear(loadedRadioStations);
+        stationsListView = (ListView) browseFragment.findViewById(R.id.browseListOfStations);
+        //todo: can the dab/internet-view be merged together?
+        stationsListView.setAdapter(new BrowseStationsActivity(browseFragment.getContext(), loadedRadioStations));
+        new BrowseDabAsync(getFragmentManager(), browseFragment, stationsListView, new WeakReference<>(this), getPinellService()).execute();
         Log.d(TAG, "Internet configured");
     }
 

@@ -280,11 +280,6 @@ public class PinellServiceImpl implements PinellService {
         getRadioService().fmRewindSearch(getSelectedHost());
     }
 
-    @Override
-    public void triggerGetNotifies() {
-        getRadioConnectionService().getNotifies(getSelectedHost());
-    }
-
     private RadioFsApiConnectionService getRadioConnectionService() {
         return radioFsApiConnectionService;
     }

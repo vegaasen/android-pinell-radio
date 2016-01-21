@@ -45,7 +45,7 @@ public class NowPlayingFragment extends AbstractFragment {
 //        } else
         deviceOn = false;
         try {
-            deviceOn = new IsDeviceOnAsync(getPinellService()).execute().get(2, TimeUnit.SECONDS);
+            deviceOn = new IsDeviceOnAsync(getPinellService()).execute().get(4, TimeUnit.SECONDS);
         } catch (Exception e) {
             Log.d(TAG, "Unable to fetch deviceOn status");
         }

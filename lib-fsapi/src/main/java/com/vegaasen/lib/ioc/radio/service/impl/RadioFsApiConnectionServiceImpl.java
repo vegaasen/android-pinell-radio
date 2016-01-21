@@ -56,8 +56,4 @@ public class RadioFsApiConnectionServiceImpl implements RadioFsApiConnectionServ
         return ApiConnection.INSTANCE.createHost(host, port);
     }
 
-    @Override
-    public void getNotifies(Host host) {
-        ApiRequestRadio.INSTANCE.getNotifies(host);
-    }
 }
