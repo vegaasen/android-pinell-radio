@@ -138,7 +138,7 @@ public class BrowseFragment extends AbstractFragment {
      */
     public void refreshRadioStationsDataSet(List<RadioStation> radioStations) {
         BrowseStationsActivity adapter = (BrowseStationsActivity) stationsListView.getAdapter();
-        adapter.updateRadioStations(radioStations);
+        adapter.clearAndRefreshRadioStations(radioStations);
         loadedRadioStations = radioStations;
         adapter.notifyDataSetChanged();
     }
@@ -151,7 +151,7 @@ public class BrowseFragment extends AbstractFragment {
      */
     public void refreshRadioStationsAndCurrentRadioDataSet(List<RadioStation> radioStations, DeviceCurrentlyPlaying currentlyPlaying) {
         BrowseStationsActivity adapter = (BrowseStationsActivity) stationsListView.getAdapter();
-        adapter.updateRadioStations(radioStations);
+        adapter.clearAndRefreshRadioStations(radioStations);
         adapter.updateCurrentRadioStation(currentlyPlaying);
         setLoadedRadioStations(radioStations);
         adapter.notifyDataSetChanged();

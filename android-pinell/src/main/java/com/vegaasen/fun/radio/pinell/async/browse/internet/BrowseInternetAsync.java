@@ -13,9 +13,9 @@ import com.vegaasen.fun.radio.pinell.adapter.BrowseStationsActivity;
 import com.vegaasen.fun.radio.pinell.async.abs.AbstractFragmentVoidAsync;
 import com.vegaasen.fun.radio.pinell.async.browse.dab.OnScrollAppendStationsAsync;
 import com.vegaasen.fun.radio.pinell.async.function.GetAllRadioStationsAsync;
+import com.vegaasen.fun.radio.pinell.async.function.GetContainerContentAsync;
 import com.vegaasen.fun.radio.pinell.async.function.SetRadioStationAsync;
 import com.vegaasen.fun.radio.pinell.service.PinellService;
-import com.vegaasen.fun.radio.pinell.util.CollectionUtils;
 import com.vegaasen.http.rest.utils.StringUtils;
 import com.vegaasen.lib.ioc.radio.model.dab.RadioStation;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceCurrentlyPlaying;
@@ -98,8 +98,14 @@ public class BrowseInternetAsync extends AbstractFragmentVoidAsync {
                     return;
                 }
                 if (radioStation.isRadioStationContainer()) {
-                    Log.d(TAG, String.format("RadioContainer {%s} selected. Opening the container", radioStation.toString()));
-                    browseFragment.refreshRadioStationsDataSet(CollectionUtils.toList(pinellService.enterContainerAndListStations(radioStation)));
+                    Log.d(TAG, String.format("RadioContainer {%s} selected. Opening the container", radioStation));
+                    List<RadioStation> candidates = new ArrayList<>();
+                    try {
+                        candidates.addAll(new GetContainerContentAsync(pinellService, radioStation).execute().get());
+                    } catch (Exception e) {
+                        Log.w(TAG, String.format("Unable to fetch the candidates for container using {%s}", radioStation));
+                    }
+                    browseFragment.refreshRadioStationsDataSet(candidates);
                 } else {
                     new SetRadioStationAsync(pinellService, radioStation).execute();
                 }

@@ -92,7 +92,7 @@ public class BrowseStationsActivity extends BaseAdapter {
         this.currentRadioStation = DeviceCurrentlyPlaying.createSimple(radioStation.getName());
     }
 
-    public void updateRadioStations(List<RadioStation> updatedRadioStations) {
+    public void clearAndRefreshRadioStations(List<RadioStation> updatedRadioStations) {
         synchronized (radioStations) {
             radioStations.clear();
             radioStations.addAll(updatedRadioStations);
