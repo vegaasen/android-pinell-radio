@@ -13,6 +13,16 @@ Nothing.
 
 See module <?>
 
+# Adding proxy when debugging Emulator
+
+This is quite simple. Do the following:
+
+* Download Charles or similar
+* Add proxy-listner port
+* Configure VPN within Emulator
+* * Use (local) ip address with (configured) port
+* Done :-)
+
 # Ports for Pinell
 
 This is the port-scanning for my own Pinell device.
