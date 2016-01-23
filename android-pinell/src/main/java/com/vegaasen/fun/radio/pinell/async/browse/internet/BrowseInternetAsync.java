@@ -1,4 +1,4 @@
-package com.vegaasen.fun.radio.pinell.async.browse.dab;
+package com.vegaasen.fun.radio.pinell.async.browse.internet;
 
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
@@ -11,6 +11,7 @@ import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.fragment.functions.BrowseFragment;
 import com.vegaasen.fun.radio.pinell.adapter.BrowseStationsActivity;
 import com.vegaasen.fun.radio.pinell.async.abs.AbstractFragmentVoidAsync;
+import com.vegaasen.fun.radio.pinell.async.browse.dab.OnScrollAppendStationsAsync;
 import com.vegaasen.fun.radio.pinell.async.function.GetAllRadioStationsAsync;
 import com.vegaasen.fun.radio.pinell.async.function.SetRadioStationAsync;
 import com.vegaasen.fun.radio.pinell.service.PinellService;
@@ -22,31 +23,32 @@ import com.vegaasen.lib.ioc.radio.model.device.DeviceCurrentlyPlaying;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
- * Represents the list of radio stations to browse related to the DAB-mode :-)
+ * Represents the list of radio stations to browse related to the Internet-mode :-)
  *
  * @author <a href="vegaasen@gmail.com">vegardaasen</a>
- * @version 22.11.2015
- * @since 22.11.2015
+ * @version 21.01.2016
+ * @since 21.01.2016
  */
-public class BrowseDabAsync extends AbstractFragmentVoidAsync {
+public class BrowseInternetAsync extends AbstractFragmentVoidAsync {
 
-    private static final String TAG = BrowseDabAsync.class.getSimpleName();
+    private static final String TAG = BrowseInternetAsync.class.getSimpleName();
 
     private final View view;
     private final WeakReference<BrowseFragment> browseFragmentReference;
-    private final ListView dabListView;
+    private final ListView radioStationsListView;
 
     private DeviceCurrentlyPlaying currentlyPlaying;
     private List<RadioStation> radioStations = new ArrayList<>();
-    private ProgressBar browseDabSpinner;
+    private ProgressBar browseSpinner;
 
-    public BrowseDabAsync(FragmentManager fragmentManager, View view, ListView dabListView, WeakReference<BrowseFragment> browseFragmentReference, PinellService pinellService) {
+    public BrowseInternetAsync(FragmentManager fragmentManager, View view, ListView radioStationsListView, WeakReference<BrowseFragment> browseFragmentReference, PinellService pinellService) {
         super(fragmentManager, null, pinellService, null);
         this.browseFragmentReference = browseFragmentReference;
         this.view = view;
-        this.dabListView = dabListView;
+        this.radioStationsListView = radioStationsListView;
     }
 
     @Override
@@ -54,7 +56,7 @@ public class BrowseDabAsync extends AbstractFragmentVoidAsync {
     protected Void doInBackground(Void... voids) {
         currentlyPlaying = pinellService.getCurrentlyPlaying();
         try {
-            radioStations.addAll(new GetAllRadioStationsAsync(pinellService).execute().get());
+            radioStations.addAll(new GetAllRadioStationsAsync(pinellService).execute().get(TIMEOUT, TimeUnit.SECONDS));
         } catch (Exception e) {
             Log.d(TAG, "Unable to fetch radioStations");
         }
@@ -68,9 +70,9 @@ public class BrowseDabAsync extends AbstractFragmentVoidAsync {
             Log.d(TAG, "Fragment removed. Skipping handling");
         }
         configureViewComponents();
-        final BrowseStationsActivity adapter = (BrowseStationsActivity) dabListView.getAdapter();
+        final BrowseStationsActivity adapter = (BrowseStationsActivity) radioStationsListView.getAdapter();
         browseFragment.refreshRadioStationsAndCurrentRadioDataSet(radioStations, currentlyPlaying);
-        dabListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+        radioStationsListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
             }
@@ -86,7 +88,7 @@ public class BrowseDabAsync extends AbstractFragmentVoidAsync {
                 }
             }
         });
-        dabListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        radioStationsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d(TAG, String.format("Position {%s} and id {%s} clicked", position, id));
@@ -101,18 +103,17 @@ public class BrowseDabAsync extends AbstractFragmentVoidAsync {
                 } else {
                     new SetRadioStationAsync(pinellService, radioStation).execute();
                 }
-                browseFragment.refreshCurrentRadioDataSet(radioStation);
-                //new BrowseDabAsync(fragmentManager, view, dabListView, fragmentAdapter, pinellService).execute();
+//                browseFragment.refreshCurrentRadioDataSet(radioStation);
             }
         });
-        if (browseDabSpinner != null) {
-            browseDabSpinner.setVisibility(View.GONE);
+        if (browseSpinner != null) {
+            browseSpinner.setVisibility(View.GONE);
         }
     }
 
     @Override
     protected void configureViewComponents() {
-        browseDabSpinner = (ProgressBar) view.findViewById(R.id.browseDabSpinner);
+        browseSpinner = (ProgressBar) view.findViewById(R.id.browseDabSpinner);
     }
 
 }

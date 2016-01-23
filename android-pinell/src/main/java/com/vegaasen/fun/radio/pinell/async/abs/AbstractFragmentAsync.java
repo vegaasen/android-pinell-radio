@@ -10,6 +10,8 @@ public abstract class AbstractFragmentAsync<T> extends AsyncTask<T, T, T> {
 
     private static final String TAG = AbstractFragmentAsync.class.getSimpleName();
 
+    protected static final int TIMEOUT = 20;
+
     protected final View view;
     protected final PinellService pinellService;
     protected final String unknown;

@@ -12,6 +12,7 @@ import com.vegaasen.fun.radio.pinell.activity.abs.AbstractFragment;
 import com.vegaasen.fun.radio.pinell.adapter.BrowseStationsActivity;
 import com.vegaasen.fun.radio.pinell.async.browse.dab.BrowseDabAsync;
 import com.vegaasen.fun.radio.pinell.async.browse.fm.BrowseFmAsync;
+import com.vegaasen.fun.radio.pinell.async.browse.internet.BrowseInternetAsync;
 import com.vegaasen.fun.radio.pinell.context.ApplicationContext;
 import com.vegaasen.fun.radio.pinell.util.CollectionUtils;
 import com.vegaasen.fun.radio.pinell.util.scheduler.TaskScheduler;
@@ -33,12 +34,11 @@ import java.util.concurrent.TimeUnit;
  * - FM presets
  * <p/>
  * TODO: Implement searching possibilities which updates async on searching (based on Mhz etc)
- * TODO: See how Internet Radio works
  * FIXME: Performance-wise, this thing sucks. Should be fixed
  * FIXME: When loading more channels (DAB, Internet-mode), this must be illustrated somehow. Figure it out!
  *
  * @author <a href="mailto:vegaasen@gmail.com">vegaasen</a>
- * @version 24.11.2015
+ * @version 21.02.2016
  * @since 27.5.2015
  */
 public class BrowseFragment extends AbstractFragment {
@@ -131,14 +131,25 @@ public class BrowseFragment extends AbstractFragment {
         }
     }
 
-    public void refreshDabSimpleDataSet(List<RadioStation> radioStations) {
+    /**
+     * Updates so that all radio stations is being updated.
+     *
+     * @param radioStations _
+     */
+    public void refreshRadioStationsDataSet(List<RadioStation> radioStations) {
         BrowseStationsActivity adapter = (BrowseStationsActivity) stationsListView.getAdapter();
         adapter.updateRadioStations(radioStations);
         loadedRadioStations = radioStations;
         adapter.notifyDataSetChanged();
     }
 
-    public void refreshDabSimpleDataSet(List<RadioStation> radioStations, DeviceCurrentlyPlaying currentlyPlaying) {
+    /**
+     * Performs a simple and refresh of datasets
+     *
+     * @param radioStations _
+     * @param currentlyPlaying _
+     */
+    public void refreshRadioStationsAndCurrentRadioDataSet(List<RadioStation> radioStations, DeviceCurrentlyPlaying currentlyPlaying) {
         BrowseStationsActivity adapter = (BrowseStationsActivity) stationsListView.getAdapter();
         adapter.updateRadioStations(radioStations);
         adapter.updateCurrentRadioStation(currentlyPlaying);
@@ -146,7 +157,12 @@ public class BrowseFragment extends AbstractFragment {
         adapter.notifyDataSetChanged();
     }
 
-    public void refreshDabDataSet(RadioStation currentRadioStation) {
+    /**
+     * Triggers a single update, won't update all radio stations in the view
+     *
+     * @param currentRadioStation _
+     */
+    public void refreshCurrentRadioDataSet(RadioStation currentRadioStation) {
         ApplicationContext.INSTANCE.setActiveRadioStation(currentRadioStation);
         BrowseStationsActivity adapter = (BrowseStationsActivity) stationsListView.getAdapter();
         adapter.updateCurrentRadioStation(currentRadioStation);
@@ -204,9 +220,8 @@ public class BrowseFragment extends AbstractFragment {
         browseFragment = inflater.inflate(R.layout.fragment_browse_internet, container, false);
         CollectionUtils.clear(loadedRadioStations);
         stationsListView = (ListView) browseFragment.findViewById(R.id.browseListOfStations);
-        //todo: can the dab/internet-view be merged together?
         stationsListView.setAdapter(new BrowseStationsActivity(browseFragment.getContext(), loadedRadioStations));
-        new BrowseDabAsync(getFragmentManager(), browseFragment, stationsListView, new WeakReference<>(this), getPinellService()).execute();
+        new BrowseInternetAsync(getFragmentManager(), browseFragment, stationsListView, new WeakReference<>(this), getPinellService()).execute();
         Log.d(TAG, "Internet configured");
     }
 

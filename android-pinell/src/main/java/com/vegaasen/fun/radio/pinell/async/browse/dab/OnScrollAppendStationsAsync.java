@@ -43,7 +43,7 @@ public class OnScrollAppendStationsAsync extends AbstractFragmentVoidAsync {
         if (!CollectionUtils.isEmpty(additionalRadioStations)) {
             Log.d(TAG, "Attempting to update radioStations");
             CollectionUtils.addWithoutDuplicates(loadedRadioStations, additionalRadioStations);
-            browseFragment.get().refreshDabSimpleDataSet(loadedRadioStations);
+            browseFragment.get().refreshRadioStationsDataSet(loadedRadioStations);
         }
     }
 

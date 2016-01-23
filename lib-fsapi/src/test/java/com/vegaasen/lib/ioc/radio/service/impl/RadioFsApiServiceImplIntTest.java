@@ -183,6 +183,7 @@ public class RadioFsApiServiceImplIntTest {
         Set<RadioStation> oneLevelDownStation = service.enterContainerAndListStations(host, radioStations.get(0), RadioFsApiServiceImpl.DEFAULT_MAX_ITEMS);
         assertNotNull(oneLevelDownStation);
         assertFalse(oneLevelDownStation.isEmpty());
+        assertNotEquals(radioStations.size(), oneLevelDownStation.size());
     }
 
     @Test

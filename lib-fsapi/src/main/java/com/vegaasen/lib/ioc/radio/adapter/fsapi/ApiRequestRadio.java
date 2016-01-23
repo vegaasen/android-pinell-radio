@@ -11,7 +11,6 @@ import com.vegaasen.lib.ioc.radio.util.RandomUtils;
 import com.vegaasen.lib.ioc.radio.util.XmlUtils;
 import org.w3c.dom.Document;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -124,21 +123,20 @@ public enum ApiRequestRadio {
                         params
                 )
         );
+        Set<RadioStation> radioStations = new HashSet<>();
         try {
             if (document != null && ApiConnection.INSTANCE.verifyResponseOk(document)) {
-                Set<RadioStation> radioStations = new HashSet<>();
                 for (final Item item : XmlUtils.INSTANCE.getItems(document.getDocumentElement())) {
                     final RadioStation candidate = RadioStation.create(item);
                     if (candidate != null) {
                         radioStations.add(candidate);
                     }
                 }
-                return radioStations;
             }
         } finally {
             postGenericRadioStations(host);
         }
-        return Collections.emptySet();
+        return radioStations;
     }
 
     public void selectRadioStation(Host host, RadioStation radioStation) {
