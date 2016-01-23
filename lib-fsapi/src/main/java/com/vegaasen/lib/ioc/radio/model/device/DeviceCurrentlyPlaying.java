@@ -5,6 +5,8 @@ import com.vegaasen.lib.ioc.radio.model.annotation.Immutable;
 @Immutable
 public class DeviceCurrentlyPlaying {
 
+    public static final int ZERO = 0;
+    public static final String EMPTY = "";
     private final long lastUpdated;
     private final String name;
     private final String tune;
@@ -27,6 +29,10 @@ public class DeviceCurrentlyPlaying {
         this.frequency = frequency;
         this.dabServiceId = dabServiceId;
         this.duration = duration;
+    }
+
+    public static DeviceCurrentlyPlaying createSimple(final String name) {
+        return create(ZERO, name, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, ZERO);
     }
 
     public static DeviceCurrentlyPlaying create(long lastUpdated, String name, String tune, String graphicsUri, String rate, String caps, String status, String frequency, String dabServiceId, int duration) {

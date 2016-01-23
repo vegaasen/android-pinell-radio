@@ -41,7 +41,7 @@ public enum ApiConnection {
     //todo: change the header so that it identifies the library correctly.
     private static final Header USER_AGENT = new Header("User-Agent", "Pinell/1.1 CFNetwork/711.3.18 Darwin/14.0.0");
     private static final Header ACCEPT = new Header("Accept", "*/*");
-    private static final Header ACCEPT_LANGUAGE = new Header("Accept-Language", "en-us");
+    private static final Header ACCEPT_LANGUAGE = new Header("Accept-Language", "en-NO;q=1");
     private static final Header CONNECTION = new Header("Connection", "keep-alive");
     private static final Header ACCEPT_ENCODING = new Header("Accept-Encoding", "gzip, deflate");
     private static final String DEFAULT_CODE = "1234";

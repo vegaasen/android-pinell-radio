@@ -1,20 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/newBackgroundColor">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/newBackgroundColor">
     <!--
         This is a view that basically just displays and let the user select a source
         he/she want to play from. Simple as that.
 
         @author vegaasen
         @since 27.5.2015
-        @version 26.7.2015
+        @version 22.11.2015
     -->
+    <ProgressBar
+            style="?android:attr/progressBarStyleLargeInverse"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/inputSourceSpinner"
+            android:layout_centerInParent="true"
+            android:progressDrawable="@drawable/progress_bar_circular"/>
     <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_below="@id/inputSourceSpinner">
         <ListView
                 android:id="@+id/inputSrcListOfSources"
                 android:layout_width="match_parent"
@@ -28,4 +36,4 @@
                 >
         </ListView>
     </LinearLayout>
-</LinearLayout>
+</RelativeLayout>

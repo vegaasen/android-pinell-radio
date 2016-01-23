@@ -28,4 +28,12 @@ public final class StringUtils {
         return candidate == null;
     }
 
+    public static boolean equalsTrimmed(final String what, final String candidate) {
+        return !isBlank(what, candidate) && trim(what).equals(trim(candidate));
+    }
+
+    public static String trim(final String candidate) {
+        return isBlank(candidate) ? candidate : candidate.trim();
+    }
+
 }

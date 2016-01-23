@@ -2,6 +2,7 @@ package com.vegaasen.lib.ioc.radio.service.impl;
 
 import com.vegaasen.http.rest.utils.StringUtils;
 import com.vegaasen.lib.ioc.radio.adapter.fsapi.ApiConnection;
+import com.vegaasen.lib.ioc.radio.adapter.fsapi.ApiRequestRadio;
 import com.vegaasen.lib.ioc.radio.adapter.fsapi.ApiRequestSystem;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Connection;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
@@ -54,4 +55,5 @@ public class RadioFsApiConnectionServiceImpl implements RadioFsApiConnectionServ
         }
         return ApiConnection.INSTANCE.createHost(host, port);
     }
+
 }

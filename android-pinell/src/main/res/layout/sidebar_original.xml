@@ -41,6 +41,7 @@
                         android:layout_height="@dimen/iconSizeHeight"
                         android:contentDescription="@string/genericUnknown"
                         android:layout_gravity="center"
+                        android:id="@+id/imgSidebarBranding"
                         android:src="@drawable/ic_info_outline_black"
                         />
                 <TextView

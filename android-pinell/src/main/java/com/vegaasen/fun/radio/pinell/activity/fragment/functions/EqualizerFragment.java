@@ -5,17 +5,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
+import com.google.common.collect.Lists;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractFragment;
 import com.vegaasen.fun.radio.pinell.adapter.EqualizerAdapter;
+import com.vegaasen.fun.radio.pinell.async.equalizer.EqualizerAsync;
 import com.vegaasen.fun.radio.pinell.context.ApplicationContext;
-import com.vegaasen.fun.radio.pinell.util.CollectionUtils;
-import com.vegaasen.fun.radio.pinell.util.Comparators;
 import com.vegaasen.lib.ioc.radio.model.system.Equalizer;
 
-import java.util.Collections;
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
@@ -36,6 +35,7 @@ public class EqualizerFragment extends AbstractFragment {
     private static final String TAG = EqualizerFragment.class.getSimpleName();
 
     private View equalizerView;
+    private ListView listView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,7 +43,7 @@ public class EqualizerFragment extends AbstractFragment {
 //        if (!isWifiEnabledAndConnected()) {
 //            equalizerView = inflater.inflate(R.layout.fragment_pinell_network_offline, container, false);
 //        } else
-        if (!getPinellService().isPinellDevice()) {
+        if (!ApplicationContext.INSTANCE.isPinellDevice()) {
             equalizerView = inflater.inflate(R.layout.fragment_pinell_na, container, false);
         } else {
             equalizerView = inflater.inflate(R.layout.fragment_equalizer, container, false);
@@ -51,9 +51,33 @@ public class EqualizerFragment extends AbstractFragment {
                 Log.e(TAG, "For some reason, the view were unable to be found. Dying");
                 throw new RuntimeException("Missing required view in the initialization of the application");
             }
-            listEqualizersAvailable();
+            configureComponents();
+            refreshView();
         }
         return equalizerView;
+    }
+
+    public void refreshView() {
+        if (equalizerView == null) {
+            Log.w(TAG, "Unable to list equalizers, as the equalizerView is not available");
+            return;
+        }
+        new EqualizerAsync(getFragmentManager(), equalizerView, listView, new WeakReference<>(this), getPinellService()).execute();
+    }
+
+    public void refreshDataSet(List<Equalizer> equalizers, Equalizer currentEqualizer) {
+        ApplicationContext.INSTANCE.setActiveEqualizer(currentEqualizer);
+        EqualizerAdapter equalizerAdapter = (EqualizerAdapter) listView.getAdapter();
+        equalizerAdapter.updateEqualizers(equalizers);
+        equalizerAdapter.updateCurrentEqualizer(currentEqualizer);
+        equalizerAdapter.notifyDataSetChanged();
+    }
+
+    public void refreshDataSet(Equalizer currentEqualizer) {
+        ApplicationContext.INSTANCE.setActiveEqualizer(currentEqualizer);
+        EqualizerAdapter equalizerAdapter = (EqualizerAdapter) listView.getAdapter();
+        equalizerAdapter.updateCurrentEqualizer(currentEqualizer);
+        equalizerAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -61,54 +85,9 @@ public class EqualizerFragment extends AbstractFragment {
         changeCurrentActiveApplicationContextContent(container, R.drawable.ic_equalizer_white, R.string.sidebarEqualizer);
     }
 
-    private void listEqualizersAvailable() {
-        if (equalizerView == null) {
-            Log.w(TAG, "Unable to list equalizers, as the equalizerView is not available");
-            return;
-        }
-        final ListView equalizerOverview = (ListView) equalizerView.findViewById(R.id.equalizerListOfEqualizers);
-        if (equalizerOverview == null) {
-            Log.w(TAG, "It seems like the equalizerOverview is nilled, skipping");
-            return;
-        }
-        final EqualizerAdapter equalizerAdapter = getEqualizerOverview(equalizerOverview);
-        equalizerOverview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(TAG, String.format("Position {%s} and id {%s} clicked", position, id));
-                final Equalizer selectedEqualizer = equalizerAdapter.getItem(position);
-                getPinellService().setEqualizer(selectedEqualizer);
-                // Perform a refresh of the list of available equalizers
-                listEqualizersAvailable();
-            }
-        });
-    }
-
-    private EqualizerAdapter getEqualizerOverview(ListView equalizerOverview) {
-        EqualizerAdapter equalizerAdapter;
-        final Equalizer currentEqualizer = getCurrentEqualizer();
-        final List<Equalizer> equalizers = getEqualizers();
-        ApplicationContext.INSTANCE.setActiveEqualizer(currentEqualizer);
-        if (equalizerOverview.getAdapter() == null) {
-            equalizerAdapter = new EqualizerAdapter(equalizerView.getContext(), equalizers, currentEqualizer);
-            equalizerOverview.setAdapter(equalizerAdapter);
-        } else {
-            equalizerAdapter = (EqualizerAdapter) equalizerOverview.getAdapter();
-            equalizerAdapter.updateEqualizers(equalizers);
-            equalizerAdapter.updateCurrentEqualizer(currentEqualizer);
-            equalizerAdapter.notifyDataSetChanged();
-        }
-        return equalizerAdapter;
-    }
-
-    public Equalizer getCurrentEqualizer() {
-        return getPinellService().getCurrentEqualizer();
-    }
-
-    private List<Equalizer> getEqualizers() {
-        final List<Equalizer> equalizers = CollectionUtils.toList(getPinellService().listEqualizers());
-        Collections.sort(equalizers, new Comparators.EqualizerComparator());
-        return equalizers;
+    private void configureComponents() {
+        listView = (ListView) equalizerView.findViewById(R.id.equalizerListOfEqualizers);
+        listView.setAdapter(new EqualizerAdapter(equalizerView.getContext(), Lists.<Equalizer>newArrayList(), null));
     }
 
 }

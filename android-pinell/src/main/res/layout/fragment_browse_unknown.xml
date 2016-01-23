@@ -11,6 +11,7 @@
 
          @author vegaasen
          @since 30.8.2015
+         @version 26.11.2015
      -->
     <ImageView
             android:id="@+id/imgFmRadioLogo"
@@ -36,6 +37,7 @@
             android:layout_centerHorizontal="true"
             android:textSize="@dimen/textSmallDefaultHeight"
             android:textStyle="italic"
+            android:layout_margin="@dimen/informationMargin"
             android:text="@string/inputSourceNotAvailableUnknownReason"
             />
 </RelativeLayout>

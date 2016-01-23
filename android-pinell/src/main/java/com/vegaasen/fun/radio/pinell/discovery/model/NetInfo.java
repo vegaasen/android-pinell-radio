@@ -23,18 +23,18 @@ import java.util.Enumeration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_CIDR;
-import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_CIDR_CUSTOM;
-import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_INTF;
-import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_IP_CUSTOM;
-import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_IP_END;
-import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_IP_START;
-import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_CIDR;
-import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_CIDR_CUSTOM;
-import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_INTF;
-import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_IP_CUSTOM;
-import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_IP_END;
-import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_IP_START;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.DEFAULT_CIDR;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.DEFAULT_CIDR_CUSTOM;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.DEFAULT_INTF;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.DEFAULT_IP_CUSTOM;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.DEFAULT_IP_END;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.DEFAULT_IP_START;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_CIDR;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_CIDR_CUSTOM;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_INTF;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_IP_CUSTOM;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_IP_END;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_IP_START;
 
 /**
  * TODO: IPv6 support

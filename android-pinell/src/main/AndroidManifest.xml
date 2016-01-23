@@ -25,7 +25,9 @@
         <activity android:name=".activity.host.SelectHostActivity"
                   android:label="@string/activity_host_main"
                   android:screenOrientation="portrait"
-                  android:theme="@android:style/Theme.Translucent.NoTitleBar">
-        </activity>
+                  android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+        <activity android:name=".activity.hidden.HiddenMenuActivity"
+                  android:label="@string/hidden_activity_host_main"
+                  android:screenOrientation="portrait"/>
     </application>
 </manifest>

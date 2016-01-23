@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:minWidth="300dp"
+              android:background="#80000000"
+              android:orientation="vertical"
+              android:gravity="center"
+        >
+    <RelativeLayout
+            android:layout_gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/newTitleColor"
+            android:paddingBottom="@dimen/elementSpacing"
+            >
+        <ImageView
+                android:id="@+id/imgSettings"
+                android:layout_width="23dp"
+                android:layout_height="23dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginStart="10dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"
+                android:background="@drawable/ic_cast_white"
+                android:contentDescription="@string/genericUnknown"
+                />
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/imgSettings"
+                android:layout_centerVertical="true"
+                android:text="@string/dialogSettingsTitle"
+                android:textColor="@color/newTitleTextColor"/>
+    </RelativeLayout>
+    <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/defaultBackgroundColor"
+                    android:orientation="horizontal"
+                    android:scrollbars="vertical"
+                    android:scrollbarAlwaysDrawVerticalTrack="false"
+            >
+        <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_volume_up_black"
+                android:id="@+id/btnSettingsVolumeUp"
+                android:contentDescription="@string/genericUnknown"
+                />
+        <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_volume_up_black"
+                android:layout_toEndOf="@id/btnSettingsVolumeUp"
+                android:id="@+id/btnSettingsVolumeDown"
+                android:contentDescription="@string/genericUnknown"
+                />
+        <Button android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btnClearExistingHosts"
+                android:id="@+id/btnSettingsClearSavedHosts"
+                android:layout_below="@id/btnSettingsVolumeDown"
+                />
+        <Button android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btnAddNewHost"
+                android:id="@+id/btnSettingsAddHost"
+                android:layout_below="@id/btnSettingsClearSavedHosts"
+                />
+        <Button android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btnAcquireNewSession"
+                android:id="@+id/btnSettingsAquireNewSession"
+                android:layout_below="@id/btnSettingsAddHost"
+                />
+    </RelativeLayout>
+</LinearLayout>

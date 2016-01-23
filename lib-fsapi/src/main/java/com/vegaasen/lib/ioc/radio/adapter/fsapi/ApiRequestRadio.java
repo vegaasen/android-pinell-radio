@@ -3,28 +3,36 @@ package com.vegaasen.lib.ioc.radio.adapter.fsapi;
 import com.vegaasen.lib.ioc.radio.adapter.constants.ApiResponse;
 import com.vegaasen.lib.ioc.radio.adapter.constants.Parameter;
 import com.vegaasen.lib.ioc.radio.adapter.constants.UriContext;
+import com.vegaasen.lib.ioc.radio.model.annotation.Beta;
 import com.vegaasen.lib.ioc.radio.model.dab.RadioStation;
 import com.vegaasen.lib.ioc.radio.model.response.Item;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
+import com.vegaasen.lib.ioc.radio.util.RandomUtils;
 import com.vegaasen.lib.ioc.radio.util.XmlUtils;
 import org.w3c.dom.Document;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 /**
- * Todo: beautify.
+ * The idea behind this class is to gather all the various API-Requests that exists within the Radio-atmosphere
+ * <p/>
+ * Todo: Review. Does this even work as intended? There are quite a few bugs here, surely this can be done better?
+ *
+ * @version 26.11.2015
+ * @since 9.2.2015
  */
 public enum ApiRequestRadio {
 
     INSTANCE;
 
-    private static final String PREVIOUS_LEVEL = "0xffffffff";
-    private static final String FM_SEARCH_FORWARD = "3";
-    private static final String FM_SEARCH_REWIND = "4";
-    public static final String EMPTY = "";
+    private static final Logger LOG = Logger.getLogger(ApiRequestRadio.class.getSimpleName());
+    private static final String PREVIOUS_HIERARCHY_LEVEL = "0xffffffff";
+    private static final String FM_SEARCH_FORWARD = "3", FM_SEARCH_REWIND = "4";
+    private static final String RANDOM = RandomUtils.randomAsString(), EMPTY = "";
+    private static final int MAX_TRIES = 5, AWAITING_READYNESS = 30;
 
     public void searchFMForward(Host host) {
         final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
@@ -64,7 +72,7 @@ public enum ApiRequestRadio {
      */
     public Set<RadioStation> selectPreviousContainer(Host host, int maxItems) {
         final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
-        params.put(Parameter.QueryParameter.VALUE, PREVIOUS_LEVEL);
+        params.put(Parameter.QueryParameter.VALUE, PREVIOUS_HIERARCHY_LEVEL);
         ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.SUB_CONTAINER_SELECT, params));
         return getRadioStations(host, -1, maxItems);
     }
@@ -86,15 +94,26 @@ public enum ApiRequestRadio {
      * @return _
      */
     public Set<RadioStation> selectContainerAndGetRadioStations(Host host, RadioStation radioStation, int maxItems) {
+        preGenericRadioStations(host);
         final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
         params.put(Parameter.QueryParameter.VALUE, radioStation.getKeyIdAsString());
         ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.SUB_CONTAINER_SELECT, params));
-        return getRadioStations(host, -1, maxItems);
+        awaitRadioReady(host);
+        return getRadioStations(host, -1, maxItems, true);
     }
 
-    //TODO: There is, for some reason, something not working as it should regarding the listing of radio stations/containers. Look into the sniffing session
     public Set<RadioStation> getRadioStations(Host host, int fromIndex, int maxItems) {
-        preGenericRadioStations(host);
+        return getRadioStations(host, fromIndex, maxItems, false);
+    }
+
+    public Set<RadioStation> getRadioStations(Host host, int fromIndex, int maxItems, boolean container) {
+        if (container) {
+            LOG.finest("Container selected, treating it as such");
+            preFolderRadioStations(host);
+        } else {
+            LOG.finest("Normal loading operation, loading stations for the first time/default list");
+            preGenericRadioStations(host);
+        }
         final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
         params.put(Parameter.QueryParameter.MAX_ITEMS, Integer.toString(maxItems));
         final Document document = ApiConnection.INSTANCE.request(
@@ -104,21 +123,20 @@ public enum ApiRequestRadio {
                         params
                 )
         );
+        Set<RadioStation> radioStations = new HashSet<>();
         try {
             if (document != null && ApiConnection.INSTANCE.verifyResponseOk(document)) {
-                Set<RadioStation> radioStations = new HashSet<>();
                 for (final Item item : XmlUtils.INSTANCE.getItems(document.getDocumentElement())) {
                     final RadioStation candidate = RadioStation.create(item);
                     if (candidate != null) {
                         radioStations.add(candidate);
                     }
                 }
-                return radioStations;
             }
         } finally {
             postGenericRadioStations(host);
         }
-        return Collections.emptySet();
+        return radioStations;
     }
 
     public void selectRadioStation(Host host, RadioStation radioStation) {
@@ -131,7 +149,25 @@ public enum ApiRequestRadio {
             params.put(Parameter.QueryParameter.VALUE, radioStation.getKeyIdAsString());
             ApiConnection.INSTANCE.requestAsync(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.STATION_SELECT, params));
         } finally {
-            postSelectRadioStation(host);
+            postGenericRadioStations(host);
+        }
+    }
+
+    /**
+     * Checks if anything has changed upon the last time checked. This results most of the times in the following response:
+     * FS_TIMEOUT (after 30ish seconds)
+     *
+     * @param host _
+     */
+    @Deprecated
+    @Beta
+    public void getNotifies(Host host) {
+        try {
+            final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
+            params.put(Parameter.QueryParameter.RANDOM, RANDOM);
+            ApiConnection.INSTANCE.requestAsync(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NOTIFIES));
+        } catch (Exception e) {
+            LOG.info("Unable to getNotifies");
         }
     }
 
@@ -143,25 +179,27 @@ public enum ApiRequestRadio {
      */
     private void preGenericRadioStations(Host host) {
         try {
-            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_CAPS));
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_STATE));
             final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
             params.put(Parameter.QueryParameter.VALUE, "0");
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_SET_NAV_STATE, params));
             params.put(Parameter.QueryParameter.VALUE, "1");
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_SET_NAV_STATE, params));
-            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_STATE));
-            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_STATUS));
-            try {
-                //todo: messy? Oh, never!!! :-) for some reason, the get_notifies may fail on strange occasions. Wrapping this crappy stuff
-                //todo: create a common wrapper for callables..?
-                ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NOTIFIES));
-            } catch (Exception e) {
-                //*gulp*
-            }
+            awaitRadioReady(host);
+            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_DEPTH));
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NUM_ITEMS));
         } catch (final Exception e) {
-            //*gulp*
+            LOG.info("Unable to execute pre-generics for radio stations");
+        }
+    }
+
+    private void preFolderRadioStations(Host host) {
+        try {
+            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_STATE));
+            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_DEPTH));
+            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NUM_ITEMS));
+        } catch (Exception e) {
+            LOG.info("Unable to execute pre-folder for radio stations");
         }
     }
 
@@ -177,21 +215,26 @@ public enum ApiRequestRadio {
             params.put(Parameter.QueryParameter.VALUE, "0");
             ApiConnection.INSTANCE.requestAsync(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_SET_NAV_STATE, params));
         } catch (final Exception e) {
-            //*gulp*
+            LOG.warning("Unable to execute post-generics for radio station");
         }
     }
 
-    /**
-     * For some reason, we also need to ensure that some of the APIs is getting requested. Atleast, that is how it looks like in the proxy listner application
-     *
-     * @param host _
-     */
-    private void postSelectRadioStation(Host host) {
-        try {
-            ApiConnection.INSTANCE.requestAsync(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NOTIFIES));
-            postGenericRadioStations(host);
-        } catch (Exception e) {
-            // *gulp*
+    private void awaitRadioReady(Host host) {
+        int tries = 0;
+        while (tries <= MAX_TRIES) {
+            Document candidate = ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_STATUS));
+            if (candidate != null) {
+                if (XmlUtils.INSTANCE.getTextContentByNode(candidate.getDocumentElement(), ApiResponse.VALUE_U_8).equals(ApiResponse.Value.TRUE)) {
+                    return;
+                }
+                try {
+                    Thread.sleep(AWAITING_READYNESS);
+                } catch (InterruptedException e) {
+                    // * gulp *
+                }
+            }
+            LOG.warning(String.format("Try {%s}", tries));
+            tries++;
         }
     }
 

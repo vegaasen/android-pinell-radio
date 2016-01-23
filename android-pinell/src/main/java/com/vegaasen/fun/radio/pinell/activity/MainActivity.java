@@ -9,7 +9,9 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractActivity;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractFragment;
@@ -19,9 +21,14 @@ import com.vegaasen.fun.radio.pinell.activity.fragment.functions.EqualizerFragme
 import com.vegaasen.fun.radio.pinell.activity.fragment.functions.InformationFragment;
 import com.vegaasen.fun.radio.pinell.activity.fragment.functions.InputSourceFragment;
 import com.vegaasen.fun.radio.pinell.activity.fragment.functions.NowPlayingFragment;
+import com.vegaasen.fun.radio.pinell.activity.hidden.HiddenMenuActivity;
 import com.vegaasen.fun.radio.pinell.activity.host.SelectHostActivity;
+import com.vegaasen.fun.radio.pinell.async.function.UpdateAudioLevelAsync;
+import com.vegaasen.fun.radio.pinell.async.function.UpdateRadioModeAsync;
 import com.vegaasen.fun.radio.pinell.context.ApplicationContext;
-import com.vegaasen.lib.ioc.radio.model.device.DeviceAudio;
+import com.vegaasen.fun.radio.pinell.util.scheduler.TaskScheduler;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * This is the main activity which controls all the various fragments within the application itself.
@@ -37,6 +44,10 @@ public class MainActivity extends AbstractActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int TRANSIT_FRAGMENT_FADE = FragmentTransaction.TRANSIT_FRAGMENT_FADE;
     private static final int REQUEST_CODE = 1;
+    private static final long REFRESH_PERIOD = TimeUnit.SECONDS.toMillis(60);
+    private static boolean active, scheduled;
+
+    private int clickedHiddenDoor;
 
     private SplashScreenFragment splashScreen;
     private NowPlayingFragment nowPlayingFragment;
@@ -50,6 +61,7 @@ public class MainActivity extends AbstractActivity {
     private SlidingPaneLayout componentSlidingSidebar;
     private View currentActiveFragmentView;
     private ImageButton buttonChangePinellHost;
+    private ImageView sidebarBranding;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,12 +74,19 @@ public class MainActivity extends AbstractActivity {
         if (renderSelectPinellHost()) {
             configureSidebarActionListeners();
         }
+        configureScheduledTasks(true);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "Resuming");
+        configureScheduledTasks(true);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        configureScheduledTasks(false);
     }
 
     @Override
@@ -75,9 +94,11 @@ public class MainActivity extends AbstractActivity {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG, String.format("Response from request {%s} was {%s}", requestCode, resultCode));
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+            configureCurrentInputSource();
             buttonChangePinellHost.setBackgroundResource(R.drawable.ic_cast_connected_white);
             getSupportFragmentManager().beginTransaction().replace(R.id.fragmentReplacer, informationFragment).commit();
-            informationFragment.refreshDeviceInformation();
+            //todo: Is this even required?
+            informationFragment.refreshView();
             setActiveFragmentLayout(currentActiveFragmentView);
         }
     }
@@ -85,23 +106,41 @@ public class MainActivity extends AbstractActivity {
     @Override
     public boolean onKeyUp(int keyCode, @NonNull KeyEvent event) {
         if (ApplicationContext.INSTANCE.isRadioConnected() && keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-            final DeviceAudio audioLevels = getPinellService().getAudioLevels();
-            final int candidateLevel = audioLevels.getLevel();
-            getPinellService().setAudioLevel(candidateLevel <= 38 ? candidateLevel + 1 : candidateLevel);
+            new UpdateAudioLevelAsync(getPinellService(), true).execute();
             conditionallyUpdateFragment();
         }
         return true;
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
         if (ApplicationContext.INSTANCE.isRadioConnected() && keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-            final DeviceAudio audioLevels = getPinellService().getAudioLevels();
-            final int candidateLevel = audioLevels.getLevel();
-            getPinellService().setAudioLevel(candidateLevel > 0 ? candidateLevel - 1 : candidateLevel);
+            new UpdateAudioLevelAsync(getPinellService(), false).execute();
             conditionallyUpdateFragment();
         }
         return true;
+    }
+
+    private void configureScheduledTasks(boolean start) {
+        active = start;
+        if (!scheduled) {
+            if (active) {
+                TaskScheduler timer = new TaskScheduler();
+                timer.scheduleAtFixedRate(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (active) {
+//                            new GetNotifiesAsync(getPinellService()).execute();
+                        }
+                    }
+                }, REFRESH_PERIOD);
+            }
+            scheduled = true;
+        }
+    }
+
+    private void configureCurrentInputSource() {
+        new UpdateRadioModeAsync(getPinellService()).execute();
     }
 
     private void conditionallyUpdateFragment() {
@@ -120,6 +159,7 @@ public class MainActivity extends AbstractActivity {
         inputSourceFragment = new InputSourceFragment();
         equalizerFragment = new EqualizerFragment();
         informationFragment = new InformationFragment();
+        sidebarBranding = (ImageView) findViewById(R.id.imgSidebarBranding);
         sectionPlaying = (RelativeLayout) findViewById(R.id.sectionPlaying);
         sectionBrowse = (RelativeLayout) findViewById(R.id.sectionBrowse);
         sectionSource = (RelativeLayout) findViewById(R.id.sectionSource);
@@ -131,6 +171,7 @@ public class MainActivity extends AbstractActivity {
     }
 
     private void configureButtonActionListeners() {
+        final MainActivity activity = this;
         buttonChangePinellHost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,6 +187,18 @@ public class MainActivity extends AbstractActivity {
                     componentSlidingSidebar.closePane();
                 } else {
                     componentSlidingSidebar.openPane();
+                }
+            }
+        });
+        sidebarBranding.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (clickedHiddenDoor > 3) {
+                    clickedHiddenDoor = 0;
+                    startActivityForResult(new Intent(activity, HiddenMenuActivity.class), REQUEST_CODE);
+                } else {
+                    Toast.makeText(getBaseContext(), String.format("%s pow!", clickedHiddenDoor), Toast.LENGTH_SHORT).show();
+                    clickedHiddenDoor++;
                 }
             }
         });

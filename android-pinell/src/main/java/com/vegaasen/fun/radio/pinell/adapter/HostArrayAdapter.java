@@ -23,8 +23,8 @@ import java.util.List;
  */
 public class HostArrayAdapter extends ArrayAdapter<HostBean> {
 
-    private static final String TAG = DeviceArrayAdapter.class.getSimpleName();
-    private static final int MAX_HOSTNAME_LENGTH = 20, START = 0;
+    private static final String TAG = DeviceArrayAdapter.class.getSimpleName(), EMPTY = "", CACHE_IDENTIFIER = "# ";
+    private static final int MAX_HOSTNAME_LENGTH = 35, START = 0;
 
     private final Context context;
     private final WeakReference<AbstractActivity> activity;
@@ -44,7 +44,7 @@ public class HostArrayAdapter extends ArrayAdapter<HostBean> {
             final TextView radioName = (TextView) deviceListView.findViewById(R.id.listDeviceRadioName);
             final HostBean host = getHost(position);
             if (host != null) {
-                final String hostName = host.getHostname();
+                final String hostName = (host.isFromCache() ? CACHE_IDENTIFIER : EMPTY) + host.getHostname();
                 Log.d(TAG, String.format("Host is now being handled {%s}", hostName));
                 radioName.setText(hostName.toCharArray(), START, hostName.length() > MAX_HOSTNAME_LENGTH ? MAX_HOSTNAME_LENGTH : hostName.length());
             }

@@ -7,6 +7,8 @@ import android.util.Log;
 import com.google.common.collect.Lists;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractActivity;
+import com.vegaasen.fun.radio.pinell.async.function.host.UpdateHostBeanInformationAsync;
+import com.vegaasen.fun.radio.pinell.context.ApplicationContext;
 import com.vegaasen.fun.radio.pinell.discovery.model.HostBean;
 import com.vegaasen.lib.ioc.radio.adapter.fsapi.ApiConnection;
 import com.vegaasen.lib.utils.TelnetUtil;
@@ -15,8 +17,8 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Set;
 
-import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_VIBRATE_FINISH;
-import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_VIBRATE_FINISH;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.DEFAULT_VIBRATE_FINISH;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_VIBRATE_FINISH;
 
 /**
  * This is used in order to define the abstract layer related to the network discovery
@@ -76,6 +78,7 @@ public abstract class AbstractHostDiscovery extends AsyncTask<Void, HostBean, Vo
                     final Set<Integer> candidates = TelnetUtil.isAlive(candidate.getIpAddress(), PORTS);
                     if (!candidates.isEmpty()) {
                         candidate.setPortsOpen(candidates);
+                        new UpdateHostBeanInformationAsync(ApplicationContext.INSTANCE.getPinellService(), candidate).silentGet();
                         discover.addHost(candidate);
                     }
                 }

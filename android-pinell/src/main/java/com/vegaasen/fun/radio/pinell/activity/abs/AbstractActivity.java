@@ -21,14 +21,15 @@ import com.vegaasen.fun.radio.pinell.context.ApplicationContext;
 import com.vegaasen.fun.radio.pinell.discovery.model.HostBean;
 import com.vegaasen.fun.radio.pinell.discovery.model.NetInfo;
 import com.vegaasen.fun.radio.pinell.service.PinellService;
+import com.vegaasen.fun.radio.pinell.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_INTF;
-import static com.vegaasen.fun.radio.pinell.common.Constants.DEFAULT_MOBILE;
-import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_INTF;
-import static com.vegaasen.fun.radio.pinell.common.Constants.KEY_MOBILE;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.DEFAULT_INTF;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.DEFAULT_MOBILE;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_INTF;
+import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.KEY_MOBILE;
 
 /**
  * Simple layer abstraction for all common screens in the application.
@@ -159,7 +160,19 @@ public abstract class AbstractActivity extends FragmentActivity {
     public void cancel() {
     }
 
+    public void addHost(List<HostBean> hosts) {
+        if (CollectionUtils.isEmpty(hosts)) {
+            return;
+        }
+        for (HostBean host : hosts) {
+            addHost(host);
+        }
+    }
+
     public void addHost(HostBean host) {
+        if (host == null || hosts.contains(host)) {
+            return;
+        }
         host.setPosition(hosts.size());
         hosts.add(host);
         adapter.add(null);

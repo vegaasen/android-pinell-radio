@@ -7,7 +7,7 @@ Its the missing application for Pinell Supersound related to Android devices. Fi
 
 # Based on
 
-..
+Nothing.
 
 # API-Overview
 
@@ -28,3 +28,5 @@ This is the port-scanning for my own Pinell device.
 * The discovery/TelnetUtils does not work as intended on Android. Sometimes it does not discover the devices, which is quite odd.
 
 # Contributors
+
+* Vegard Aasen | vegaasen@gmail.com | Norway | Kongsberg/Odda | Kongsberg ASA | Aasen Websnekkeri

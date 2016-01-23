@@ -10,7 +10,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import com.google.common.base.Strings;
 import com.vegaasen.fun.radio.pinell.R;
+import com.vegaasen.http.rest.utils.StringUtils;
 import com.vegaasen.lib.ioc.radio.model.dab.RadioStation;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceCurrentlyPlaying;
 
@@ -65,7 +67,7 @@ public class BrowseStationsActivity extends BaseAdapter {
             ImageView image = (ImageView) convertView.findViewById(R.id.selectableAdvancedItemImg);
             image.setImageResource(R.drawable.ic_audiotrack_white);
             caption.setText(candidate.getName());
-            if (currentRadioStation != null && candidate.getName().equals(  currentRadioStation.getName())) {
+            if (currentRadioStation != null && StringUtils.equalsTrimmed(currentRadioStation.getName(), candidate.getName())) {
                 final Resources resources = context.getResources();
                 RelativeLayout equalizerContainer = (RelativeLayout) convertView.findViewById(R.id.selectableAdvancedItem);
                 equalizerContainer.setBackgroundColor(resources.getColor(R.color.newSidebarBackgroundColor));
@@ -83,7 +85,14 @@ public class BrowseStationsActivity extends BaseAdapter {
         this.currentRadioStation = selected;
     }
 
-    public void updateRadioStations(List<RadioStation> updatedRadioStations) {
+    public void updateCurrentRadioStation(RadioStation radioStation) {
+        if (radioStation == null || Strings.isNullOrEmpty(radioStation.getName())) {
+            return;
+        }
+        this.currentRadioStation = DeviceCurrentlyPlaying.createSimple(radioStation.getName());
+    }
+
+    public void clearAndRefreshRadioStations(List<RadioStation> updatedRadioStations) {
         synchronized (radioStations) {
             radioStations.clear();
             radioStations.addAll(updatedRadioStations);

@@ -9,6 +9,8 @@ public final class UriContext {
     }
 
     public static final class System {
+        public static final String DEVICE_DETAILS = SLASH + "dd.xml";
+
         public static final String GET_POWER_STATE = SLASH + "GET/netRemote.sys.power";
         public static final String SET_POWER_STATE = SLASH + "SET/netRemote.sys.power";
         //equalizers
@@ -46,9 +48,11 @@ public final class UriContext {
         public static final String SUB_CONTAINER_SELECT = SLASH + "SET/netRemote.nav.action.navigate";
         public static final String PRE_GET_NAV_CAPS = SLASH + "GET/netRemote.nav.caps";
         public static final String PRE_GET_NUM_ITEMS = SLASH + "GET/netRemote.nav.numItems";
+        public static final String PRE_GET_NAV_DEPTH = SLASH + "GET/netRemote.nav.depth";
         public static final String PRE_GET_NAV_STATE = SLASH + "GET/netRemote.nav.state";
         public static final String PRE_SET_NAV_STATE = SLASH + "SET/netRemote.nav.state";
         public static final String PRE_GET_NAV_STATUS = SLASH + "GET/netRemote.nav.status";
+        public static final String PRE_SET_NAV_STATUS = SLASH + "SET/netRemote.nav.status";
         public static final String PRE_GET_NOTIFIES = SLASH + "GET_NOTIFIES";
 
         public static final class FM {

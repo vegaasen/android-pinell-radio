@@ -1,0 +1,82 @@
+http://192.168.0.102:2244/fsapi/GET/netRemote.nav.state?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.nav.state?pin=1234	Tue Jan 12 22:41:23 CET 2016	14	377	Complete
+http://192.168.0.102:2244/fsapi/SET/netRemote.nav.state?pin=1234&value=0	200	GET	192.168.0.102:2244	/fsapi/SET/netRemote.nav.state?pin=1234&value=0	Tue Jan 12 22:41:23 CET 2016	12	359	Complete
+http://192.168.0.102:2244/fsapi/SET/netRemote.nav.state?pin=1234&value=1	200	GET	192.168.0.102:2244	/fsapi/SET/netRemote.nav.state?pin=1234&value=1	Tue Jan 12 22:41:23 CET 2016	42	359	Complete
+http://192.168.0.102:2244/fsapi/GET_NOTIFIES?pin=1234&r=20044&sid=937461581	200	GET	192.168.0.102:2244	/fsapi/GET_NOTIFIES?pin=1234&r=20044&sid=937461581	Tue Jan 12 22:41:23 CET 2016	216	435	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.nav.status?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.nav.status?pin=1234	Tue Jan 12 22:41:23 CET 2016	16	378	Complete
+# (unrelated) http://192.168.0.102:2244/fsapi/GET_NOTIFIES?pin=1234&r=20044&sid=937461581		GET	192.168.0.102:2244	/fsapi/GET_NOTIFIES?pin=1234&r=20044&sid=937461581	Tue Jan 12 22:41:23 CET 2016		243	Waiting for response
+http://192.168.0.102:2244/fsapi/GET/netRemote.nav.depth?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.nav.depth?pin=1234	Tue Jan 12 22:41:23 CET 2016	21	368	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.nav.numItems?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.nav.numItems?pin=1234	Tue Jan 12 22:41:23 CET 2016	32	382	Complete
+http://192.168.0.102:2244/fsapi/LIST_GET_NEXT/netRemote.nav.list/-1?maxItems=30&pin=1234	200	GET	192.168.0.102:2244	/fsapi/LIST_GET_NEXT/netRemote.nav.list/-1?maxItems=30&pin=1234	Tue Jan 12 22:41:23 CET 2016	20	1362	Complete
+
+
+http://192.168.0.102:2244/fsapi/SET/netRemote.nav.state?sid=2049751887&pin=1234&value=0	200	GET	192.168.0.102:2244	/fsapi/SET/netRemote.nav.state?sid=2049751887&pin=1234&value=0	Tue Jan 12 22:40:23 CET 2016	20	350	Complete
+http://192.168.0.102:2244/fsapi/SET/netRemote.nav.state?sid=2049751887&pin=1234&value=1	200	GET	192.168.0.102:2244	/fsapi/SET/netRemote.nav.state?sid=2049751887&pin=1234&value=1	Tue Jan 12 22:40:23 CET 2016	28	350	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.nav.caps?sid=2049751887&pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.nav.caps?sid=2049751887&pin=1234	Tue Jan 12 22:40:23 CET 2016	14	369	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.nav.status?sid=2049751887&pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.nav.status?sid=2049751887&pin=1234	Tue Jan 12 22:40:23 CET 2016	18	369	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.nav.state?sid=2049751887&pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.nav.state?sid=2049751887&pin=1234	Tue Jan 12 22:40:24 CET 2016	21	368	Complete
+http://192.168.0.102:2244/fsapi/GET_NOTIFIES?sid=2049751887&pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET_NOTIFIES?sid=2049751887&pin=1234	Tue Jan 12 22:40:24 CET 2016	23	404	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.nav.numItems?sid=2049751887&pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.nav.numItems?sid=2049751887&pin=1234	Tue Jan 12 22:40:24 CET 2016	38	373	Complete
+http://192.168.0.102:2244/fsapi/LIST_GET_NEXT/netRemote.nav.list/-1?sid=2049751887&pin=1234&maxItems=30	200	GET	192.168.0.102:2244	/fsapi/LIST_GET_NEXT/netRemote.nav.list/-1?sid=2049751887&pin=1234&maxItems=30	Tue Jan 12 22:40:24 CET 2016	25	1353	Complete
+http://192.168.0.102:2244/fsapi/SET/netRemote.nav.state?sid=2049751887&pin=1234&value=0	200	GET	192.168.0.102:2244	/fsapi/SET/netRemote.nav.state?sid=2049751887&pin=1234&value=0	Tue Jan 12 22:40:24 CET 2016	16	350	Complete
+
+
+
+
+
+http://192.168.0.102:2244/fsapi/GET/netRemote.sys.info.activeSession?pin=1234&sid=937461581	404	GET	192.168.0.102:2244	/fsapi/GET/netRemote.sys.info.activeSession?pin=1234&sid=937461581	Tue Jan 12 22:52:53 CET 2016	24	318	Complete
+http://192.168.0.102:2244/fsapi/CREATE_SESSION?pin=1234	200	GET	192.168.0.102:2244	/fsapi/CREATE_SESSION?pin=1234	Tue Jan 12 22:52:53 CET 2016	16	376	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.sys.audio.mute?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.sys.audio.mute?pin=1234	Tue Jan 12 22:52:53 CET 2016	21	382	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.sys.audio.volume?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.sys.audio.volume?pin=1234	Tue Jan 12 22:52:53 CET 2016	53	384	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.sys.power?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.sys.power?pin=1234	Tue Jan 12 22:52:53 CET 2016	43	377	Complete
+http://192.168.0.102:2244/fsapi/GET_NOTIFIES?pin=1234&r=61113&sid=2102027722	200	GET	192.168.0.102:2244	/fsapi/GET_NOTIFIES?pin=1234&r=61113&sid=2102027722	Tue Jan 12 22:52:53 CET 2016	1302	436	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.sys.mode?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.sys.mode?pin=1234	Tue Jan 12 22:52:53 CET 2016	42	378	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.sys.audio.volume?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.sys.audio.volume?pin=1234	Tue Jan 12 22:52:53 CET 2016	42	384	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.sys.audio.mute?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.sys.audio.mute?pin=1234	Tue Jan 12 22:52:53 CET 2016	39	382	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.play.info.name?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.play.info.name?pin=1234	Tue Jan 12 22:52:53 CET 2016	37	405	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.play.info.text?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.play.info.text?pin=1234	Tue Jan 12 22:52:53 CET 2016	33	445	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.play.status?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.play.status?pin=1234	Tue Jan 12 22:52:53 CET 2016	51	379	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.play.shuffle?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.play.shuffle?pin=1234	Tue Jan 12 22:52:53 CET 2016	50	380	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.play.repeat?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.play.repeat?pin=1234	Tue Jan 12 22:52:53 CET 2016	37	379	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.sys.audio.mute?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.sys.audio.mute?pin=1234	Tue Jan 12 22:52:53 CET 2016	37	382	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.sys.audio.volume?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.sys.audio.volume?pin=1234	Tue Jan 12 22:52:53 CET 2016	41	384	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.sys.audio.mute?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.sys.audio.mute?pin=1234	Tue Jan 12 22:52:53 CET 2016	45	382	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.sys.audio.volume?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.sys.audio.volume?pin=1234	Tue Jan 12 22:52:53 CET 2016	41	384	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.sys.power?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.sys.power?pin=1234	Tue Jan 12 22:52:53 CET 2016	41	377	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.sys.audio.volume?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.sys.audio.volume?pin=1234	Tue Jan 12 22:52:54 CET 2016	26	384	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.sys.mode?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.sys.mode?pin=1234	Tue Jan 12 22:52:54 CET 2016	24	378	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.sys.audio.mute?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.sys.audio.mute?pin=1234	Tue Jan 12 22:52:54 CET 2016	35	382	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.play.info.text?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.play.info.text?pin=1234	Tue Jan 12 22:52:54 CET 2016	44	445	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.play.info.name?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.play.info.name?pin=1234	Tue Jan 12 22:52:54 CET 2016	35	405	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.play.status?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.play.status?pin=1234	Tue Jan 12 22:52:54 CET 2016	23	379	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.play.shuffle?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.play.shuffle?pin=1234	Tue Jan 12 22:52:54 CET 2016	36	380	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.play.repeat?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.play.repeat?pin=1234	Tue Jan 12 22:52:54 CET 2016	38	379	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.play.info.duration?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.play.info.duration?pin=1234	Tue Jan 12 22:52:54 CET 2016	33	388	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.play.info.artist?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.play.info.artist?pin=1234	Tue Jan 12 22:52:54 CET 2016	56	395	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.nav.caps?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.nav.caps?pin=1234	Tue Jan 12 22:52:54 CET 2016	72	378	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.play.info.album?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.play.info.album?pin=1234	Tue Jan 12 22:52:54 CET 2016	34	394	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.play.info.album?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.play.info.album?pin=1234	Tue Jan 12 22:52:54 CET 2016	48	394	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.play.info.artist?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.play.info.artist?pin=1234	Tue Jan 12 22:52:54 CET 2016	59	395	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.play.info.duration?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.play.info.duration?pin=1234	Tue Jan 12 22:52:54 CET 2016	57	388	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.play.caps?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.play.caps?pin=1234	Tue Jan 12 22:52:54 CET 2016	44	379	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.nav.caps?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.nav.caps?pin=1234	Tue Jan 12 22:52:54 CET 2016	36	378	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.play.info.duration?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.play.info.duration?pin=1234	Tue Jan 12 22:52:54 CET 2016	39	388	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.play.info.artist?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.play.info.artist?pin=1234	Tue Jan 12 22:52:54 CET 2016	45	395	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.play.info.album?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.play.info.album?pin=1234	Tue Jan 12 22:52:54 CET 2016	43	394	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.play.info.album?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.play.info.album?pin=1234	Tue Jan 12 22:52:54 CET 2016	36	394	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.play.info.artist?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.play.info.artist?pin=1234	Tue Jan 12 22:52:54 CET 2016	29	395	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.play.info.duration?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.play.info.duration?pin=1234	Tue Jan 12 22:52:54 CET 2016	27	388	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.play.caps?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.play.caps?pin=1234	Tue Jan 12 22:52:54 CET 2016	42	379	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.play.info.graphicUri?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.play.info.graphicUri?pin=1234	Tue Jan 12 22:52:54 CET 2016	40	471	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.play.info.graphicUri?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.play.info.graphicUri?pin=1234	Tue Jan 12 22:52:54 CET 2016	35	471	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.nav.state?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.nav.state?pin=1234	Tue Jan 12 22:52:54 CET 2016	13	377	Complete
+http://192.168.0.102:2244/fsapi/SET/netRemote.nav.state?pin=1234&value=0	200	GET	192.168.0.102:2244	/fsapi/SET/netRemote.nav.state?pin=1234&value=0	Tue Jan 12 22:52:54 CET 2016	12	359	Complete
+http://192.168.0.102:2244/fsapi/SET/netRemote.nav.state?pin=1234&value=1	200	GET	192.168.0.102:2244	/fsapi/SET/netRemote.nav.state?pin=1234&value=1	Tue Jan 12 22:52:54 CET 2016	25	359	Complete
+http://192.168.0.102:2244/fsapi/GET_NOTIFIES?pin=1234&r=61113&sid=2102027722	200	GET	192.168.0.102:2244	/fsapi/GET_NOTIFIES?pin=1234&r=61113&sid=2102027722	Tue Jan 12 22:52:55 CET 2016	806	436	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.nav.status?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.nav.status?pin=1234	Tue Jan 12 22:52:55 CET 2016	16	378	Complete
+http://192.168.0.102:2244/fsapi/GET_NOTIFIES?pin=1234&r=61113&sid=2102027722		GET	192.168.0.102:2244	/fsapi/GET_NOTIFIES?pin=1234&r=61113&sid=2102027722	Tue Jan 12 22:52:55 CET 2016		244	Waiting for response
+http://192.168.0.102:2244/fsapi/SET/netRemote.sys.audio.volume?pin=1234&value=5	200	GET	192.168.0.102:2244	/fsapi/SET/netRemote.sys.audio.volume?pin=1234&value=5	Tue Jan 12 22:52:55 CET 2016	14	366	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.nav.numItems?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.nav.numItems?pin=1234	Tue Jan 12 22:52:56 CET 2016	19	382	Complete
+http://192.168.0.102:2244/fsapi/GET/netRemote.nav.depth?pin=1234	200	GET	192.168.0.102:2244	/fsapi/GET/netRemote.nav.depth?pin=1234	Tue Jan 12 22:52:56 CET 2016	32	368	Complete
+http://192.168.0.102:2244/fsapi/LIST_GET_NEXT/netRemote.nav.list/-1?maxItems=30&pin=1234	200	GET	192.168.0.102:2244	/fsapi/LIST_GET_NEXT/netRemote.nav.list/-1?maxItems=30&pin=1234	Tue Jan 12 22:52:56 CET 2016	26	1362	Complete
+http://192.168.0.102:2244/fsapi/SET/netRemote.sys.audio.volume?pin=1234&value=4	200	GET	192.168.0.102:2244	/fsapi/SET/netRemote.sys.audio.volume?pin=1234&value=4	Tue Jan 12 22:52:56 CET 2016	22	366	Complete
+http://init-p01st.push.apple.com/bag	200	GET	init-p01st.push.apple.com	/bag	Tue Jan 12 22:52:58 CET 2016	121	7008	Complete

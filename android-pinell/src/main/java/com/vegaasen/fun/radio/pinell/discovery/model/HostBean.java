@@ -15,6 +15,7 @@ public class HostBean implements Parcelable {
 
     private static final String EMPTY = "";
 
+    private boolean fromCache;
     private int deviceType = TYPE_COMPUTER;
     private int isAlive = 1;
     private int position = 0;
@@ -46,6 +47,14 @@ public class HostBean implements Parcelable {
             return new HostBean[size];
         }
     };
+
+    public boolean isFromCache() {
+        return fromCache;
+    }
+
+    public void setFromCache(boolean fromCache) {
+        this.fromCache = fromCache;
+    }
 
     public int getDeviceType() {
         return deviceType;
@@ -171,6 +180,11 @@ public class HostBean implements Parcelable {
         dest.writeMap(banners);
         dest.writeList(Lists.newArrayList(portsOpen));
         dest.writeList(portsClosed);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return !(o == null || !(o instanceof HostBean)) && this.getIpAddress().equals(((HostBean) o).getIpAddress());
     }
 
     @Override

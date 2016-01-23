@@ -9,6 +9,18 @@ This library is actually meant to target Pinell-radios, however it may also be u
 
 Please note that the Pinell devices is not using all functionalities that is exposed/supported by the Frontier Silicon API itself.
 
+# Extras
+
+/fsapi/SET/netRemote.sys.info.friendlyName?pin=1234&value=Pinell%20Supersound%20002261bf1170&_=1449270945079
+/fsapi/GET/netRemote.sys.info.friendlyName?pin=1234&_=1449270762342
+/fsapi/GET/netRemote.sys.net.wlan.connectedSSID?pin=1234&_=1449270762343
+/fsapi/GET/netRemote.sys.net.wlan.rssi?pin=1234&_=1449270762343
+/fsapi/GET/netRemote.sys.net.ipConfig.dhcp?pin=1234&_=1449270762344
+/fsapi/GET/netRemote.sys.net.ipConfig.address?pin=1234&_=1449270762345
+/fsapi/GET/netRemote.sys.net.ipConfig.gateway?pin=1234&_=1449270762346
+/fsapi/GET/netRemote.sys.net.ipConfig.dnsPrimary?pin=1234&_=1449270762346
+/fsapi/GET/netRemote.sys.net.ipConfig.dnsSecondary?p
+
 # Usage
 
 Not finished yet.
