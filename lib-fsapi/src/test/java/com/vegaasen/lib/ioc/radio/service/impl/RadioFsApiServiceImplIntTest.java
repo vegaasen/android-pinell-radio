@@ -167,6 +167,18 @@ public class RadioFsApiServiceImplIntTest {
     }
 
     @Test
+    public void getCurrentlyPlayingAndListStations_normalProcedure() throws InterruptedException {
+        turnDeviceOn();
+        DeviceCurrentlyPlaying currentlyPlaying = service.getCurrentlyPlaying(host);
+        assertNotNull(currentlyPlaying);
+        currentlyPlaying = service.getCurrentlyPlaying(host, true);
+        assertNotNull(currentlyPlaying);
+        Set<RadioStation> radioStations = service.listStations(host, RadioFsApiServiceImpl.DEFAULT_START_INDEX, RadioFsApiServiceImpl.DEFAULT_MAX_ITEMS);
+        assertNotNull(radioStations);
+        assertFalse(radioStations.isEmpty());
+    }
+
+    @Test
     public void enterContainerAndListStations_normalProcedure() throws InterruptedException {
         turnDeviceOn();
         final Set<RadioMode> radioModes = service.listAvailableRadioModes(host);
