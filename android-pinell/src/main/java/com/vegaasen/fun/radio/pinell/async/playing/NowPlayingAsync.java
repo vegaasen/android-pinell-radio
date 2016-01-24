@@ -40,15 +40,19 @@ public class NowPlayingAsync extends AbstractFragmentVoidAsync {
     private TextView artistTitle;
     private SeekBar volumeControl;
     private ProgressBar progressBar;
+    private boolean simple;
 
-    public NowPlayingAsync(FragmentManager fragmentManager, View view, WeakReference<NowPlayingFragment> nowPlayingFragment, PinellService pinellService, String unknown) {
+    public NowPlayingAsync(FragmentManager fragmentManager, View view, WeakReference<NowPlayingFragment> nowPlayingFragment, PinellService pinellService, String unknown, boolean simple) {
         super(fragmentManager, view, pinellService, unknown);
         this.nowPlayingFragment = nowPlayingFragment;
+        this.simple = simple;
     }
 
     @Override
     protected Void doInBackground(Void... params) {
-        deviceCurrentlyPlaying = pinellService.getCurrentlyPlaying();
+        if (!simple) {
+            deviceCurrentlyPlaying = pinellService.getCurrentlyPlaying();
+        }
         audioLevels = pinellService.getAudioLevels();
         return null;
     }
@@ -61,18 +65,20 @@ public class NowPlayingAsync extends AbstractFragmentVoidAsync {
             return;
         }
         configureViewComponents();
-        if (deviceCurrentlyPlaying == null) {
-            Log.w(TAG, "Unable to fetch currently playing. Device not turned on or not a Pinell device?");
-            return;
-        }
-        if (radioTitle == null || artistTitle == null || volumeControl == null) {
-            Log.d(TAG, "Unable to process the details as the view does not seems to exist?");
-            return;
-        }
-        radioTitle.setText(Strings.isNullOrEmpty(deviceCurrentlyPlaying.getName()) ? unknown : deviceCurrentlyPlaying.getName());
-        artistTitle.setText(Strings.isNullOrEmpty(deviceCurrentlyPlaying.getTune()) ? unknown : deviceCurrentlyPlaying.getTune());
-        if (!Strings.isNullOrEmpty(deviceCurrentlyPlaying.getGraphicsUri())) {
-            radioImage.setBackground(ImageUtils.convert(deviceCurrentlyPlaying.getGraphicsUri()));
+        if (!simple) {
+            if (deviceCurrentlyPlaying == null) {
+                Log.w(TAG, "Unable to fetch currently playing. Device not turned on or not a Pinell device?");
+                return;
+            }
+            if (radioTitle == null || artistTitle == null || volumeControl == null) {
+                Log.d(TAG, "Unable to process the details as the view does not seems to exist?");
+                return;
+            }
+            radioTitle.setText(Strings.isNullOrEmpty(deviceCurrentlyPlaying.getName()) ? unknown : deviceCurrentlyPlaying.getName());
+            artistTitle.setText(Strings.isNullOrEmpty(deviceCurrentlyPlaying.getTune()) ? unknown : deviceCurrentlyPlaying.getTune());
+            if (!Strings.isNullOrEmpty(deviceCurrentlyPlaying.getGraphicsUri())) {
+                radioImage.setBackground(ImageUtils.convert(deviceCurrentlyPlaying.getGraphicsUri()));
+            }
         }
         if (audioLevels == null) {
             Log.w(TAG, "For some reason, the AudioLevel could not be obtained - disabling the volumeControl");
@@ -85,10 +91,12 @@ public class NowPlayingAsync extends AbstractFragmentVoidAsync {
 
     @Override
     protected void configureViewComponents() {
+        if (!simple) {
+            radioTitle = (TextView) view.findViewById(R.id.playingRadioChannelTxt);
+            radioImage = (ImageView) view.findViewById(R.id.playingRadioChannelImg);
+            artistTitle = (TextView) view.findViewById(R.id.playingArtistTitleTxt);
+        }
         progressBar = (ProgressBar) view.findViewById(R.id.informationProgressBar);
-        radioTitle = (TextView) view.findViewById(R.id.playingRadioChannelTxt);
-        radioImage = (ImageView) view.findViewById(R.id.playingRadioChannelImg);
-        artistTitle = (TextView) view.findViewById(R.id.playingArtistTitleTxt);
         volumeControl = (SeekBar) view.findViewById(R.id.playingVolumeControlSeek);
     }
 

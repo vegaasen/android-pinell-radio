@@ -11,10 +11,8 @@ import com.vegaasen.http.rest.model.http.Param;
 import com.vegaasen.http.rest.model.http.RequestType;
 import com.vegaasen.http.rest.model.http.Response;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.URLConnection;
@@ -37,13 +35,13 @@ import java.util.logging.Logger;
  * COOL BEANS! :-)
  *
  * @author <a href="vegaasen@gmail.com">vegardaasen</a>
- * @version 14.10.2015
+ * @version 24.1.2016
+ * @since 14.10.2015
  */
 public final class HttpUtils {
 
     private static final Logger LOG = Logger.getLogger(HttpUtils.class.getSimpleName());
     private static final int FIRST_INDEXED = 0;
-    private static final String EMPTY = "";
 
     private HttpUtils() {
     }
@@ -140,27 +138,6 @@ public final class HttpUtils {
         Authenticator.setDefault(new UsernamePasswordAuthenticator(authentication.getUser()));
     }
 
-    private static String convertInputStreamToPayload(final InputStream stream) {
-        if (stream == null) {
-            return EMPTY;
-        }
-        final InputStreamReader reader = new InputStreamReader(stream);
-        final StringBuilder builder = new StringBuilder();
-        final BufferedReader bufferedReader = new BufferedReader(reader);
-        try {
-            String read;
-            read = bufferedReader.readLine();
-            while (read != null) {
-                builder.append(read);
-                read = bufferedReader.readLine();
-
-            }
-        } catch (final IOException e) {
-            //eaten! NOMMNOMMNOMM!!
-        }
-        return builder.toString();
-    }
-
     private static void configureSchemeForGet(final Scheme scheme) {
         scheme.setTo(scheme.compileAsString());
     }
@@ -189,7 +166,7 @@ public final class HttpUtils {
             response.setWhen(urlConnection.getIfModifiedSince());
             response.setOriginalRequestScheme(scheme);
             response.setHeaders(convertHeaders(urlConnection.getHeaderFields()));
-            response.setPayload(convertInputStreamToPayload(inputStream));
+            response.setPayload(InputUtils.convertInputStreamToPayload(inputStream));
             response.setOriginalPayload(inputStream);
             return response;
         } catch (final IOException e) {

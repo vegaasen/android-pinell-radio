@@ -178,7 +178,12 @@ public class PinellServiceImpl implements PinellService {
 
     @Override
     public DeviceCurrentlyPlaying getCurrentlyPlaying() {
-        return getRadioService().getCurrentlyPlaying(getSelectedHost());
+        return getCurrentlyPlaying(false);
+    }
+
+    @Override
+    public DeviceCurrentlyPlaying getCurrentlyPlaying(boolean simple) {
+        return getRadioService().getCurrentlyPlaying(getSelectedHost(), simple);
     }
 
     @Override

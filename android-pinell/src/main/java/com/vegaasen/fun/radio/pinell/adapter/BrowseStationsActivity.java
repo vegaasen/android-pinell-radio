@@ -89,7 +89,7 @@ public class BrowseStationsActivity extends BaseAdapter {
         if (radioStation == null || Strings.isNullOrEmpty(radioStation.getName())) {
             return;
         }
-        this.currentRadioStation = DeviceCurrentlyPlaying.createSimple(radioStation.getName());
+        this.currentRadioStation = DeviceCurrentlyPlaying.create(radioStation.getName());
     }
 
     public void clearAndRefreshRadioStations(List<RadioStation> updatedRadioStations) {

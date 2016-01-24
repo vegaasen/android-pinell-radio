@@ -35,6 +35,7 @@ import java.util.concurrent.TimeUnit;
 public class BrowseInternetAsync extends AbstractFragmentVoidAsync {
 
     private static final String TAG = BrowseInternetAsync.class.getSimpleName();
+    private static final boolean SIMPLE = true;
 
     private final View view;
     private final WeakReference<BrowseFragment> browseFragmentReference;
@@ -54,7 +55,7 @@ public class BrowseInternetAsync extends AbstractFragmentVoidAsync {
     @Override
     @SuppressWarnings("unchecked")
     protected Void doInBackground(Void... voids) {
-        currentlyPlaying = pinellService.getCurrentlyPlaying();
+        currentlyPlaying = pinellService.getCurrentlyPlaying(SIMPLE);
         try {
             radioStations.addAll(new GetAllRadioStationsAsync(pinellService).execute().get(TIMEOUT, TimeUnit.SECONDS));
         } catch (Exception e) {
@@ -119,7 +120,7 @@ public class BrowseInternetAsync extends AbstractFragmentVoidAsync {
 
     @Override
     protected void configureViewComponents() {
-        browseSpinner = (ProgressBar) view.findViewById(R.id.browseDabSpinner);
+        browseSpinner = (ProgressBar) view.findViewById(R.id.browseInternetSpinner);
     }
 
 }

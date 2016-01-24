@@ -31,7 +31,7 @@ public class DeviceCurrentlyPlaying {
         this.duration = duration;
     }
 
-    public static DeviceCurrentlyPlaying createSimple(final String name) {
+    public static DeviceCurrentlyPlaying create(final String name) {
         return create(ZERO, name, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, ZERO);
     }
 

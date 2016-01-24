@@ -27,6 +27,13 @@ interface PinellRadioService {
     DeviceCurrentlyPlaying getCurrentlyPlaying();
 
     /**
+     * Get the currently playing element on the radio. Simple? Only the name will be populated.
+     *
+     * @return _
+     */
+    DeviceCurrentlyPlaying getCurrentlyPlaying(boolean simple);
+
+    /**
      * Mutes the radio
      *
      * @return volume muted from

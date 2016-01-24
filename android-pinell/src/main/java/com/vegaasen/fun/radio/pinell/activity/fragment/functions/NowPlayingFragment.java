@@ -53,6 +53,10 @@ public class NowPlayingFragment extends AbstractFragment {
             nowPlayingView = inflater.inflate(R.layout.fragment_pinell_na, container, false);
         } else if (!deviceOn) {
             nowPlayingView = inflater.inflate(R.layout.fragment_now_playing_device_off, container, false);
+        } else if (invalidRadioMode()) {
+            nowPlayingView = inflater.inflate(R.layout.fragment_now_playing_invalid_mode, container, false);
+            configureComponents();
+            configureActions();
         } else {
             nowPlayingView = inflater.inflate(R.layout.fragment_now_playing, container, false);
             configureComponents();
@@ -68,7 +72,7 @@ public class NowPlayingFragment extends AbstractFragment {
 //        if (!isWifiEnabledAndConnected()) {
 //            return;
 //        }
-        if (ApplicationContext.INSTANCE.isPinellDevice() && deviceOn) {
+        if (ApplicationContext.INSTANCE.isPinellDevice() && deviceOn && !invalidRadioMode()) {
             configureScheduledTasks(true);
         }
     }
@@ -82,6 +86,11 @@ public class NowPlayingFragment extends AbstractFragment {
     @Override
     protected void changeActiveContent(ViewGroup container) {
         changeCurrentActiveApplicationContextContent(container, R.drawable.ic_volume_up_white, R.string.sidebarNowPlaying);
+    }
+
+    private boolean invalidRadioMode() {
+        PinellRadioMode activeRadioMode = ApplicationContext.INSTANCE.getActiveRadioMode();
+        return activeRadioMode.equals(PinellRadioMode.MUSIC_PLAYER) || activeRadioMode.equals(PinellRadioMode.AUX);
     }
 
     private void configureScheduledTasks(boolean start) {
@@ -107,7 +116,7 @@ public class NowPlayingFragment extends AbstractFragment {
     }
 
     private void refreshView() {
-        new NowPlayingAsync(getFragmentManager(), nowPlayingView, new WeakReference<>(this), getPinellService(), getResources().getString(R.string.genericUnknown)).execute();
+        new NowPlayingAsync(getFragmentManager(), nowPlayingView, new WeakReference<>(this), getPinellService(), getResources().getString(R.string.genericUnknown), invalidRadioMode()).execute();
     }
 
     private void configureComponents() {
@@ -131,7 +140,10 @@ public class NowPlayingFragment extends AbstractFragment {
             }
         });
         if (!ApplicationContext.INSTANCE.getActiveRadioMode().equals(PinellRadioMode.FM_AM)) {
-            nowPlayingView.findViewById(R.id.playingartistChannelSelector).setVisibility(View.GONE);
+            View view = nowPlayingView.findViewById(R.id.playingartistChannelSelector);
+            if (view != null) {
+                view.setVisibility(View.GONE);
+            }
             return;
         }
         Log.d(TAG, "FM seems to be active. Configuring controls");

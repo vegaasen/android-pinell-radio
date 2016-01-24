@@ -25,4 +25,12 @@ public abstract class KeyValueVariant {
     public StringId getValue() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        return "KeyValueVariant{" +
+                "key=" + key +
+                ", value=" + value +
+                '}';
+    }
 }

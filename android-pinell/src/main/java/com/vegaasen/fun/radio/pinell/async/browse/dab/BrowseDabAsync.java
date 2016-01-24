@@ -33,6 +33,7 @@ import java.util.List;
 public class BrowseDabAsync extends AbstractFragmentVoidAsync {
 
     private static final String TAG = BrowseDabAsync.class.getSimpleName();
+    private static final boolean SIMPLE = true;
 
     private final View view;
     private final WeakReference<BrowseFragment> browseFragmentReference;
@@ -52,7 +53,7 @@ public class BrowseDabAsync extends AbstractFragmentVoidAsync {
     @Override
     @SuppressWarnings("unchecked")
     protected Void doInBackground(Void... voids) {
-        currentlyPlaying = pinellService.getCurrentlyPlaying();
+        currentlyPlaying = pinellService.getCurrentlyPlaying(SIMPLE);
         try {
             radioStations.addAll(new GetAllRadioStationsAsync(pinellService).execute().get());
         } catch (Exception e) {

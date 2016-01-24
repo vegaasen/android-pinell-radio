@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/newBackgroundColor">
+    <!--
+         This will be referred whenever the selected Pinell device is either:
+         - not a Pinell device
+         - not available
+
+         @author vegaasen
+         @since 24.01.2016
+     -->
+    <ProgressBar
+            style="?android:attr/progressBarStyleLargeInverse"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/informationProgressBar"
+            android:layout_centerInParent="true"
+            android:progressDrawable="@drawable/progress_bar_circular"/>
+    <ImageView
+            android:id="@+id/imgFmRadioLogo"
+            android:layout_below="@id/informationProgressBar"
+            android:layout_width="@dimen/defaultBigIconSize"
+            android:layout_height="@dimen/defaultBigIconSize"
+            android:layout_centerInParent="true"
+            android:background="@drawable/ic_info_outline_black"
+            android:contentDescription="@string/genericUnknown"
+            />
+    <TextView
+            android:id="@+id/txtFmRadioFrequency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/imgFmRadioLogo"
+            android:layout_centerHorizontal="true"
+            android:text="@string/pinellNotAvailInputTitle"
+            />
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtFmRadioFrequency"
+            android:layout_centerHorizontal="true"
+            android:textSize="@dimen/textSmallDefaultHeight"
+            android:textStyle="italic"
+            android:text="@string/pinellNotAvailInputReason"
+            android:id="@+id/txtNotAvailableReason"
+            />
+    <SeekBar
+            android:id="@+id/playingVolumeControlSeek"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:max="@integer/volumeControlMax"
+            android:layout_marginTop="@dimen/selectableMargin"
+            android:layout_below="@id/txtNotAvailableReason"
+            />
+</RelativeLayout>

@@ -1,8 +1,10 @@
 package com.vegaasen.http.rest.model.http;
 
 import com.vegaasen.http.rest.model.Scheme;
+import com.vegaasen.http.rest.utils.StringUtils;
 
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -15,7 +17,7 @@ public final class Response {
     private long when;
     private String payload;
     private InputStream originalPayload;
-    private Map<String, String> headers;
+    private Map<String, String> headers = new HashMap<>();
     private int responseCode;
     private Scheme originalRequestScheme;
 
@@ -49,6 +51,13 @@ public final class Response {
 
     public void setHeaders(Map<String, String> headers) {
         this.headers = headers;
+    }
+
+    public void addHeader(String key, String value) {
+        if (StringUtils.isBlank(key, value)) {
+            return;
+        }
+        headers.put(key, value);
     }
 
     public int getResponseCode() {

@@ -163,19 +163,21 @@ public enum ApiRequestSystem {
         ApiConnection.INSTANCE.requestAsync(ApiConnection.INSTANCE.getApiUri(host, UriContext.Device.AUDIO_VOLUME_LEVEL_SET, params));
     }
 
-    public DeviceCurrentlyPlaying getCurrentlyPlaying(Host host) {
-        return DeviceCurrentlyPlaying.create(
-                System.currentTimeMillis(),
-                getResponse(host, UriContext.Device.CURRENTLY_PLAYING_NAME).trim(),
-                getResponse(host, UriContext.Device.CURRENTLY_PLAYING_TEXT),
-                getResponse(host, UriContext.Device.CURRENTLY_PLAYING_GRAPHICAL),
-                getResponse(host, UriContext.Device.CURRENTLY_PLAYING_RATE),
-                getResponse(host, UriContext.Device.CURRENTLY_PLAYING_CAPS),
-                getResponse(host, UriContext.Device.CURRENTLY_PLAYING_STATUS),
-                getResponse(host, UriContext.Device.CURRENTLY_PLAYING_FREQUENCY),
-                getResponse(host, UriContext.Device.CURRENTLY_PLAYING_DAB_SERVICE_ID),
-                ItemUtils.parseSafeInt(getResponse(host, UriContext.Device.CURRENTLY_PLAYING_DURATION))
-        );
+    public DeviceCurrentlyPlaying getCurrentlyPlaying(Host host, boolean simple) {
+        return simple ?
+                DeviceCurrentlyPlaying.create(getResponse(host, UriContext.Device.CURRENTLY_PLAYING_NAME).trim()) :
+                DeviceCurrentlyPlaying.create(
+                        System.currentTimeMillis(),
+                        getResponse(host, UriContext.Device.CURRENTLY_PLAYING_NAME).trim(),
+                        getResponse(host, UriContext.Device.CURRENTLY_PLAYING_TEXT),
+                        getResponse(host, UriContext.Device.CURRENTLY_PLAYING_GRAPHICAL),
+                        getResponse(host, UriContext.Device.CURRENTLY_PLAYING_RATE),
+                        getResponse(host, UriContext.Device.CURRENTLY_PLAYING_CAPS),
+                        getResponse(host, UriContext.Device.CURRENTLY_PLAYING_STATUS),
+                        getResponse(host, UriContext.Device.CURRENTLY_PLAYING_FREQUENCY),
+                        getResponse(host, UriContext.Device.CURRENTLY_PLAYING_DAB_SERVICE_ID),
+                        ItemUtils.parseSafeInt(getResponse(host, UriContext.Device.CURRENTLY_PLAYING_DURATION))
+                );
     }
 
     /**

@@ -18,7 +18,7 @@ public abstract class AbstractRestinator extends AbstractBaseRestinator implemen
 
     @Override
     public Response get() {
-        return HttpUtils.performGetLikeRequest(RequestType.GET, scheme);
+        return com.vegaasen.http.rest.utils.apache.HttpUtils.httpGet(scheme);
     }
 
     @Override

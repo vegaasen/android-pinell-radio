@@ -54,7 +54,7 @@ public class ApiRequestSystemIntTest extends AbstractApiRequestIntTest {
 
     @Test
     public void getCurrentlyPlaying_normalProcedure() {
-        DeviceCurrentlyPlaying result = ApiRequestSystem.INSTANCE.getCurrentlyPlaying(host);
+        DeviceCurrentlyPlaying result = ApiRequestSystem.INSTANCE.getCurrentlyPlaying(host, false);
         assertNotNull(result);
         System.out.println(result.toString());
     }

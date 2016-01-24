@@ -82,6 +82,14 @@ public interface RadioFsApiService {
     DeviceCurrentlyPlaying getCurrentlyPlaying(Host host);
 
     /**
+     * Get the currently active playing tune, radio station or similar. If the simple-option is selected,
+     * only the name will be returned.
+     *
+     * @return _
+     */
+    DeviceCurrentlyPlaying getCurrentlyPlaying(Host host, boolean simple);
+
+    /**
      * Get the current audio information from the radio - such as muted, not-muted, audio level etc.
      *
      * @param host _

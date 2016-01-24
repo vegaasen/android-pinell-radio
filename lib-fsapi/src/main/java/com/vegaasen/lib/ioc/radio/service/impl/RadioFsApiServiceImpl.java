@@ -100,11 +100,16 @@ public class RadioFsApiServiceImpl implements RadioFsApiService {
 
     @Override
     public DeviceCurrentlyPlaying getCurrentlyPlaying(Host host) {
+        return getCurrentlyPlaying(host, false);
+    }
+
+    @Override
+    public DeviceCurrentlyPlaying getCurrentlyPlaying(Host host, boolean simple) {
         if (host == null) {
             LOG.warning("Unable to get information for host. Host is nilled");
             return null;
         }
-        return ApiRequestSystem.INSTANCE.getCurrentlyPlaying(host);
+        return ApiRequestSystem.INSTANCE.getCurrentlyPlaying(host, simple);
     }
 
     @Override

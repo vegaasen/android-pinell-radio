@@ -32,7 +32,7 @@ public enum ApiRequestRadio {
     private static final String PREVIOUS_HIERARCHY_LEVEL = "0xffffffff";
     private static final String FM_SEARCH_FORWARD = "3", FM_SEARCH_REWIND = "4";
     private static final String RANDOM = RandomUtils.randomAsString(), EMPTY = "";
-    private static final int MAX_TRIES = 5, AWAITING_READYNESS = 30;
+    private static final int MAX_TRIES = 5, AWAITING_READYNESS = 50;
 
     public void searchFMForward(Host host) {
         final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
