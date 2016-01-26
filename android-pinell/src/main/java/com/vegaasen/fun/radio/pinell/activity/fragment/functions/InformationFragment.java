@@ -1,5 +1,7 @@
 package com.vegaasen.fun.radio.pinell.activity.fragment.functions;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +13,7 @@ import com.vegaasen.fun.radio.pinell.async.information.InformationLoadingAsync;
 import com.vegaasen.fun.radio.pinell.async.information.InformationSoundLevelAsync;
 import com.vegaasen.fun.radio.pinell.context.ApplicationContext;
 import com.vegaasen.fun.radio.pinell.util.scheduler.TaskScheduler;
+import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeUnit;
@@ -39,6 +42,27 @@ public class InformationFragment extends AbstractFragment {
         //todo: This checks too quick (before it has been set) - what to do here on first entry? Pass to another screen?
         if (!ApplicationContext.INSTANCE.isPinellDevice()) {
             informationView = inflater.inflate(R.layout.fragment_pinell_na, container, false);
+            final Host selectedHost = ApplicationContext.INSTANCE.getPinellService().getSelectedHost();
+            if (ApplicationContext.INSTANCE.getStorageService().contains(selectedHost)) {
+                new AlertDialog.Builder(getActivity())
+                        .setTitle(getString(R.string.msgStoredHostNotFoundTitle))
+                        .setMessage(getString(R.string.msgStoredHostNotFoundMessage, selectedHost.getHost()))
+                        .setPositiveButton(getString(R.string.btnYes), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                ApplicationContext.INSTANCE.getStorageService().remove(selectedHost);
+                                dialogInterface.dismiss();
+                            }
+                        })
+                        .setNegativeButton(getString(R.string.btnNo), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        })
+                        .create()
+                        .show();
+            }
         } else {
             informationView = inflater.inflate(R.layout.fragment_information, container, false);
             refreshView();

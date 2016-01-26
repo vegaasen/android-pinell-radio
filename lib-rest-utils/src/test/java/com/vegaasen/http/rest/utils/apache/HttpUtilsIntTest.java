@@ -11,7 +11,7 @@ import static org.junit.Assert.assertNotNull;
 /**
  * @author <a href="vegaasen@gmail.com">vegardaasen</a>
  */
-public class HttpUtilsTest {
+public class HttpUtilsIntTest {
 
     private Scheme validScheme;
 

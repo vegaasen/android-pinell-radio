@@ -4,8 +4,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:weightSum="1"
-        android:background="@color/newBackgroundColor">
+        android:weightSum="1">
     <!--
         When loading any of the fragments (except the find-host part),
         this can be used. It basically just displays a spinner whilst waiting for more

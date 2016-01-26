@@ -165,7 +165,7 @@ public class RadioFsApiServiceImpl implements RadioFsApiService {
             LOG.warning("Unable to listStations due to either host is nilled");
             return null;
         }
-        LOG.fine(String.format("Listing stations for {%s} from {%s} and max stations {%s}", host.toString(), from, maxStations));
+        LOG.info(String.format("Listing stations for {%s} from {%s} and max stations {%s}", host.toString(), from, maxStations));
         return ApiRequestRadio.INSTANCE.getRadioStations(host, from, maxStations);
     }
 
@@ -175,7 +175,7 @@ public class RadioFsApiServiceImpl implements RadioFsApiService {
             LOG.warning("Unable to enter container and list stations due to either host or selected folder is nilled/empty");
             return Collections.emptySet();
         }
-        LOG.fine(String.format("Selecting container {%s} for {%s}. Showing {%s} elements", radioStation.toString(), host.toString(), maxStations));
+        LOG.info(String.format("Selecting container {%s} for {%s}. Showing {%s} elements", radioStation.toString(), host.toString(), maxStations));
         return ApiRequestRadio.INSTANCE.selectContainerAndGetRadioStations(host, radioStation, maxStations);
     }
 
@@ -185,7 +185,7 @@ public class RadioFsApiServiceImpl implements RadioFsApiService {
             LOG.warning("Unable to move to previous container and list stations due to host is nilled/empty");
             return Collections.emptySet();
         }
-        LOG.fine(String.format("Moving to previous container for {%s}. Showing {%s} elements", host.toString(), maxStations));
+        LOG.info(String.format("Moving to previous container for {%s}. Showing {%s} elements", host.toString(), maxStations));
         return ApiRequestRadio.INSTANCE.selectPreviousContainer(host, maxStations);
     }
 
@@ -195,7 +195,7 @@ public class RadioFsApiServiceImpl implements RadioFsApiService {
             LOG.warning("Unable to selectStation due to either host or selected folder is nilled/empty");
             return;
         }
-        LOG.fine(String.format("Selecting station {%s} for {%s}", radioStation.toString(), host.toString()));
+        LOG.info(String.format("Selecting station {%s} for {%s}", radioStation.toString(), host.toString()));
         ApiRequestRadio.INSTANCE.selectRadioStation(host, radioStation);
     }
 

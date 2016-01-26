@@ -7,6 +7,10 @@ repositories {
     mavenCentral()
 }
 
+test {
+    exclude '**/*IntTest*'
+}
+
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }

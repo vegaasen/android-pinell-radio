@@ -6,4 +6,6 @@
     <string name="messagePinellDeviceNotOn">Powering on Pinell device</string>
     <string name="messageHostDetailsTitle">Pinell host details</string>
     <string name="messageApplicationDetailsTitle">Application details :-)</string>
+    <string name="msgStoredHostNotFoundTitle">Pinell device not found</string>
+    <string name="msgStoredHostNotFoundMessage">It seems that the selected pinell device (%s) is not available. Do you want to remove the saved record?</string>
 </resources>

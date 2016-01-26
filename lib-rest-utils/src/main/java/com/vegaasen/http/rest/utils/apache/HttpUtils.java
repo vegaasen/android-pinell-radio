@@ -24,18 +24,25 @@ import java.util.logging.Logger;
  */
 public class HttpUtils {
 
-    private static final int MAX_TIMEOUT = (int) TimeUnit.SECONDS.toMillis(30);
+    private static final int MAX_TIMEOUT = (int) TimeUnit.SECONDS.toMillis(5);
     private static final Logger LOG = Logger.getLogger(HttpUtils.class.getSimpleName());
+    private static final RequestConfig REQUEST_CONFIG = RequestConfig
+            .custom()
+            .setSocketTimeout(MAX_TIMEOUT)
+            .setConnectTimeout(MAX_TIMEOUT)
+            .setConnectionRequestTimeout(MAX_TIMEOUT)
+            .build();
 
     public static Response httpGet(final Scheme scheme) {
         if (scheme == null || scheme.getTo() == null) {
             return null;
         }
         LOG.fine(String.format("Performing httpGet for {%s}", scheme));
-        HttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(RequestConfig.custom().setSocketTimeout(MAX_TIMEOUT).build()).build();
+        HttpClient httpClient = HttpClientBuilder.create().build();
         try {
             HttpGet request = new HttpGet(assembleRequestUri(scheme));
             assembleHeaders(scheme, request);
+            request.setConfig(REQUEST_CONFIG);
             return ResponseTranslator.translate(httpClient.execute(request));
         } catch (Exception e) {
             LOG.warning(String.format("Unable to perform get on {%s}", scheme));
@@ -71,6 +78,5 @@ public class HttpUtils {
             request.addHeader(header.getKey().getId(), header.getValue().getId());
         }
     }
-
 
 }

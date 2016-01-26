@@ -6,7 +6,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class ApiConnectionTest {
+public class ApiConnectionIntTest {
 
     @Test
     public void assemble_connection() {

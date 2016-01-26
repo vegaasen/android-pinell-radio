@@ -1,5 +1,6 @@
 package com.vegaasen.fun.radio.pinell.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -39,6 +40,7 @@ import java.util.concurrent.TimeUnit;
  * @version 26.7.2015
  * @since 0.1-SNAPSHOT
  */
+@SuppressLint("EasterEgg")
 public class MainActivity extends AbstractActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();

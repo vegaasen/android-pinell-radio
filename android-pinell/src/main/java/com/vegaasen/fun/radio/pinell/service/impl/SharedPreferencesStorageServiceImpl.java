@@ -33,6 +33,20 @@ public class SharedPreferencesStorageServiceImpl implements StorageService {
     }
 
     @Override
+    public boolean contains(Host host) {
+        if (host == null) {
+            Log.d(TAG, "Unable to verify if the host exists, as the host is nilled");
+            return false;
+        }
+        for (Host candidate : getAll()) {
+            if (candidate.equals(host)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public void remove(Host hostBean) {
         if (preferences == null) {
             Log.w(TAG, "Unable to remove the host due to preferences being nilled");

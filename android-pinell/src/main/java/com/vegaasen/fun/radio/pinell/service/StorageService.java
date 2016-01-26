@@ -24,6 +24,13 @@ public interface StorageService {
     int clear();
 
     /**
+     * Verifies if the provided host exists within the storage
+     *
+     * @param host _
+     */
+    boolean contains(Host host);
+
+    /**
      * Remove the provided hostBean from the storage
      *
      * @param hostBean _

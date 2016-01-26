@@ -3,6 +3,8 @@ package com.vegaasen.lib.ioc.radio.model.system.connection;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceInformation;
 import com.vegaasen.lib.ioc.radio.model.system.auth.RadioSession;
 
+import java.util.Objects;
+
 /**
  * @author vegardaasen
  * @version 05.1.2016@0.5
@@ -78,6 +80,28 @@ public class Host {
 
     public String getConnectionString() {
         return String.format("%s://%s:%s", HTTP_SCHEME, getHost(), getPort());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(host, port, code, radioSession, deviceInformation, cached);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        final Host other = (Host) obj;
+        return Objects.equals(this.host, other.host)
+                && Objects.equals(this.port, other.port)
+                && Objects.equals(this.code, other.code)
+                && Objects.equals(this.radioSession, other.radioSession)
+                && Objects.equals(this.deviceInformation, other.deviceInformation)
+                && Objects.equals(this.cached, other.cached);
     }
 
     @Override

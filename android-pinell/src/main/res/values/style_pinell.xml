@@ -8,6 +8,7 @@
     -->
     <style name="PinellTheme" parent="android:Theme.Holo.Light.NoActionBar">
         <item name="android:textViewStyle">@style/PinellTextViewStyle</item>
+        <item name="android:colorBackground">@color/newBackgroundColor</item>
     </style>
     <style name="PinellTextViewStyle" parent="android:Widget.TextView">
         <item name="android:textSize">@dimen/textDefaultHeight</item>

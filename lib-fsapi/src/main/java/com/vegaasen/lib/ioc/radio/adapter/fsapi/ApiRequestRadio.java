@@ -108,10 +108,10 @@ public enum ApiRequestRadio {
 
     public Set<RadioStation> getRadioStations(Host host, int fromIndex, int maxItems, boolean container) {
         if (container) {
-            LOG.finest("Container selected, treating it as such");
+            LOG.info("Container selected, treating it as such");
             preFolderRadioStations(host);
         } else {
-            LOG.finest("Normal loading operation, loading stations for the first time/default list");
+            LOG.info("Normal loading operation, loading stations for the first time/default list");
             preGenericRadioStations(host);
         }
         final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
@@ -179,14 +179,19 @@ public enum ApiRequestRadio {
      */
     private void preGenericRadioStations(Host host) {
         try {
+            LOG.info(String.format("Fetching {%s}", UriContext.RadioNavigation.PRE_GET_NAV_STATE));
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_STATE));
             final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
             params.put(Parameter.QueryParameter.VALUE, "0");
+            LOG.info(String.format("Setting {%s} to 0", UriContext.RadioNavigation.PRE_SET_NAV_STATE));
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_SET_NAV_STATE, params));
             params.put(Parameter.QueryParameter.VALUE, "1");
+            LOG.info(String.format("Setting {%s} to 1", UriContext.RadioNavigation.PRE_SET_NAV_STATE));
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_SET_NAV_STATE, params));
             awaitRadioReady(host);
+            LOG.info(String.format("Fetching {%s}", UriContext.RadioNavigation.PRE_GET_NAV_DEPTH));
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_DEPTH));
+            LOG.info(String.format("Fetching {%s}", UriContext.RadioNavigation.PRE_GET_NUM_ITEMS));
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NUM_ITEMS));
         } catch (final Exception e) {
             LOG.info("Unable to execute pre-generics for radio stations");
@@ -195,8 +200,11 @@ public enum ApiRequestRadio {
 
     private void preFolderRadioStations(Host host) {
         try {
+            LOG.info(String.format("Fetching {%s}", UriContext.RadioNavigation.PRE_GET_NAV_STATE));
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_STATE));
+            LOG.info(String.format("Fetching {%s}", UriContext.RadioNavigation.PRE_GET_NAV_DEPTH));
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_DEPTH));
+            LOG.info(String.format("Fetching {%s}", UriContext.RadioNavigation.PRE_GET_NUM_ITEMS));
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NUM_ITEMS));
         } catch (Exception e) {
             LOG.info("Unable to execute pre-folder for radio stations");
@@ -233,7 +241,7 @@ public enum ApiRequestRadio {
                     // * gulp *
                 }
             }
-            LOG.warning(String.format("Try {%s}", tries));
+            LOG.info(String.format("Try {%s}", tries));
             tries++;
         }
     }

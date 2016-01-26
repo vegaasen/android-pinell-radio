@@ -6,6 +6,7 @@ package com.vegaasen.lib.ioc.radio.util;
  * - Formatting
  * - Trimming
  * - etc..
+ * todo: trimming seems not to work anymore. wtf.
  *
  * @author <a href="mailto:vegaasen@gmail.com">vegaasen</a>
  * @version 26.7.2015

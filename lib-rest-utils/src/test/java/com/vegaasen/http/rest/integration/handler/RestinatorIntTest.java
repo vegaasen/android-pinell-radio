@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 /**
  * @author <a href="vegaasen@gmail.com">vegardaasen</a>
  */
-public final class RestinatorTest {
+public final class RestinatorIntTest {
 
     private static final String VALID_URL = "http://www.vegaasen.com/";
     private static final String PINELL_LOCAL_HOST = "http://192.168.0.104:2244";

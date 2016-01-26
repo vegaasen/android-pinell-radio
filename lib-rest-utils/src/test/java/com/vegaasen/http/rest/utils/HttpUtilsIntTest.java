@@ -15,7 +15,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author <a href="vegaasen@gmail.com">vegardaasen</a>
  */
-public final class HttpUtilsTest {
+public final class HttpUtilsIntTest {
 
     private Scheme validScheme;
 

@@ -164,6 +164,7 @@ public enum ApiRequestSystem {
     }
 
     public DeviceCurrentlyPlaying getCurrentlyPlaying(Host host, boolean simple) {
+        LOG.info(String.format("Fetching currently playing by {%s:%s}", host, simple));
         return simple ?
                 DeviceCurrentlyPlaying.create(getResponse(host, UriContext.Device.CURRENTLY_PLAYING_NAME).trim()) :
                 DeviceCurrentlyPlaying.create(

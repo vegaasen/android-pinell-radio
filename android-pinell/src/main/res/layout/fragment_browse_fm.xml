@@ -4,8 +4,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scrollbars="none"
-                android:scrollbarAlwaysDrawVerticalTrack="false"
-                android:background="@color/newBackgroundColor">
+                android:scrollbarAlwaysDrawVerticalTrack="false">
     <!--
         This is the view related to browsing. Here you will be able to browse through a list
         of current detected radiostations, or similar.

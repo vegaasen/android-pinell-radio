@@ -4,4 +4,6 @@
     <string name="btnClearExistingHosts">Clear saved hosts</string>
     <string name="btnAddNewHost">Add host</string>
     <string name="btnAcquireNewSession">Acquire new session</string>
+    <string name="btnYes">Yep</string>
+    <string name="btnNo">Nop</string>
 </resources>
