@@ -53,12 +53,8 @@ public class NowPlayingFragment extends AbstractFragment {
             nowPlayingView = inflater.inflate(R.layout.fragment_pinell_na, container, false);
         } else if (!deviceOn) {
             nowPlayingView = inflater.inflate(R.layout.fragment_now_playing_device_off, container, false);
-        } else if (invalidRadioMode()) {
-            nowPlayingView = inflater.inflate(R.layout.fragment_now_playing_invalid_mode, container, false);
-            configureComponents();
-            configureActions();
         } else {
-            nowPlayingView = inflater.inflate(R.layout.fragment_now_playing, container, false);
+            nowPlayingView = inflater.inflate(invalidRadioMode() ? R.layout.fragment_now_playing_invalid_mode : R.layout.fragment_now_playing, container, false);
             configureComponents();
             configureActions();
             refreshView();
