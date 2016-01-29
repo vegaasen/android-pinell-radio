@@ -267,6 +267,11 @@ public class PinellServiceImpl implements PinellService {
     }
 
     @Override
+    public Set<RadioStation> enterPreviousContainerAndListStations() {
+        return getRadioService().enterPreviousContainerAndListStations(getSelectedHost(), RadioFsApiService.DEFAULT_MAX_ITEMS);
+    }
+
+    @Override
     public void setRadioStation(RadioStation radioStation) {
         if (radioStation == null) {
             Log.d(TAG, "Unable to select the radio station as it seems to be nilled");

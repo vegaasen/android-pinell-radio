@@ -12,6 +12,10 @@ public class RadioStation extends AbsRadioStation {
         super(keyId, name, type, subType);
     }
 
+    public static RadioStation create(String name, String type) {
+        return new RadioStation(0, name, null, type);
+    }
+
     public static RadioStation create(Item item) {
         if (!valid(item)) {
             return null;

@@ -12,7 +12,7 @@ import com.vegaasen.fun.radio.pinell.activity.fragment.functions.BrowseFragment;
 import com.vegaasen.fun.radio.pinell.adapter.BrowseStationsActivity;
 import com.vegaasen.fun.radio.pinell.async.abs.AbstractFragmentVoidAsync;
 import com.vegaasen.fun.radio.pinell.async.function.GetAllRadioStationsAsync;
-import com.vegaasen.fun.radio.pinell.async.function.SetRadioStationAsync;
+import com.vegaasen.fun.radio.pinell.async.function.browse.SetRadioStationAsync;
 import com.vegaasen.fun.radio.pinell.service.PinellService;
 import com.vegaasen.fun.radio.pinell.util.CollectionUtils;
 import com.vegaasen.http.rest.utils.StringUtils;

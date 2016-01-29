@@ -113,6 +113,13 @@ interface PinellRadioService {
     Set<RadioStation> enterContainerAndListStations(RadioStation radioContainer);
 
     /**
+     * Enter the selected RadioStation (as its a container) and list its content
+     *
+     * @return the detected radioStations
+     */
+    Set<RadioStation> enterPreviousContainerAndListStations();
+
+    /**
      * Select the chosen radioStation. This will choose the selected radio station
      *
      * @param radioStation _

@@ -32,6 +32,7 @@ public final class ApiResponse {
     public static final class SubType {
         public static final String TYPE_CONTAINER = "0";
         public static final String TYPE_STATION = "1";
+        public static final String TYPE_UNKNOWN = "-1";
     }
 
     public static final class Value {

@@ -1,4 +1,4 @@
-package com.vegaasen.fun.radio.pinell.async.function;
+package com.vegaasen.fun.radio.pinell.async.function.browse;
 
 import android.util.Log;
 import com.vegaasen.fun.radio.pinell.async.abs.AbstractFragmentVoidAsync;

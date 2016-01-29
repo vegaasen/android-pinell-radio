@@ -1,5 +1,6 @@
 package com.vegaasen.lib.ioc.radio.adapter.fsapi;
 
+import com.vegaasen.http.rest.utils.StringUtils;
 import com.vegaasen.lib.ioc.radio.adapter.constants.ApiResponse;
 import com.vegaasen.lib.ioc.radio.adapter.constants.Parameter;
 import com.vegaasen.lib.ioc.radio.adapter.constants.UriContext;
@@ -74,10 +75,7 @@ public enum ApiRequestRadio {
      * @return _
      */
     public Set<RadioStation> selectPreviousContainer(Host host, int maxItems) {
-        final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
-        params.put(Parameter.QueryParameter.VALUE, PREVIOUS_HIERARCHY_LEVEL);
-        ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.SUB_CONTAINER_SELECT, params));
-        return getRadioStations(host, -1, maxItems);
+        return getRadioStations(host, RadioFsApiService.DEFAULT_START_INDEX, maxItems, true, RadioStation.create(PREVIOUS_HIERARCHY_LEVEL, ApiResponse.SubType.TYPE_UNKNOWN));
     }
 
     /**
@@ -203,7 +201,8 @@ public enum ApiRequestRadio {
             params.put(Parameter.QueryParameter.VALUE, STATE_NAVIGATION_ON);
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_SET_NAV_STATE, params));
             awaitRadioReady(host);
-            params.put(Parameter.QueryParameter.VALUE, candidate.getKeyIdAsString());
+            String key = candidate.getKeyIdAsString();
+            params.put(Parameter.QueryParameter.VALUE, !StringUtils.isBlank(key) ? key : candidate.getName());
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.SUB_CONTAINER_SELECT, params));
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NUM_ITEMS));
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_DEPTH));

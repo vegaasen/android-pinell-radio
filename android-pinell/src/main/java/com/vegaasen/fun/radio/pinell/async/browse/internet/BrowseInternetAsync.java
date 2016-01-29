@@ -13,10 +13,12 @@ import com.vegaasen.fun.radio.pinell.adapter.BrowseStationsActivity;
 import com.vegaasen.fun.radio.pinell.async.abs.AbstractFragmentVoidAsync;
 import com.vegaasen.fun.radio.pinell.async.browse.dab.OnScrollAppendStationsAsync;
 import com.vegaasen.fun.radio.pinell.async.function.GetAllRadioStationsAsync;
-import com.vegaasen.fun.radio.pinell.async.function.GetContainerContentAsync;
-import com.vegaasen.fun.radio.pinell.async.function.SetRadioStationAsync;
+import com.vegaasen.fun.radio.pinell.async.function.browse.GetContainerContentAsync;
+import com.vegaasen.fun.radio.pinell.async.function.browse.GetPreviousContainerContentAsync;
+import com.vegaasen.fun.radio.pinell.async.function.browse.SetRadioStationAsync;
 import com.vegaasen.fun.radio.pinell.service.PinellService;
 import com.vegaasen.http.rest.utils.StringUtils;
+import com.vegaasen.lib.ioc.radio.adapter.constants.ApiResponse;
 import com.vegaasen.lib.ioc.radio.model.dab.RadioStation;
 import com.vegaasen.lib.ioc.radio.model.device.DeviceCurrentlyPlaying;
 
@@ -35,6 +37,8 @@ public class BrowseInternetAsync extends AbstractFragmentVoidAsync {
 
     private static final String TAG = BrowseInternetAsync.class.getSimpleName();
     private static final boolean SIMPLE = true;
+    private static final String RETURN = "<< Previous folder";
+    public static final RadioStation RETURN_PLACEHOLDER = RadioStation.create(RETURN, ApiResponse.SubType.TYPE_UNKNOWN);
 
     private final View view;
     private final WeakReference<BrowseFragment> browseFragmentReference;
@@ -98,28 +102,58 @@ public class BrowseInternetAsync extends AbstractFragmentVoidAsync {
                     return;
                 }
                 if (radioStation.isRadioStationContainer()) {
-                    Log.d(TAG, String.format("RadioContainer {%s} selected. Opening the container", radioStation));
-                    List<RadioStation> candidates = new ArrayList<>();
-                    try {
-                        candidates.addAll(new GetContainerContentAsync(pinellService, radioStation).execute().get());
-                    } catch (Exception e) {
-                        Log.w(TAG, String.format("Unable to fetch the candidates for container using {%s}", radioStation));
-                    }
-                    browseFragment.refreshRadioStationsDataSet(candidates);
+                    handleContainer(radioStation, browseFragment);
                 } else {
-                    new SetRadioStationAsync(pinellService, radioStation).execute();
+                    if (RETURN.equals(radioStation.getName())) {
+                        handlePreviousContainer(radioStation, browseFragment);
+                    } else {
+                        new SetRadioStationAsync(pinellService, radioStation).execute();
+                    }
                 }
-//                browseFragment.refreshCurrentRadioDataSet(radioStation);
             }
         });
-        if (browseSpinner != null) {
-            browseSpinner.setVisibility(View.GONE);
-        }
+        spinnerVisibility(View.GONE);
     }
 
     @Override
     protected void configureViewComponents() {
         browseSpinner = (ProgressBar) view.findViewById(R.id.browseInternetSpinner);
+    }
+
+    private void spinnerVisibility(int visible) {
+        if (browseSpinner != null) {
+            browseSpinner.setVisibility(visible);
+        }
+    }
+
+    private void handlePreviousContainer(RadioStation radioStation, BrowseFragment browseFragment) {
+        Log.d(TAG, "Choosing return to previous folder :-)");
+        spinnerVisibility(View.VISIBLE);
+        List<RadioStation> candidates = new ArrayList<>();
+        try {
+            candidates.add(RETURN_PLACEHOLDER);
+            candidates.addAll(new GetPreviousContainerContentAsync(pinellService).execute().get());
+        } catch (Exception e) {
+            Log.w(TAG, String.format("Unable to fetch the candidates for container using {%s}", radioStation));
+        } finally {
+            spinnerVisibility(View.GONE);
+        }
+        browseFragment.refreshRadioStationsDataSet(candidates);
+    }
+
+    private void handleContainer(RadioStation radioStation, BrowseFragment browseFragment) {
+        Log.d(TAG, String.format("RadioContainer {%s} selected. Opening the container", radioStation));
+        List<RadioStation> candidates = new ArrayList<>();
+        spinnerVisibility(View.VISIBLE);
+        try {
+            candidates.add(RETURN_PLACEHOLDER);
+            candidates.addAll(new GetContainerContentAsync(pinellService, radioStation).execute().get());
+        } catch (Exception e) {
+            Log.w(TAG, String.format("Unable to fetch the candidates for container using {%s}", radioStation));
+        } finally {
+            spinnerVisibility(View.GONE);
+        }
+        browseFragment.refreshRadioStationsDataSet(candidates);
     }
 
 }
