@@ -23,7 +23,6 @@ import com.vegaasen.lib.ioc.radio.model.device.DeviceCurrentlyPlaying;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Represents the list of radio stations to browse related to the Internet-mode :-)
@@ -57,7 +56,7 @@ public class BrowseInternetAsync extends AbstractFragmentVoidAsync {
     protected Void doInBackground(Void... voids) {
         currentlyPlaying = pinellService.getCurrentlyPlaying(SIMPLE);
         try {
-            radioStations.addAll(new GetAllRadioStationsAsync(pinellService).execute().get(TIMEOUT, TimeUnit.SECONDS));
+            radioStations.addAll(new GetAllRadioStationsAsync(pinellService).assembleRadioStations());
         } catch (Exception e) {
             Log.d(TAG, "Unable to fetch radioStations");
         }

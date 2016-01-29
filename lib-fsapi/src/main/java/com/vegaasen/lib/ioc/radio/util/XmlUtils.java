@@ -32,7 +32,7 @@ public enum XmlUtils {
 
     private static final Logger LOG = Logger.getLogger(XmlUtils.class.getSimpleName());
     private static final String EMPTY = "";
-    private static final int INIT = -1;
+    private static final int INIT = -1, ZERO = 0;
 
     public Document getDocument(String candidate) {
         if (candidate == null || candidate.isEmpty()) {
@@ -70,15 +70,24 @@ public enum XmlUtils {
 
     public int getNumberContentByNode(final Element ele, final String nodeName) {
         try {
-            return (ele == null) ? 0 : Integer.parseInt(getTextContentByNode(ele, nodeName));
+            return (ele == null) ? ZERO : Integer.parseInt(getTextContentByNode(ele, nodeName));
         } catch (NumberFormatException e) {
             // *gulp*
         }
-        return 0;
+        return ZERO;
     }
 
     public String getTextContentByNode(final Element ele, final String nodeName) {
-        return (ele == null) ? EMPTY : ele.getElementsByTagName(nodeName).item(0).getTextContent();
+        if (ele == null) {
+            LOG.warning(String.format("{%s} expected, but not found.", nodeName));
+            return EMPTY;
+        }
+        NodeList candidate = ele.getElementsByTagName(nodeName);
+        if (candidate == null || candidate.getLength() == ZERO) {
+            LOG.info(String.format("{%s} found, but seems to be nilled by {%s}", nodeName, candidate));
+            return EMPTY;
+        }
+        return candidate.item(ZERO).getTextContent();
     }
 
     /**
@@ -121,8 +130,8 @@ public enum XmlUtils {
                     while (found++ != fields.getLength()) {
                         final Element field = (Element) fields.item(found);
                         if (field != null) {
-                            if (field.getAttributes().getLength() > 0) {
-                                fieldValues.put(field.getAttributes().item(0).getTextContent(), field.getTextContent());
+                            if (field.getAttributes().getLength() > ZERO) {
+                                fieldValues.put(field.getAttributes().item(ZERO).getTextContent(), field.getTextContent());
                             }
                         }
                     }
@@ -144,13 +153,13 @@ public enum XmlUtils {
             final Map<String, String> fieldValues = new HashMap<>();
             final Element item = (Element) candidates.item(i);
             if (item != null && item.getAttribute(ApiResponse.NODE).equals(attribute)) {
-                int found = 0;
+                int found = ZERO;
                 final NodeList values = item.getElementsByTagName(ApiResponse.VALUE);
                 if (values != null) {
                     while (found++ != values.getLength()) {
                         final NodeList arrays = item.getElementsByTagName(ApiResponse.VALUE_ARRAY_C_8);
                         if (arrays != null) {
-                            final Element arrayElement = (Element) arrays.item(0);
+                            final Element arrayElement = (Element) arrays.item(ZERO);
                             if (arrayElement != null) {
                                 fieldValues.put(key, arrayElement.getTextContent());
                             }
@@ -189,7 +198,7 @@ public enum XmlUtils {
         if (item != null) {
             return Integer.parseInt(item.getAttribute(ApiResponse.ITEM_KEY));
         }
-        return 0;
+        return ZERO;
     }
 
 }

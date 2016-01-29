@@ -130,6 +130,7 @@ public enum ApiConnection {
         } catch (URISyntaxException e) {
             LOG.warning("Unable to get APIUrl");
         }
+        LOG.warning(String.format("Unable to get APIUrl for {%s} and {%s}", context, parameters));
         return null;
     }
 

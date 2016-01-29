@@ -161,7 +161,6 @@ public interface RadioFsApiService {
      *
      * @param host         _
      * @param radioStation _
-     * @return _
      */
     void selectStation(Host host, RadioStation radioStation);
 

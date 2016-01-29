@@ -47,6 +47,7 @@ public class MainActivity extends AbstractActivity {
     private static final int TRANSIT_FRAGMENT_FADE = FragmentTransaction.TRANSIT_FRAGMENT_FADE;
     private static final int REQUEST_CODE = 1;
     private static final long REFRESH_PERIOD = TimeUnit.SECONDS.toMillis(60);
+
     private static boolean active, scheduled;
 
     private int clickedHiddenDoor;

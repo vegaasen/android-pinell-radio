@@ -7,6 +7,7 @@ import com.vegaasen.lib.ioc.radio.model.annotation.Beta;
 import com.vegaasen.lib.ioc.radio.model.dab.RadioStation;
 import com.vegaasen.lib.ioc.radio.model.response.Item;
 import com.vegaasen.lib.ioc.radio.model.system.connection.Host;
+import com.vegaasen.lib.ioc.radio.service.RadioFsApiService;
 import com.vegaasen.lib.ioc.radio.util.RandomUtils;
 import com.vegaasen.lib.ioc.radio.util.XmlUtils;
 import org.w3c.dom.Document;
@@ -32,7 +33,9 @@ public enum ApiRequestRadio {
     private static final String PREVIOUS_HIERARCHY_LEVEL = "0xffffffff";
     private static final String FM_SEARCH_FORWARD = "3", FM_SEARCH_REWIND = "4";
     private static final String RANDOM = RandomUtils.randomAsString(), EMPTY = "";
-    private static final int MAX_TRIES = 5, AWAITING_READYNESS = 50;
+    private static final int MAX_TRIES = 6, AWAITING_READYNESS = 100;
+    public static final String STATE_NAVIGATION_ON = "1";
+    public static final String STATE_NAVIGATION_OFF = "0";
 
     public void searchFMForward(Host host) {
         final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
@@ -94,22 +97,17 @@ public enum ApiRequestRadio {
      * @return _
      */
     public Set<RadioStation> selectContainerAndGetRadioStations(Host host, RadioStation radioStation, int maxItems) {
-        preGenericRadioStations(host);
-        final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
-        params.put(Parameter.QueryParameter.VALUE, radioStation.getKeyIdAsString());
-        ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.SUB_CONTAINER_SELECT, params));
-        awaitRadioReady(host);
-        return getRadioStations(host, -1, maxItems, true);
+        return getRadioStations(host, RadioFsApiService.DEFAULT_START_INDEX, maxItems, true, radioStation);
     }
 
     public Set<RadioStation> getRadioStations(Host host, int fromIndex, int maxItems) {
-        return getRadioStations(host, fromIndex, maxItems, false);
+        return getRadioStations(host, fromIndex, maxItems, false, null);
     }
 
-    public Set<RadioStation> getRadioStations(Host host, int fromIndex, int maxItems, boolean container) {
+    public Set<RadioStation> getRadioStations(Host host, int fromIndex, int maxItems, boolean container, RadioStation candidateContainer) {
         if (container) {
             LOG.info("Container selected, treating it as such");
-            preFolderRadioStations(host);
+            preFolderRadioStations(host, candidateContainer);
         } else {
             LOG.info("Normal loading operation, loading stations for the first time/default list");
             preGenericRadioStations(host);
@@ -134,7 +132,9 @@ public enum ApiRequestRadio {
                 }
             }
         } finally {
-            postGenericRadioStations(host);
+            if (!container) {
+                postGenericRadioStations(host);
+            }
         }
         return radioStations;
     }
@@ -147,7 +147,8 @@ public enum ApiRequestRadio {
             }
             final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
             params.put(Parameter.QueryParameter.VALUE, radioStation.getKeyIdAsString());
-            ApiConnection.INSTANCE.requestAsync(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.STATION_SELECT, params));
+            LOG.info(String.format("Selecting station {%s} on {%s}", radioStation, host));
+            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.STATION_SELECT, params));
         } finally {
             postGenericRadioStations(host);
         }
@@ -174,38 +175,38 @@ public enum ApiRequestRadio {
     /**
      * For some odd reason, Pinell radios requires this sequence to be sent when dealing with radioStations.
      * It looks a bit messy, just because it is a bit messy. Awesome..
+     * Note: some of the functionality has been commented out. If you remove this thing, the searching will not work as intended.
      *
      * @param host _
      */
     private void preGenericRadioStations(Host host) {
         try {
-            LOG.info(String.format("Fetching {%s}", UriContext.RadioNavigation.PRE_GET_NAV_STATE));
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_STATE));
             final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
-            params.put(Parameter.QueryParameter.VALUE, "0");
-            LOG.info(String.format("Setting {%s} to 0", UriContext.RadioNavigation.PRE_SET_NAV_STATE));
-            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_SET_NAV_STATE, params));
-            params.put(Parameter.QueryParameter.VALUE, "1");
-            LOG.info(String.format("Setting {%s} to 1", UriContext.RadioNavigation.PRE_SET_NAV_STATE));
+            params.put(Parameter.QueryParameter.VALUE, STATE_NAVIGATION_OFF);
+//            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_SET_NAV_STATE, params));
+            params.put(Parameter.QueryParameter.VALUE, STATE_NAVIGATION_ON);
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_SET_NAV_STATE, params));
             awaitRadioReady(host);
-            LOG.info(String.format("Fetching {%s}", UriContext.RadioNavigation.PRE_GET_NAV_DEPTH));
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_DEPTH));
-            LOG.info(String.format("Fetching {%s}", UriContext.RadioNavigation.PRE_GET_NUM_ITEMS));
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NUM_ITEMS));
         } catch (final Exception e) {
             LOG.info("Unable to execute pre-generics for radio stations");
         }
     }
 
-    private void preFolderRadioStations(Host host) {
+    private void preFolderRadioStations(Host host, RadioStation candidate) {
         try {
-            LOG.info(String.format("Fetching {%s}", UriContext.RadioNavigation.PRE_GET_NAV_STATE));
-            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_STATE));
-            LOG.info(String.format("Fetching {%s}", UriContext.RadioNavigation.PRE_GET_NAV_DEPTH));
-            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_DEPTH));
-            LOG.info(String.format("Fetching {%s}", UriContext.RadioNavigation.PRE_GET_NUM_ITEMS));
+            final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
+            params.put(Parameter.QueryParameter.VALUE, STATE_NAVIGATION_OFF);
+//            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_SET_NAV_STATE, params));
+            params.put(Parameter.QueryParameter.VALUE, STATE_NAVIGATION_ON);
+            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_SET_NAV_STATE, params));
+            awaitRadioReady(host);
+            params.put(Parameter.QueryParameter.VALUE, candidate.getKeyIdAsString());
+            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.SUB_CONTAINER_SELECT, params));
             ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NUM_ITEMS));
+            ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_DEPTH));
         } catch (Exception e) {
             LOG.info("Unable to execute pre-folder for radio stations");
         }
@@ -220,8 +221,8 @@ public enum ApiRequestRadio {
     private void postGenericRadioStations(Host host) {
         try {
             final Map<String, String> params = ApiConnection.INSTANCE.getDefaultApiConnectionParams(host);
-            params.put(Parameter.QueryParameter.VALUE, "0");
-            ApiConnection.INSTANCE.requestAsync(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_SET_NAV_STATE, params));
+            params.put(Parameter.QueryParameter.VALUE, STATE_NAVIGATION_OFF);
+//            ApiConnection.INSTANCE.requestAsync(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_SET_NAV_STATE, params));
         } catch (final Exception e) {
             LOG.warning("Unable to execute post-generics for radio station");
         }
@@ -230,15 +231,16 @@ public enum ApiRequestRadio {
     private void awaitRadioReady(Host host) {
         int tries = 0;
         while (tries <= MAX_TRIES) {
+            try {
+                Thread.sleep(AWAITING_READYNESS);
+            } catch (InterruptedException e) {
+                // * gulp *
+            }
             Document candidate = ApiConnection.INSTANCE.request(ApiConnection.INSTANCE.getApiUri(host, UriContext.RadioNavigation.PRE_GET_NAV_STATUS));
+            LOG.info(XmlUtils.INSTANCE.asString(candidate));
             if (candidate != null) {
                 if (XmlUtils.INSTANCE.getTextContentByNode(candidate.getDocumentElement(), ApiResponse.VALUE_U_8).equals(ApiResponse.Value.TRUE)) {
                     return;
-                }
-                try {
-                    Thread.sleep(AWAITING_READYNESS);
-                } catch (InterruptedException e) {
-                    // * gulp *
                 }
             }
             LOG.info(String.format("Try {%s}", tries));

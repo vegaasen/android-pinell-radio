@@ -55,7 +55,7 @@ public class BrowseDabAsync extends AbstractFragmentVoidAsync {
     protected Void doInBackground(Void... voids) {
         currentlyPlaying = pinellService.getCurrentlyPlaying(SIMPLE);
         try {
-            radioStations.addAll(new GetAllRadioStationsAsync(pinellService).execute().get());
+            radioStations.addAll(new GetAllRadioStationsAsync(pinellService).assembleRadioStations());
         } catch (Exception e) {
             Log.d(TAG, "Unable to fetch radioStations");
         }

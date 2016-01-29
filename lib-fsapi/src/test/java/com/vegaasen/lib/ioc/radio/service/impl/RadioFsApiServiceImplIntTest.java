@@ -179,6 +179,19 @@ public class RadioFsApiServiceImplIntTest {
     }
 
     @Test
+    public void enterContainer_chooseContainer_ListContainers() {
+        String localNorway = "Local Norway";
+        Set<RadioStation> containers = service.listStations(host, RadioFsApiService.DEFAULT_START_INDEX, RadioFsApiService.DEFAULT_MAX_ITEMS);
+        System.out.println(String.format("Found containers {%s}", containers));
+        for (RadioStation container : containers) {
+            if (container.getName().equals(localNorway)) {
+                Set<RadioStation> types = service.enterContainerAndListStations(host, container, RadioFsApiService.DEFAULT_MAX_ITEMS);
+                System.out.println(String.format("Found types {%s} by {%s}", types, localNorway));
+            }
+        }
+    }
+
+    @Test
     public void enterContainerAndListStations_normalProcedure() throws InterruptedException {
         turnDeviceOn();
         final Set<RadioMode> radioModes = service.listAvailableRadioModes(host);

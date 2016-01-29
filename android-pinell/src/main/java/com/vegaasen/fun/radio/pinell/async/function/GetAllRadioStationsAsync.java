@@ -1,6 +1,5 @@
 package com.vegaasen.fun.radio.pinell.async.function;
 
-import com.vegaasen.fun.radio.pinell.async.abs.AbstractFragmentAsync;
 import com.vegaasen.fun.radio.pinell.service.PinellService;
 import com.vegaasen.fun.radio.pinell.util.CollectionUtils;
 import com.vegaasen.fun.radio.pinell.util.Comparators;
@@ -11,39 +10,22 @@ import java.util.List;
 
 /**
  * Simple async-adapter that fetches all radio stations
+ * <p/>
+ * Note: Must be called from within a async task.
  *
  * @author <a href="vegaasen@gmail.com">vegardaasen</a>
  * @since 23.01.2016
  */
-public class GetAllRadioStationsAsync extends AbstractFragmentAsync<List<RadioStation>> {
+public class GetAllRadioStationsAsync {
 
-    private final int from;
-
-    public GetAllRadioStationsAsync(PinellService pinellService, int from) {
-        super(pinellService);
-        this.from = from;
-    }
+    private final PinellService pinellService;
 
     public GetAllRadioStationsAsync(PinellService pinellService) {
-        super(pinellService);
-        from = 0;
+        this.pinellService = pinellService;
     }
 
-    @Override
-    protected List<RadioStation> doInBackground(List<RadioStation>... lists) {
-        return assembleRadioStations(from);
-    }
-
-    @Override
-    protected void onPostExecute(List<RadioStation> aVoid) {
-    }
-
-    @Override
-    protected void configureViewComponents() {
-    }
-
-    private List<RadioStation> assembleRadioStations(int from) {
-        return sortRadioStations(CollectionUtils.toList(pinellService.listRadioStations(from)));
+    public List<RadioStation> assembleRadioStations() {
+        return sortRadioStations(CollectionUtils.toList(pinellService.listRadioStations(0)));
     }
 
     private List<RadioStation> sortRadioStations(final List<RadioStation> radioStations) {
