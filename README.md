@@ -5,6 +5,10 @@ Pinell Android Application
 
 Its the missing application for Pinell Supersound related to Android devices. Finally. omfg.
 
+# Important note(s)
+
+Please note that I'm not doing anything more with this project, as I no longer posess a Pinell Radio device, hence I cannot test the application. If someone else like to continue, please do :-)
+
 # Based on
 
 Nothing.
