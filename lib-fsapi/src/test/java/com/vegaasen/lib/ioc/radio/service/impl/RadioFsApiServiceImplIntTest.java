@@ -264,6 +264,11 @@ public class RadioFsApiServiceImplIntTest {
         assertNotNull(currentFMBand);
     }
 
+    @Test
+    public void turnDeviceOff_normalProcedure() {
+        turnDeviceOff();
+    }
+
     private void turnDeviceOff() {
         service.setPowerState(host, PowerState.OFF);
     }

@@ -9,16 +9,15 @@ import android.widget.TextView;
 import com.vegaasen.fun.radio.pinell.R;
 import com.vegaasen.fun.radio.pinell.activity.abs.AbstractActivity;
 import com.vegaasen.fun.radio.pinell.adapter.HostArrayAdapter;
+import com.vegaasen.fun.radio.pinell.adapter.disovery.DiscoveryAdapter;
 import com.vegaasen.fun.radio.pinell.context.ApplicationContext;
 import com.vegaasen.fun.radio.pinell.discovery.abs.AbstractHostDiscovery;
 import com.vegaasen.fun.radio.pinell.discovery.mode.XANHostDiscovery;
-import com.vegaasen.fun.radio.pinell.discovery.model.HostBean;
 import com.vegaasen.fun.radio.pinell.discovery.model.NetInfo;
 import com.vegaasen.fun.radio.pinell.listeners.DeviceListListener;
 import com.vegaasen.fun.radio.pinell.util.translator.HostTranslator;
 
 import java.lang.ref.WeakReference;
-import java.util.Collections;
 
 import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.DEFAULT_CIDR;
 import static com.vegaasen.fun.radio.pinell.common.PinellyConstants.DEFAULT_CIDR_CUSTOM;
@@ -148,6 +147,7 @@ public class SelectHostActivity extends AbstractActivity {
     }
 
     private void refreshHostsToList(AbstractActivity activity) {
+        new DiscoveryAdapter(NetInfo.getIpFromLongUnsigned(networkIp)).getPotentialHosts();
         configureAdapter(activity).setEmptyView(configureTextViews());
         hostDiscovery = new XANHostDiscovery(activity);
         hostDiscovery.setNetwork(networkIp, networkStart, networkEnd);
@@ -155,13 +155,13 @@ public class SelectHostActivity extends AbstractActivity {
         setProgressBarVisibility(true);
         setProgressBarIndeterminateVisibility(true);
         Log.e(TAG, "#### ---v Remove the hardcoded host!!! ####");
-        HostBean host = new HostBean();
-        host.setIpAddress("192.168.0.102");
-        host.setHostname(host.getIpAddress());
-        host.setPortsOpen(Collections.singleton(2244));
+//        HostBean host = new HostBean();
+//        host.setIpAddress("192.168.0.102");
+//        host.setHostname(host.getIpAddress());
+//        host.setPortsOpen(Collections.singleton(2244));
         Log.e(TAG, "#### ^--- Remove the hardcoded host!!! ####");
         addHost(HostTranslator.INSTANCE.translateBean(ApplicationContext.INSTANCE.getStorageService().getAll()));
-        addHost(host);
+//        addHost(host);
     }
 
     private ListView configureAdapter(AbstractActivity activity) {
